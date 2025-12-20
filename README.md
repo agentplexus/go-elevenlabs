@@ -10,17 +10,17 @@ Go SDK for the [ElevenLabs API](https://elevenlabs.io/).
 
 ## Features
 
-- **Text-to-Speech**: Convert text to realistic speech with multiple voices and models
-- **Speech-to-Text**: Transcribe audio with speaker diarization support
-- **Sound Effects**: Generate sound effects from text descriptions
-- **Voice Design**: Create custom AI voices with specific characteristics
-- **Music Composition**: Generate music from text prompts
-- **Audio Isolation**: Extract vocals/speech from audio
-- **Forced Alignment**: Get word-level timestamps for audio
-- **Text-to-Dialogue**: Generate multi-speaker conversations
-- **Dubbing**: Translate and dub video/audio content
-- **Projects**: Manage long-form audio content (audiobooks, podcasts)
-- **Pronunciation Dictionaries**: Control pronunciation of specific terms
+- 🗣️ **Text-to-Speech**: Convert text to realistic speech with multiple voices and models
+- 📝 **Speech-to-Text**: Transcribe audio with speaker diarization support
+- 🔊 **Sound Effects**: Generate sound effects from text descriptions
+- 🎨 **Voice Design**: Create custom AI voices with specific characteristics
+- 🎵 **Music Composition**: Generate music from text prompts
+- 🎙️ **Audio Isolation**: Extract vocals/speech from audio
+- ⏱️ **Forced Alignment**: Get word-level timestamps for audio
+- 💬 **Text-to-Dialogue**: Generate multi-speaker conversations
+- 🌍 **Dubbing**: Translate and dub video/audio content
+- 📚 **Projects**: Manage long-form audio content (audiobooks, podcasts)
+- 📖 **Pronunciation Dictionaries**: Control pronunciation of specific terms
 
 ## Installation
 
