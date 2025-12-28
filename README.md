@@ -346,6 +346,25 @@ call, err := client.Twilio().OutboundCall(ctx, &elevenlabs.TwilioOutboundCallReq
 numbers, err := client.PhoneNumbers().List(ctx)
 ```
 
+## Examples
+
+See the [`examples/`](https://github.com/agentplexus/go-elevenlabs/tree/main/examples) directory for runnable examples:
+
+| Example | Description |
+|---------|-------------|
+| `basic/` | Common SDK operations |
+| `websocket-tts/` | Real-time TTS streaming for LLM integration |
+| `websocket-stt/` | Live transcription with partial results |
+| `speech-to-speech/` | Voice conversion |
+| `twilio/` | Phone call integration with Twilio |
+| `ttsscript/` | Multi-voice script authoring |
+| `retryhttp/` | Retry-capable HTTP transport |
+
+```bash
+export ELEVENLABS_API_KEY="your-api-key"
+go run examples/basic/main.go
+```
+
 ## Error Handling
 
 ```go

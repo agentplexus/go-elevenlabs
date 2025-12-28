@@ -8,10 +8,10 @@ This document outlines the API priorities and implementation roadmap for support
 |------------|----------------|---------------------|
 | HTTP TTS | ✅ Covered | Medium (too slow for real-time) |
 | HTTP STT | ✅ Covered | Medium (too slow for real-time) |
-| **WebSocket TTS** | ⏳ In Progress | **Critical** |
-| **WebSocket STT** | ⏳ In Progress | **Critical** |
-| **Speech-to-Speech** | ⏳ In Progress | High |
-| **Twilio Integration** | ⏳ In Progress | **Critical** for phone |
+| **WebSocket TTS** | ✅ Covered | **Critical** |
+| **WebSocket STT** | ✅ Covered | **Critical** |
+| **Speech-to-Speech** | ✅ Covered | High |
+| **Twilio Integration** | ✅ Covered | **Critical** for phone |
 | Conversational AI Agents | ❌ Not covered | Optional* |
 
 *Optional if building your own orchestration with Dialogflow/LLM
@@ -94,23 +94,21 @@ Caller → Twilio → Your Server → Dialogflow/LLM
 
 ## Implementation Status
 
-### Phase 1: Core Real-Time APIs
+### Phase 1: Core Real-Time APIs ✅ Complete
 
-- [ ] `websocket.go` - WebSocket connection management
-- [ ] `websockettts.go` - WebSocket TTS streaming
-- [ ] `websocketstt.go` - WebSocket STT streaming
+- [x] `websockettts.go` - WebSocket TTS streaming
+- [x] `websocketstt.go` - WebSocket STT streaming
 
-### Phase 2: Phone Integration
+### Phase 2: Phone Integration ✅ Complete
 
-- [ ] `twilio.go` - Twilio call registration and outbound calls
-- [ ] `phone.go` - Phone number management
-- [ ] `sip.go` - SIP trunk integration
+- [x] `twilio.go` - Twilio call registration, outbound calls, and SIP trunk integration
+- [x] Phone number management (List, Get, Update, Delete)
 
-### Phase 3: Voice Processing
+### Phase 3: Voice Processing ✅ Complete
 
-- [ ] `speechtospeech.go` - Voice conversion (HTTP + streaming)
+- [x] `speechtospeech.go` - Voice conversion (HTTP + streaming)
 
-### Phase 4: Full Agent Platform (Optional)
+### Phase 4: Full Agent Platform (Future)
 
 - [ ] `agents.go` - Agent CRUD operations
 - [ ] `conversations.go` - Conversation management
