@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/grokify/go-elevenlabs/internal/api"
+	"github.com/agentplexus/go-elevenlabs/internal/api"
 )
 
 // DubbingService handles dubbing operations.

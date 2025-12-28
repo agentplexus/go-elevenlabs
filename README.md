@@ -25,7 +25,7 @@ Go SDK for the [ElevenLabs API](https://elevenlabs.io/).
 ## Installation
 
 ```bash
-go get github.com/grokify/go-elevenlabs
+go get github.com/agentplexus/go-elevenlabs
 ```
 
 ## Quick Start
@@ -41,7 +41,7 @@ import (
     "log"
     "os"
 
-    elevenlabs "github.com/grokify/go-elevenlabs"
+    elevenlabs "github.com/agentplexus/go-elevenlabs"
 )
 
 func main() {
@@ -277,7 +277,7 @@ if err != nil {
 
 ## Documentation
 
-- [API Reference](https://grokify.github.io/go-elevenlabs/)
+- [API Reference](https://agentplexus.github.io/go-elevenlabs/)
 - [ElevenLabs API Docs](https://elevenlabs.io/docs)
 
 ## Contributing
@@ -288,13 +288,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 MIT License
 
- [build-status-svg]: https://github.com/grokify/go-elevenlabs/actions/workflows/ci.yaml/badge.svg?branch=main
- [build-status-url]: https://github.com/grokify/go-elevenlabs/actions/workflows/ci.yaml
- [lint-status-svg]: https://github.com/grokify/go-elevenlabs/actions/workflows/lint.yaml/badge.svg?branch=main
- [lint-status-url]: https://github.com/grokify/go-elevenlabs/actions/workflows/lint.yaml
- [goreport-svg]: https://goreportcard.com/badge/github.com/grokify/go-elevenlabs
- [goreport-url]: https://goreportcard.com/report/github.com/grokify/go-elevenlabs
- [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/grokify/go-elevenlabs
- [docs-godoc-url]: https://pkg.go.dev/github.com/grokify/go-elevenlabs
+ [build-status-svg]: https://github.com/agentplexus/go-elevenlabs/actions/workflows/ci.yaml/badge.svg?branch=main
+ [build-status-url]: https://github.com/agentplexus/go-elevenlabs/actions/workflows/ci.yaml
+ [lint-status-svg]: https://github.com/agentplexus/go-elevenlabs/actions/workflows/lint.yaml/badge.svg?branch=main
+ [lint-status-url]: https://github.com/agentplexus/go-elevenlabs/actions/workflows/lint.yaml
+ [goreport-svg]: https://goreportcard.com/badge/github.com/agentplexus/go-elevenlabs
+ [goreport-url]: https://goreportcard.com/report/github.com/agentplexus/go-elevenlabs
+ [docs-godoc-svg]: https://pkg.go.dev/badge/github.com/agentplexus/go-elevenlabs
+ [docs-godoc-url]: https://pkg.go.dev/github.com/agentplexus/go-elevenlabs
  [license-svg]: https://img.shields.io/badge/license-MIT-blue.svg
- [license-url]: https://github.com/grokify/go-elevenlabs/blob/master/LICENSE
+ [license-url]: https://github.com/agentplexus/go-elevenlabs/blob/master/LICENSE

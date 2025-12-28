@@ -34,10 +34,17 @@ type CompiledSegment struct {
 	SlideIndex int
 
 	// SegmentIndex is the 0-based segment index within the slide.
+	// For title segments, this is -1.
 	SegmentIndex int
 
 	// SlideTitle is the slide title (if any).
 	SlideTitle string
+
+	// IsTitleSegment indicates this segment was generated from a slide title.
+	IsTitleSegment bool
+
+	// IsSectionHeader indicates this segment belongs to a section header slide.
+	IsSectionHeader bool
 
 	// Text is the processed text with pronunciations applied.
 	Text string
@@ -73,6 +80,61 @@ func (c *Compiler) Compile(script *Script, language string) ([]CompiledSegment, 
 	var segments []CompiledSegment
 
 	for slideIdx, slide := range script.Slides {
+		// Check if we should speak the title
+		if slide.ShouldSpeakTitle() && slide.Title != "" {
+			titleText := slide.Title
+
+			// Apply pronunciations to title
+			titleText = c.applyPronunciations(titleText, language, script.Pronunciations, nil)
+
+			// Determine voice for title
+			voiceID := ""
+			if v, ok := slide.TitleVoice[language]; ok {
+				voiceID = v
+			} else if len(slide.Segments) > 0 {
+				// Fall back to first segment's voice
+				if v, ok := slide.Segments[0].Voice[language]; ok {
+					voiceID = v
+				}
+			}
+			if voiceID == "" {
+				if v, ok := script.DefaultVoices[language]; ok {
+					voiceID = v
+				}
+			}
+
+			// Determine pause after title
+			titlePauseAfter := ParseDuration(slide.TitlePauseAfter)
+			if titlePauseAfter == 0 {
+				// Apply defaults based on slide type
+				if slide.IsSectionHeader {
+					titlePauseAfter = 500 // 500ms for section headers
+				} else {
+					titlePauseAfter = 300 // 300ms for regular slides
+				}
+			}
+
+			// Add pause before section headers
+			pauseBefore := 0
+			if slide.IsSectionHeader && slideIdx > 0 {
+				pauseBefore = 1000 // 1s pause before section headers
+			}
+
+			segments = append(segments, CompiledSegment{
+				SlideIndex:      slideIdx,
+				SegmentIndex:    -1, // Title segments use -1
+				SlideTitle:      slide.Title,
+				IsTitleSegment:  true,
+				IsSectionHeader: slide.IsSectionHeader,
+				Text:            titleText,
+				OriginalText:    slide.Title,
+				VoiceID:         voiceID,
+				Language:        language,
+				PauseBeforeMs:   pauseBefore,
+				PauseAfterMs:    titlePauseAfter,
+			})
+		}
+
 		for segIdx, seg := range slide.Segments {
 			text, ok := seg.Text[language]
 			if !ok {
@@ -110,18 +172,19 @@ func (c *Compiler) Compile(script *Script, language string) ([]CompiledSegment, 
 			}
 
 			segments = append(segments, CompiledSegment{
-				SlideIndex:    slideIdx,
-				SegmentIndex:  segIdx,
-				SlideTitle:    slide.Title,
-				Text:          text,
-				OriginalText:  originalText,
-				VoiceID:       voiceID,
-				Language:      language,
-				PauseBeforeMs: pauseBefore,
-				PauseAfterMs:  pauseAfter,
-				Emphasis:      seg.Emphasis,
-				Rate:          seg.Rate,
-				Pitch:         seg.Pitch,
+				SlideIndex:      slideIdx,
+				SegmentIndex:    segIdx,
+				SlideTitle:      slide.Title,
+				IsSectionHeader: slide.IsSectionHeader,
+				Text:            text,
+				OriginalText:    originalText,
+				VoiceID:         voiceID,
+				Language:        language,
+				PauseBeforeMs:   pauseBefore,
+				PauseAfterMs:    pauseAfter,
+				Emphasis:        seg.Emphasis,
+				Rate:            seg.Rate,
+				Pitch:           seg.Pitch,
 			})
 		}
 	}

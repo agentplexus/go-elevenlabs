@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/grokify/go-elevenlabs/internal/api"
+	"github.com/agentplexus/go-elevenlabs/internal/api"
 )
 
 // Version is the SDK version.

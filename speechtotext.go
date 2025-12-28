@@ -3,7 +3,7 @@ package elevenlabs
 import (
 	"context"
 
-	"github.com/grokify/go-elevenlabs/internal/api"
+	"github.com/agentplexus/go-elevenlabs/internal/api"
 )
 
 // SpeechToTextService handles speech-to-text transcription.

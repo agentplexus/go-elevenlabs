@@ -6,7 +6,7 @@ import (
 
 	ht "github.com/ogen-go/ogen/http"
 
-	"github.com/grokify/go-elevenlabs/internal/api"
+	"github.com/agentplexus/go-elevenlabs/internal/api"
 )
 
 // AudioIsolationService handles audio isolation (vocal/speech extraction).

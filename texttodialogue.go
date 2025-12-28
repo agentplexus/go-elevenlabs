@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	"github.com/grokify/go-elevenlabs/internal/api"
+	"github.com/agentplexus/go-elevenlabs/internal/api"
 )
 
 // TextToDialogueService handles multi-voice dialogue generation.

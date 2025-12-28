@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/grokify/go-elevenlabs/internal/api"
+	"github.com/agentplexus/go-elevenlabs/internal/api"
 )
 
 // UserService handles user and subscription operations.

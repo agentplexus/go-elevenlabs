@@ -1,4 +1,4 @@
-module github.com/grokify/go-elevenlabs
+module github.com/agentplexus/go-elevenlabs
 
 go 1.24.0
 

@@ -42,6 +42,22 @@ type Slide struct {
 	// Notes are speaker notes or comments (not rendered to audio).
 	Notes string `json:"notes,omitempty"`
 
+	// IsSectionHeader marks this slide as the start of a new section.
+	// Section headers can have their titles spoken and use longer transition pauses.
+	IsSectionHeader bool `json:"is_section_header,omitempty"`
+
+	// SpeakTitle causes the slide title to be spoken before the segments.
+	// If true, the title is converted to a segment. Defaults to true for section headers.
+	SpeakTitle *bool `json:"speak_title,omitempty"`
+
+	// TitleVoice overrides the voice used for speaking the title, by language.
+	// If not set, uses the segment voice or default voice.
+	TitleVoice map[string]string `json:"title_voice,omitempty"`
+
+	// TitlePauseAfter is the pause after the spoken title (e.g., "500ms").
+	// Defaults to "500ms" for section headers, "300ms" for regular slides.
+	TitlePauseAfter string `json:"title_pause_after,omitempty"`
+
 	// Segments are the audio segments for this slide.
 	Segments []Segment `json:"segments"`
 }
@@ -134,6 +150,17 @@ func (s *Script) SegmentCount() int {
 		count += len(slide.Segments)
 	}
 	return count
+}
+
+// ShouldSpeakTitle returns true if the slide title should be spoken.
+// Returns true if SpeakTitle is explicitly true, or if the slide is a
+// section header and SpeakTitle is not explicitly false.
+func (s *Slide) ShouldSpeakTitle() bool {
+	if s.SpeakTitle != nil {
+		return *s.SpeakTitle
+	}
+	// Default: speak title for section headers only
+	return s.IsSectionHeader
 }
 
 // Validate checks the script for common issues.

@@ -34,11 +34,17 @@ type ElevenLabsSegment struct {
 	// SlideIndex is the source slide index.
 	SlideIndex int
 
-	// SegmentIndex is the source segment index.
+	// SegmentIndex is the source segment index (-1 for title segments).
 	SegmentIndex int
 
 	// SlideTitle is the slide title for reference.
 	SlideTitle string
+
+	// IsTitleSegment indicates this segment was generated from a slide title.
+	IsTitleSegment bool
+
+	// IsSectionHeader indicates this segment belongs to a section header slide.
+	IsSectionHeader bool
 
 	// PauseBeforeMs is silence to add before this segment.
 	PauseBeforeMs int
@@ -69,15 +75,25 @@ func (f *ElevenLabsFormatter) Format(segments []CompiledSegment) []ElevenLabsSeg
 			}
 		}
 
+		// Generate appropriate filename
+		var filename string
+		if seg.IsTitleSegment {
+			filename = fmt.Sprintf("slide%02d_title.mp3", seg.SlideIndex+1)
+		} else {
+			filename = fmt.Sprintf("slide%02d_seg%02d.mp3", seg.SlideIndex+1, seg.SegmentIndex+1)
+		}
+
 		result[i] = ElevenLabsSegment{
 			Text:              text,
 			VoiceID:           seg.VoiceID,
 			SlideIndex:        seg.SlideIndex,
 			SegmentIndex:      seg.SegmentIndex,
 			SlideTitle:        seg.SlideTitle,
+			IsTitleSegment:    seg.IsTitleSegment,
+			IsSectionHeader:   seg.IsSectionHeader,
 			PauseBeforeMs:     seg.PauseBeforeMs,
 			PauseAfterMs:      seg.PauseAfterMs,
-			SuggestedFilename: fmt.Sprintf("slide%02d_seg%02d.mp3", seg.SlideIndex+1, seg.SegmentIndex+1),
+			SuggestedFilename: filename,
 		}
 	}
 
@@ -166,7 +182,12 @@ func NewBatchConfig(outputDir string) *BatchConfig {
 
 // GenerateFilename generates an output filename for a segment.
 func (c *BatchConfig) GenerateFilename(seg ElevenLabsSegment, language string) string {
-	name := fmt.Sprintf("slide%02d_seg%02d", seg.SlideIndex+1, seg.SegmentIndex+1)
+	var name string
+	if seg.IsTitleSegment {
+		name = fmt.Sprintf("slide%02d_title", seg.SlideIndex+1)
+	} else {
+		name = fmt.Sprintf("slide%02d_seg%02d", seg.SlideIndex+1, seg.SegmentIndex+1)
+	}
 
 	if c.FilePrefix != "" {
 		name = c.FilePrefix + "_" + name
@@ -185,15 +206,17 @@ func (c *BatchConfig) GenerateFilename(seg ElevenLabsSegment, language string) s
 
 // ManifestEntry represents an entry in a generation manifest.
 type ManifestEntry struct {
-	SlideIndex    int    `json:"slide_index"`
-	SegmentIndex  int    `json:"segment_index"`
-	SlideTitle    string `json:"slide_title,omitempty"`
-	Text          string `json:"text"`
-	VoiceID       string `json:"voice_id"`
-	Language      string `json:"language"`
-	OutputFile    string `json:"output_file"`
-	PauseBeforeMs int    `json:"pause_before_ms,omitempty"`
-	PauseAfterMs  int    `json:"pause_after_ms,omitempty"`
+	SlideIndex      int    `json:"slide_index"`
+	SegmentIndex    int    `json:"segment_index"`
+	SlideTitle      string `json:"slide_title,omitempty"`
+	IsTitleSegment  bool   `json:"is_title_segment,omitempty"`
+	IsSectionHeader bool   `json:"is_section_header,omitempty"`
+	Text            string `json:"text"`
+	VoiceID         string `json:"voice_id"`
+	Language        string `json:"language"`
+	OutputFile      string `json:"output_file"`
+	PauseBeforeMs   int    `json:"pause_before_ms,omitempty"`
+	PauseAfterMs    int    `json:"pause_after_ms,omitempty"`
 }
 
 // GenerateManifest creates a manifest of all segments for tracking.
@@ -201,15 +224,17 @@ func GenerateManifest(segments []ElevenLabsSegment, config *BatchConfig, languag
 	entries := make([]ManifestEntry, len(segments))
 	for i, seg := range segments {
 		entries[i] = ManifestEntry{
-			SlideIndex:    seg.SlideIndex,
-			SegmentIndex:  seg.SegmentIndex,
-			SlideTitle:    seg.SlideTitle,
-			Text:          seg.Text,
-			VoiceID:       seg.VoiceID,
-			Language:      language,
-			OutputFile:    config.GenerateFilename(seg, language),
-			PauseBeforeMs: seg.PauseBeforeMs,
-			PauseAfterMs:  seg.PauseAfterMs,
+			SlideIndex:      seg.SlideIndex,
+			SegmentIndex:    seg.SegmentIndex,
+			SlideTitle:      seg.SlideTitle,
+			IsTitleSegment:  seg.IsTitleSegment,
+			IsSectionHeader: seg.IsSectionHeader,
+			Text:            seg.Text,
+			VoiceID:         seg.VoiceID,
+			Language:        language,
+			OutputFile:      config.GenerateFilename(seg, language),
+			PauseBeforeMs:   seg.PauseBeforeMs,
+			PauseAfterMs:    seg.PauseAfterMs,
 		}
 	}
 	return entries

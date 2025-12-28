@@ -12,7 +12,7 @@ import (
 	"log"
 	"os"
 
-	elevenlabs "github.com/grokify/go-elevenlabs"
+	elevenlabs "github.com/agentplexus/go-elevenlabs"
 )
 
 func main() {

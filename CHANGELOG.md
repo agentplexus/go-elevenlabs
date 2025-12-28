@@ -19,4 +19,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modular package structure (texttospeech)
 - Error handling with detailed API errors
 
-[Unreleased]: https://github.com/grokify/go-elevenlabs/commits/master
+[Unreleased]: https://github.com/agentplexus/go-elevenlabs/commits/master
