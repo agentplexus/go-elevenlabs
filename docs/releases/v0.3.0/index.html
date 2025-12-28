@@ -1996,12 +1996,14 @@
 </span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="nx">player</span><span class="p">.</span><span class="nx">Write</span><span class="p">(</span><span class="nx">audio</span><span class="p">)</span>
 </span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Features:</strong>
-- Stream text as it arrives (perfect for LLM output)
-- Configurable latency optimization (0-4)
-- Word-level alignment timestamps
-- SSML parsing support
-- Multiple output formats (PCM recommended for real-time)</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Stream text as it arrives (perfect for LLM output)</li>
+<li>Configurable latency optimization (0-4)</li>
+<li>Word-level alignment timestamps</li>
+<li>SSML parsing support</li>
+<li>Multiple output formats (PCM recommended for real-time)</li>
+</ul>
 <h3 id="websocket-stt-real-time-speech-to-text">WebSocket STT (Real-Time Speech-to-Text)<a class="headerlink" href="#websocket-stt-real-time-speech-to-text" title="Permanent link">&para;</a></h3>
 <p>Live audio transcription via WebSocket with partial results.</p>
 <div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">conn</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">WebSocketSTT</span><span class="p">().</span><span class="nx">Connect</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">WebSocketSTTOptions</span><span class="p">{</span>
@@ -2026,11 +2028,13 @@
 </span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Features:</strong>
-- Partial (interim) results for responsive UIs
-- Word-level timing with confidence scores
-- Automatic language detection
-- Multiple audio encodings (PCM, μ-law)</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Partial (interim) results for responsive UIs</li>
+<li>Word-level timing with confidence scores</li>
+<li>Automatic language detection</li>
+<li>Multiple audio encodings (PCM, μ-law)</li>
+</ul>
 <h3 id="speech-to-speech-voice-conversion">Speech-to-Speech (Voice Conversion)<a class="headerlink" href="#speech-to-speech-voice-conversion" title="Permanent link">&para;</a></h3>
 <p>Transform speech from one voice to another while preserving content.</p>
 <div class="language-go highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToSpeech</span><span class="p">().</span><span class="nx">Convert</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">SpeechToSpeechRequest</span><span class="p">{</span>
@@ -2042,11 +2046,13 @@
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">// Simple one-liner</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nx">audio</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToSpeech</span><span class="p">().</span><span class="nx">Simple</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">voiceID</span><span class="p">,</span><span class="w"> </span><span class="nx">audioReader</span><span class="p">)</span>
 </span></code></pre></div>
-<p><strong>Features:</strong>
-- Voice conversion with content preservation
-- Background noise removal
-- Streaming conversion support
-- Seed audio for consistent style</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Voice conversion with content preservation</li>
+<li>Background noise removal</li>
+<li>Streaming conversion support</li>
+<li>Seed audio for consistent style</li>
+</ul>
 <h3 id="twilio-integration">Twilio Integration<a class="headerlink" href="#twilio-integration" title="Permanent link">&para;</a></h3>
 <p>Phone call integration for conversational AI agents.</p>
 <div class="language-go highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Register incoming call</span>
@@ -2065,12 +2071,14 @@
 </span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="nx">ToNumber</span><span class="p">:</span><span class="w">           </span><span class="s">&quot;+1234567890&quot;</span><span class="p">,</span>
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">})</span>
 </span></code></pre></div>
-<p><strong>Features:</strong>
-- Incoming call registration with TwiML response
-- Outbound calls via Twilio
-- SIP trunk integration
-- Dynamic variables for prompt injection
-- First message and system prompt overrides</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Incoming call registration with TwiML response</li>
+<li>Outbound calls via Twilio</li>
+<li>SIP trunk integration</li>
+<li>Dynamic variables for prompt injection</li>
+<li>First message and system prompt overrides</li>
+</ul>
 <h3 id="phone-number-management">Phone Number Management<a class="headerlink" href="#phone-number-management" title="Permanent link">&para;</a></h3>
 <p>Manage phone numbers for voice agents.</p>
 <div class="language-go highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">numbers</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">PhoneNumbers</span><span class="p">().</span><span class="nx">List</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
