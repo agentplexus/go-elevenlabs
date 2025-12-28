@@ -12,13 +12,13 @@
         <meta name="author" content="AgentPlexus">
       
       
-        <link rel="canonical" href="https://agentplexus.github.io/go-elevenlabs/services/sound-effects/">
+        <link rel="canonical" href="https://agentplexus.github.io/go-elevenlabs/services/speech-to-text/">
       
       
-        <link rel="prev" href="../voice-design/">
+        <link rel="prev" href="../text-to-speech/">
       
       
-        <link rel="next" href="../music/">
+        <link rel="next" href="../voices/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Sound Effects - go-elevenlabs</title>
+        <title>Speech-to-Text - go-elevenlabs</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sound-effects" class="md-skip">
+        <a href="#speech-to-text" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sound Effects
+              Speech-to-Text
             
           </span>
         </div>
@@ -622,10 +622,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../speech-to-text/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Speech-to-Text
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -636,6 +658,140 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#transcribe-with-file-upload" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transcribe with File Upload
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#speaker-diarization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speaker Diarization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#request-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Request Options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#response-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Response Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#meeting-transcription" class="md-nav__link">
+    <span class="md-ellipsis">
+      Meeting Transcription
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtitle-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subtitle Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#podcast-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Podcast Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-audio-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Audio Formats
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -691,32 +847,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Sound Effects
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../sound-effects/" class="md-nav__link">
         
   
   
@@ -727,164 +861,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      Basic Usage
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#full-control" class="md-nav__link">
-    <span class="md-ellipsis">
-      Full Control
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#looping-sound-effects" class="md-nav__link">
-    <span class="md-ellipsis">
-      Looping Sound Effects
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#request-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Request Options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#prompt-influence" class="md-nav__link">
-    <span class="md-ellipsis">
-      Prompt Influence
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-prompts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Prompts
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example Prompts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nature" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nature
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#urban" class="md-nav__link">
-    <span class="md-ellipsis">
-      Urban
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#technology" class="md-nav__link">
-    <span class="md-ellipsis">
-      Technology
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#musictransitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Music/Transitions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-cases" class="md-nav__link">
-    <span class="md-ellipsis">
-      Use Cases
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Use Cases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#course-production" class="md-nav__link">
-    <span class="md-ellipsis">
-      Course Production
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#video-production" class="md-nav__link">
-    <span class="md-ellipsis">
-      Video Production
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#best-practices" class="md-nav__link">
-    <span class="md-ellipsis">
-      Best Practices
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1548,18 +1524,27 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#full-control" class="md-nav__link">
+  <a href="#transcribe-with-file-upload" class="md-nav__link">
     <span class="md-ellipsis">
-      Full Control
+      Transcribe with File Upload
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#looping-sound-effects" class="md-nav__link">
+  <a href="#speaker-diarization" class="md-nav__link">
     <span class="md-ellipsis">
-      Looping Sound Effects
+      Speaker Diarization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Options
     </span>
   </a>
   
@@ -1575,62 +1560,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prompt-influence" class="md-nav__link">
+  <a href="#response-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      Prompt Influence
+      Response Structure
     </span>
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-prompts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Prompts
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Example Prompts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nature" class="md-nav__link">
-    <span class="md-ellipsis">
-      Nature
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#urban" class="md-nav__link">
-    <span class="md-ellipsis">
-      Urban
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#technology" class="md-nav__link">
-    <span class="md-ellipsis">
-      Technology
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#musictransitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Music/Transitions
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1645,18 +1579,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#course-production" class="md-nav__link">
+  <a href="#meeting-transcription" class="md-nav__link">
     <span class="md-ellipsis">
-      Course Production
+      Meeting Transcription
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#video-production" class="md-nav__link">
+  <a href="#subtitle-generation" class="md-nav__link">
     <span class="md-ellipsis">
-      Video Production
+      Subtitle Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#podcast-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Podcast Processing
     </span>
   </a>
   
@@ -1664,6 +1607,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-audio-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Audio Formats
+    </span>
+  </a>
   
 </li>
       
@@ -1695,125 +1647,166 @@
   
 
 
-<h1 id="sound-effects">Sound Effects<a class="headerlink" href="#sound-effects" title="Permanent link">&para;</a></h1>
-<p>Generate sound effects from text descriptions.</p>
+<h1 id="speech-to-text">Speech-to-Text<a class="headerlink" href="#speech-to-text" title="Permanent link">&para;</a></h1>
+<p>Transcribe audio files with optional speaker diarization.</p>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nx">audio</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">Simple</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;thunder and rain storm&quot;</span><span class="p">)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">}</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nx">f</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Create</span><span class="p">(</span><span class="s">&quot;thunder.mp3&quot;</span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nx">io</span><span class="p">.</span><span class="nx">Copy</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span><span class="w"> </span><span class="nx">audio</span><span class="p">)</span>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Transcribe from URL</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">TranscribeURL</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;https://example.com/audio.mp3&quot;</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Text: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Text</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Language: %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">LanguageCode</span><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="full-control">Full Control<a class="headerlink" href="#full-control" title="Permanent link">&para;</a></h2>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">Generate</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">SoundEffectRequest</span><span class="p">{</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nx">Text</span><span class="p">:</span><span class="w">            </span><span class="s">&quot;car engine starting and revving&quot;</span><span class="p">,</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nx">DurationSeconds</span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">      </span><span class="c1">// 0.5 to 30 seconds</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">PromptInfluence</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w">      </span><span class="c1">// 0.0 to 1.0</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nx">OutputFormat</span><span class="p">:</span><span class="w">    </span><span class="s">&quot;mp3_44100_128&quot;</span><span class="p">,</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">})</span>
+<h2 id="transcribe-with-file-upload">Transcribe with File Upload<a class="headerlink" href="#transcribe-with-file-upload" title="Permanent link">&para;</a></h2>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">file</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">os</span><span class="p">.</span><span class="nx">Open</span><span class="p">(</span><span class="s">&quot;audio.mp3&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">defer</span><span class="w"> </span><span class="nx">file</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">Transcribe</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">TranscriptionRequest</span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nx">File</span><span class="p">:</span><span class="w">     </span><span class="nx">file</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nx">Filename</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;audio.mp3&quot;</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nx">ModelID</span><span class="p">:</span><span class="w">  </span><span class="s">&quot;scribe_v1&quot;</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">})</span>
 </span></code></pre></div>
-<h2 id="looping-sound-effects">Looping Sound Effects<a class="headerlink" href="#looping-sound-effects" title="Permanent link">&para;</a></h2>
-<p>Create seamlessly looping audio for backgrounds:</p>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">audio</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">GenerateLoop</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="s">&quot;gentle rain on window&quot;</span><span class="p">,</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="mf">10.0</span><span class="p">,</span><span class="w">  </span><span class="c1">// duration in seconds</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">)</span>
+<h2 id="speaker-diarization">Speaker Diarization<a class="headerlink" href="#speaker-diarization" title="Permanent link">&para;</a></h2>
+<p>Identify different speakers in the audio:</p>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">TranscribeWithDiarization</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">audioURL</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Words</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;[%s] %s (%.2fs - %.2fs)\n&quot;</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nx">word</span><span class="p">.</span><span class="nx">Speaker</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="p">.</span><span class="nx">Text</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="p">.</span><span class="nx">Start</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="p">.</span><span class="nx">End</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="full-options">Full Options<a class="headerlink" href="#full-options" title="Permanent link">&para;</a></h2>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">Transcribe</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">TranscriptionRequest</span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nx">File</span><span class="p">:</span><span class="w">              </span><span class="nx">file</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nx">Filename</span><span class="p">:</span><span class="w">          </span><span class="s">&quot;interview.mp3&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nx">ModelID</span><span class="p">:</span><span class="w">           </span><span class="s">&quot;scribe_v1&quot;</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nx">LanguageCode</span><span class="p">:</span><span class="w">      </span><span class="s">&quot;en&quot;</span><span class="p">,</span><span class="w">           </span><span class="c1">// ISO 639-1 code</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nx">Diarize</span><span class="p">:</span><span class="w">           </span><span class="kc">true</span><span class="p">,</span><span class="w">           </span><span class="c1">// Enable speaker detection</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nx">TagAudioEvents</span><span class="p">:</span><span class="w">    </span><span class="kc">true</span><span class="p">,</span><span class="w">           </span><span class="c1">// Tag laughter, music, etc.</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="nx">NumSpeakers</span><span class="p">:</span><span class="w">       </span><span class="mi">2</span><span class="p">,</span><span class="w">              </span><span class="c1">// Expected number of speakers</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">})</span>
 </span></code></pre></div>
 <h2 id="request-options">Request Options<a class="headerlink" href="#request-options" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Option</th>
-<th>Range</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>Text</code></td>
-<td>required</td>
-<td>Description of the sound effect</td>
+<td><code>File</code></td>
+<td>io.Reader</td>
+<td>Audio file to transcribe</td>
 </tr>
 <tr>
-<td><code>DurationSeconds</code></td>
-<td>0.5-30</td>
-<td>Target duration (auto if not set)</td>
-</tr>
-<tr>
-<td><code>PromptInfluence</code></td>
-<td>0.0-1.0</td>
-<td>How closely to follow the prompt</td>
-</tr>
-<tr>
-<td><code>Loop</code></td>
-<td>bool</td>
-<td>Create seamless loop</td>
-</tr>
-<tr>
-<td><code>OutputFormat</code></td>
+<td><code>Filename</code></td>
 <td>string</td>
-<td>Audio format</td>
+<td>Name of the audio file</td>
+</tr>
+<tr>
+<td><code>AudioURL</code></td>
+<td>string</td>
+<td>URL to audio (alternative to file)</td>
+</tr>
+<tr>
+<td><code>ModelID</code></td>
+<td>string</td>
+<td>Transcription model (default: scribe_v1)</td>
+</tr>
+<tr>
+<td><code>LanguageCode</code></td>
+<td>string</td>
+<td>ISO 639-1 language code</td>
+</tr>
+<tr>
+<td><code>Diarize</code></td>
+<td>bool</td>
+<td>Enable speaker diarization</td>
+</tr>
+<tr>
+<td><code>TagAudioEvents</code></td>
+<td>bool</td>
+<td>Tag non-speech audio events</td>
+</tr>
+<tr>
+<td><code>NumSpeakers</code></td>
+<td>int</td>
+<td>Expected number of speakers</td>
 </tr>
 </tbody>
 </table>
-<h2 id="prompt-influence">Prompt Influence<a class="headerlink" href="#prompt-influence" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Low (0.0-0.3)</strong>: More variation, creative interpretation</li>
-<li><strong>Medium (0.3-0.6)</strong>: Balanced (default: 0.3)</li>
-<li><strong>High (0.6-1.0)</strong>: Strictly follows prompt</li>
-</ul>
-<h2 id="example-prompts">Example Prompts<a class="headerlink" href="#example-prompts" title="Permanent link">&para;</a></h2>
-<h3 id="nature">Nature<a class="headerlink" href="#nature" title="Permanent link">&para;</a></h3>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="s">&quot;gentle rain on a tin roof&quot;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="s">&quot;thunderstorm with distant lightning&quot;</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="s">&quot;ocean waves on a beach&quot;</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="s">&quot;wind blowing through trees&quot;</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="s">&quot;birds chirping in a forest&quot;</span>
-</span></code></pre></div>
-<h3 id="urban">Urban<a class="headerlink" href="#urban" title="Permanent link">&para;</a></h3>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="s">&quot;busy city traffic&quot;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s">&quot;car horn honking&quot;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="s">&quot;subway train arriving&quot;</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="s">&quot;crowd murmuring in a cafe&quot;</span>
-</span></code></pre></div>
-<h3 id="technology">Technology<a class="headerlink" href="#technology" title="Permanent link">&para;</a></h3>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="s">&quot;computer keyboard typing&quot;</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="s">&quot;notification chime&quot;</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s">&quot;sci-fi door opening&quot;</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s">&quot;robot powering up&quot;</span>
-</span></code></pre></div>
-<h3 id="musictransitions">Music/Transitions<a class="headerlink" href="#musictransitions" title="Permanent link">&para;</a></h3>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="s">&quot;dramatic orchestral hit&quot;</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="s">&quot;soft piano transition&quot;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="s">&quot;whoosh transition sound&quot;</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="s">&quot;upbeat intro jingle&quot;</span>
+<h2 id="response-structure">Response Structure<a class="headerlink" href="#response-structure" title="Permanent link">&para;</a></h2>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kd">type</span><span class="w"> </span><span class="nx">TranscriptionResponse</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="nx">Text</span><span class="w">         </span><span class="kt">string</span><span class="w">              </span><span class="c1">// Full transcription text</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nx">LanguageCode</span><span class="w"> </span><span class="kt">string</span><span class="w">              </span><span class="c1">// Detected language</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nx">Words</span><span class="w">        </span><span class="p">[]</span><span class="nx">TranscriptionWord</span><span class="w"> </span><span class="c1">// Word-level timestamps</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="kd">type</span><span class="w"> </span><span class="nx">TranscriptionWord</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nx">Text</span><span class="w">    </span><span class="kt">string</span><span class="w">  </span><span class="c1">// The word</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="nx">Start</span><span class="w">   </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// Start time in seconds</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="nx">End</span><span class="w">     </span><span class="kt">float64</span><span class="w"> </span><span class="c1">// End time in seconds</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="nx">Speaker</span><span class="w"> </span><span class="kt">string</span><span class="w">  </span><span class="c1">// Speaker ID (if diarization enabled)</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
-<h3 id="course-production">Course Production<a class="headerlink" href="#course-production" title="Permanent link">&para;</a></h3>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Intro sound</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nx">intro</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">Simple</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;professional podcast intro jingle&quot;</span><span class="p">)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">// Transition</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nx">transition</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">Simple</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;soft whoosh transition&quot;</span><span class="p">)</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1">// Background ambience (looping)</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nx">ambience</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">GenerateLoop</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;quiet office ambience&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span>
+<h3 id="meeting-transcription">Meeting Transcription<a class="headerlink" href="#meeting-transcription" title="Permanent link">&para;</a></h3>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">Transcribe</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">TranscriptionRequest</span><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nx">File</span><span class="p">:</span><span class="w">        </span><span class="nx">meetingFile</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nx">Filename</span><span class="p">:</span><span class="w">    </span><span class="s">&quot;meeting.mp3&quot;</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nx">Diarize</span><span class="p">:</span><span class="w">     </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="nx">NumSpeakers</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">})</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1">// Group by speaker</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nx">speakers</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">string</span><span class="p">)</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Words</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="nx">speakers</span><span class="p">[</span><span class="nx">word</span><span class="p">.</span><span class="nx">Speaker</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">append</span><span class="p">(</span><span class="nx">speakers</span><span class="p">[</span><span class="nx">word</span><span class="p">.</span><span class="nx">Speaker</span><span class="p">],</span><span class="w"> </span><span class="nx">word</span><span class="p">.</span><span class="nx">Text</span><span class="p">)</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="video-production">Video Production<a class="headerlink" href="#video-production" title="Permanent link">&para;</a></h3>
-<div class="language-go highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// Action sounds</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nx">punch</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">Simple</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;punch impact sound&quot;</span><span class="p">)</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">// Ambient backgrounds</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nx">forest</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SoundEffects</span><span class="p">().</span><span class="nx">GenerateLoop</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;peaceful forest ambience&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span>
+<h3 id="subtitle-generation">Subtitle Generation<a class="headerlink" href="#subtitle-generation" title="Permanent link">&para;</a></h3>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">TranscribeURL</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">videoAudioURL</span><span class="p">)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1">// Generate SRT format</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">for</span><span class="w"> </span><span class="nx">i</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">result</span><span class="p">.</span><span class="nx">Words</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%d\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%s --&gt; %s\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">formatTime</span><span class="p">(</span><span class="nx">word</span><span class="p">.</span><span class="nx">Start</span><span class="p">),</span><span class="w"> </span><span class="nx">formatTime</span><span class="p">(</span><span class="nx">word</span><span class="p">.</span><span class="nx">End</span><span class="p">))</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%s\n\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">word</span><span class="p">.</span><span class="nx">Text</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">}</span>
 </span></code></pre></div>
+<h3 id="podcast-processing">Podcast Processing<a class="headerlink" href="#podcast-processing" title="Permanent link">&para;</a></h3>
+<div class="language-go highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Transcribe podcast episode</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SpeechToText</span><span class="p">().</span><span class="nx">Transcribe</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">elevenlabs</span><span class="p">.</span><span class="nx">TranscriptionRequest</span><span class="p">{</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nx">File</span><span class="p">:</span><span class="w">           </span><span class="nx">podcastFile</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nx">Filename</span><span class="p">:</span><span class="w">       </span><span class="s">&quot;episode.mp3&quot;</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nx">Diarize</span><span class="p">:</span><span class="w">        </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">    </span><span class="nx">TagAudioEvents</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">  </span><span class="c1">// Detect music, laughter, etc.</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="p">})</span>
+</span></code></pre></div>
+<h2 id="supported-audio-formats">Supported Audio Formats<a class="headerlink" href="#supported-audio-formats" title="Permanent link">&para;</a></h2>
+<ul>
+<li>MP3</li>
+<li>WAV</li>
+<li>M4A</li>
+<li>FLAC</li>
+<li>OGG</li>
+<li>WEBM</li>
+</ul>
 <h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Be specific</strong> - "car engine starting cold" vs just "car"</li>
-<li><strong>Include context</strong> - "footsteps on wooden floor" vs "footsteps"</li>
-<li><strong>Use loops for backgrounds</strong> - Enables seamless repetition</li>
-<li><strong>Test prompt influence</strong> - Adjust based on desired creativity</li>
+<li><strong>Use diarization for multi-speaker content</strong> - Interviews, meetings, podcasts</li>
+<li><strong>Specify language</strong> when known for better accuracy</li>
+<li><strong>Set expected speaker count</strong> for more accurate diarization</li>
+<li><strong>Enable audio event tagging</strong> for richer metadata</li>
 </ol>
 
 

@@ -15,7 +15,7 @@ A Go SDK for the [ElevenLabs](https://elevenlabs.io/) Text-to-Speech API.
 ## Installation
 
 ```bash
-go get github.com/grokify/go-elevenlabs
+go get github.com/agentplexus/go-elevenlabs
 ```
 
 ## Quick Example
@@ -28,7 +28,7 @@ import (
     "io"
     "os"
 
-    elevenlabs "github.com/grokify/go-elevenlabs"
+    elevenlabs "github.com/agentplexus/go-elevenlabs"
 )
 
 func main() {
@@ -67,4 +67,4 @@ This SDK is particularly well-suited for:
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/grokify/go-elevenlabs/blob/main/LICENSE) for details.
+MIT License - see [LICENSE](https://github.com/agentplexus/go-elevenlabs/blob/main/LICENSE) for details.

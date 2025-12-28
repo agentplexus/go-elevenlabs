@@ -345,7 +345,7 @@ We created a detailed coverage page in the documentation. <break time="800ms"/>
 
 # API Coverage 📊
 
-| Coverage Level | Categories | Methods |
+| Coverage | Categories | Methods |
 |----------------|------------|---------|
 | **Full** ✓ | TTS, STT, Voices, Models, History, User, SFX, Alignment, Isolation, Dialogue, Music, Pronunciation | ~50 |
 | **Partial** ✓ | Voice Design, Projects, Dubbing | ~15 |
@@ -369,7 +369,7 @@ You can set stability, similarity boost, style, and speaker boost. <break time="
 Streaming methods are also available for real-time playback. <break time="800ms"/>
 -->
 
-# Service Example: Text-to-Speech 💻
+# Example: Text-to-Speech 💻
 
 ```go
 // Simple usage
@@ -402,7 +402,7 @@ The service generates combined audio with different speakers. <break time="600ms
 This is great for podcasts, audiobooks, educational content, and demos. <break time="800ms"/>
 -->
 
-# Service Example: Text-to-Dialogue 🎭
+# Example: Text-to-Dialogue 🎭
 
 ```go
 // Generate multi-speaker conversation
@@ -452,7 +452,7 @@ All tests pass with golangci-lint showing zero issues. <break time="800ms"/>
 
 ```bash
 $ go test ./...
-ok  github.com/grokify/go-elevenlabs    0.270s
+ok  github.com/agentplexus/go-elevenlabs    0.270s
 
 $ golangci-lint run
 0 issues
@@ -825,7 +825,7 @@ All deliverables are available in the repository. <break time="800ms"/>
 | API Coverage Page | ✅ Complete |
 | CI/CD Pipeline | ✅ Complete |
 
-**Repository**: `github.com/grokify/go-elevenlabs`
+**Repository**: `github.com/agentplexus/go-elevenlabs`
 
 ---
 
@@ -862,24 +862,24 @@ The SDK is released under the MIT License. <break time="800ms"/>
 
 <!--
 Here are the important links. <break time="500ms"/>
-The repository is at github.com/grokify/go-elevenlabs. <break time="500ms"/>
-Documentation is at grokify.github.io/go-elevenlabs. <break time="500ms"/>
+The repository is at github.com/agentplexus/go-elevenlabs. <break time="500ms"/>
+Documentation is at agentplexus.github.io/go-elevenlabs. <break time="500ms"/>
 ElevenLabs official docs are at elevenlabs.io/docs. <break time="600ms"/>
-You can find me on GitHub at @grokify. <break time="800ms"/>
+You can find me on GitHub at @agentplexus. <break time="800ms"/>
 -->
 
 # Resources 🔗
 
 ### Links
 
-- **Repository**: github.com/grokify/go-elevenlabs
-- **Documentation**: grokify.github.io/go-elevenlabs
+- **Repository**: github.com/agentplexus/go-elevenlabs
+- **Documentation**: agentplexus.github.io/go-elevenlabs
 - **ElevenLabs**: elevenlabs.io/docs
-- **Go Package**: pkg.go.dev/github.com/grokify/go-elevenlabs
+- **Go Package**: pkg.go.dev/github.com/agentplexus/go-elevenlabs
 
 ### Contact
 
-- GitHub: @grokify
+- GitHub: @agentplexus
 
 ---
 

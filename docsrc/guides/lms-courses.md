@@ -28,7 +28,7 @@ import (
     "context"
     "log"
 
-    elevenlabs "github.com/grokify/go-elevenlabs"
+    elevenlabs "github.com/agentplexus/go-elevenlabs"
 )
 
 func main() {
@@ -256,7 +256,7 @@ if sub.CharactersRemaining() < scriptLength {
 
 ## Complete Example
 
-See the [examples directory](https://github.com/grokify/go-elevenlabs/tree/main/examples) for complete working examples.
+See the [examples directory](https://github.com/agentplexus/go-elevenlabs/tree/main/examples) for complete working examples.
 
 ```go
 // Full course generation workflow

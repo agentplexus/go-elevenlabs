@@ -14,7 +14,7 @@ import (
     "log"
     "os"
 
-    elevenlabs "github.com/grokify/go-elevenlabs"
+    elevenlabs "github.com/agentplexus/go-elevenlabs"
 )
 
 func main() {
@@ -245,4 +245,4 @@ func saveAudio(r io.Reader, filename string) {
 
 ## More Examples
 
-See the [examples directory](https://github.com/grokify/go-elevenlabs/tree/main/examples) in the repository for complete working examples.
+See the [examples directory](https://github.com/agentplexus/go-elevenlabs/tree/main/examples) in the repository for complete working examples.

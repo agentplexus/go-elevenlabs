@@ -5,7 +5,7 @@ The `voices` package provides reference information for ElevenLabs pre-made voic
 ## Installation
 
 ```go
-import "github.com/grokify/go-elevenlabs/voices"
+import "github.com/agentplexus/go-elevenlabs/voices"
 ```
 
 ## Quick Start
@@ -13,7 +13,7 @@ import "github.com/grokify/go-elevenlabs/voices"
 ### Use Voice Constants
 
 ```go
-import "github.com/grokify/go-elevenlabs/voices"
+import "github.com/agentplexus/go-elevenlabs/voices"
 
 // Use constants instead of hard-coded IDs
 audio, err := client.TextToSpeech().Simple(ctx, voices.Rachel, "Hello world")
@@ -205,8 +205,8 @@ old := voices.FilterByAge("old")
 
 ```go
 import (
-    "github.com/grokify/go-elevenlabs/ttsscript"
-    "github.com/grokify/go-elevenlabs/voices"
+    "github.com/agentplexus/go-elevenlabs/ttsscript"
+    "github.com/agentplexus/go-elevenlabs/voices"
 )
 
 script := &ttsscript.Script{

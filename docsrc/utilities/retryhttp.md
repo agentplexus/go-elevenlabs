@@ -16,7 +16,7 @@ import "github.com/grokify/mogo/net/http/retryhttp"
 
 ```go
 import (
-    elevenlabs "github.com/grokify/go-elevenlabs"
+    elevenlabs "github.com/agentplexus/go-elevenlabs"
     "github.com/grokify/mogo/net/http/retryhttp"
 )
 
@@ -175,8 +175,8 @@ import (
     "net/http"
     "time"
 
-    elevenlabs "github.com/grokify/go-elevenlabs"
-    "github.com/grokify/go-elevenlabs/voices"
+    elevenlabs "github.com/agentplexus/go-elevenlabs"
+    "github.com/agentplexus/go-elevenlabs/voices"
     "github.com/grokify/mogo/net/http/retryhttp"
 )
 

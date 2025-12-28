@@ -415,4 +415,4 @@ Want to help expand SDK coverage? Contributions are welcome! Priority areas:
 3. **Professional Voice Cloning** - Premium feature
 4. **Conversational AI** - Growing feature set
 
-See the [Contributing Guide](https://github.com/grokify/go-elevenlabs/blob/main/CONTRIBUTING.md) for details.
+See the [Contributing Guide](https://github.com/agentplexus/go-elevenlabs/blob/main/CONTRIBUTING.md) for details.

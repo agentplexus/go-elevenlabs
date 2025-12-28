@@ -46,7 +46,7 @@ Instead of storing raw SSML (which is engine-specific and hard to edit), author 
 ### 2. Load and Compile
 
 ```go
-import "github.com/grokify/go-elevenlabs/ttsscript"
+import "github.com/agentplexus/go-elevenlabs/ttsscript"
 
 // Load script
 script, err := ttsscript.LoadScript("script.json")
@@ -62,7 +62,7 @@ segments, err := compiler.Compile(script, "en")
 ### 3. Generate Audio
 
 ```go
-import elevenlabs "github.com/grokify/go-elevenlabs"
+import elevenlabs "github.com/agentplexus/go-elevenlabs"
 
 client, _ := elevenlabs.NewClient()
 formatter := ttsscript.NewElevenLabsFormatter()

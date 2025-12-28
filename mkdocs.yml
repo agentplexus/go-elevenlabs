@@ -1,13 +1,12 @@
 site_name: go-elevenlabs
 site_description: Go SDK for ElevenLabs Text-to-Speech API
-site_author: Grokify
-site_url: https://grokify.github.io/go-elevenlabs/
+site_author: AgentPlexus
+site_url: https://agentplexus.github.io/go-elevenlabs/
 
-repo_name: grokify/go-elevenlabs
-repo_url: https://github.com/grokify/go-elevenlabs
+repo_name: agentplexus/go-elevenlabs
+repo_url: https://github.com/agentplexus/go-elevenlabs
 
-docs_dir: docs
-site_dir: ../docs
+docs_dir: docsrc
 
 theme:
   name: material
