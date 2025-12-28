@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
-	github.com/grokify/mogo v0.72.4
+	github.com/grokify/mogo v0.72.5
 	github.com/ogen-go/ogen v1.18.0
 	go.opentelemetry.io/otel v1.39.0
 	go.opentelemetry.io/otel/metric v1.39.0
