@@ -1,6 +1,6 @@
 # Release Notes v0.4.0
 
-**Release Date:** TBD
+**Release Date:** December 31, 2025
 
 Bug fixes, improved testing infrastructure, and new utilities for voice settings and audio conversion.
 
