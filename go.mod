@@ -3,7 +3,7 @@ module github.com/agentplexus/go-elevenlabs
 go 1.24.0
 
 require (
-	github.com/agentplexus/ogen-tools v0.0.0-00010101000000-000000000000
+	github.com/agentplexus/ogen-tools v0.1.0
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
 	github.com/gorilla/websocket v1.5.3
@@ -39,5 +39,3 @@ require (
 	golang.org/x/text v0.32.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
-
-replace github.com/agentplexus/ogen-tools => ../ogen-tools
