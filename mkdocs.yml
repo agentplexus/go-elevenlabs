@@ -82,6 +82,7 @@ nav:
     - Pronunciation Rules: guides/pronunciation-rules.md
     - TTS Script Authoring: guides/ttsscript.md
   - Utilities:
+    - Voice Settings Presets: utilities/voicesettings.md
     - Voice Reference: utilities/voices.md
     - TTS Script Package: utilities/ttsscript.md
     - Retry HTTP Transport: utilities/retryhttp.md
@@ -89,8 +90,11 @@ nav:
     - Client: api/client.md
     - Errors: api/errors.md
     - Coverage: api/coverage.md
+  - Contributing:
+    - Testing: contributing/testing.md
   - Releases:
-    - v0.3.0 (Latest): releases/v0.3.0.md
+    - v0.4.0: releases/v0.4.0.md
+    - v0.3.0: releases/v0.3.0.md
     - v0.2.0: releases/v0.2.0.md
     - v0.1.0: releases/v0.1.0.md
   - Examples: examples.md

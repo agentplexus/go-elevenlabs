@@ -220,15 +220,23 @@ dub, err := client.Dubbing().Create(ctx, &elevenlabs.DubbingRequest{
 
 ### Voice Settings for Courses
 
+Use the built-in presets for different platforms:
+
 ```go
-// Recommended settings for educational content
-settings := &elevenlabs.VoiceSettings{
-    Stability:       0.6,   // More consistent delivery
-    SimilarityBoost: 0.75,  // Natural sound
-    Style:           0.1,   // Minimal style (clearer)
-    SpeakerBoost:    true,  // Enhanced clarity
-}
+// Platform-specific presets
+settings := elevenlabs.VoiceSettingsForUdemy()     // Neutral, clear, consistent
+settings := elevenlabs.VoiceSettingsForCoursera()  // Slightly expressive, engaging
+settings := elevenlabs.VoiceSettingsForEdX()       // Very stable, highly intelligible
+
+// Use with TTS
+audio, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+    VoiceID:       voiceID,
+    Text:          script,
+    VoiceSettings: elevenlabs.VoiceSettingsForUdemy(),
+})
 ```
+
+See [Voice Settings Presets](../utilities/voicesettings.md) for all available presets.
 
 ### Quality Presets
 

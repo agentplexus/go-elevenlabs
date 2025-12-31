@@ -85,6 +85,36 @@ type TTSRequest struct {
 	LanguageCode string
 }
 
+// ValidOutputFormats lists the valid audio output formats.
+// For highest quality, use pcm_48000 (lossless) or mp3_44100_192.
+var ValidOutputFormats = map[string]bool{
+	// MP3 formats (lossy, widely compatible)
+	"mp3_22050_32":  true,
+	"mp3_24000_48":  true,
+	"mp3_44100_32":  true,
+	"mp3_44100_64":  true,
+	"mp3_44100_96":  true,
+	"mp3_44100_128": true, // default
+	"mp3_44100_192": true, // highest quality MP3
+	// PCM formats (lossless raw audio, can be wrapped in WAV)
+	"pcm_8000":  true,
+	"pcm_16000": true,
+	"pcm_22050": true,
+	"pcm_24000": true,
+	"pcm_32000": true,
+	"pcm_44100": true, // CD quality
+	"pcm_48000": true, // highest quality
+	// Telephony formats
+	"ulaw_8000": true,
+	"alaw_8000": true,
+	// Opus formats (efficient lossy codec)
+	"opus_48000_32":  true,
+	"opus_48000_64":  true,
+	"opus_48000_96":  true,
+	"opus_48000_128": true,
+	"opus_48000_192": true,
+}
+
 // Validate validates the TTS request.
 func (r *TTSRequest) Validate() error {
 	if r.VoiceID == "" {
@@ -96,6 +126,12 @@ func (r *TTSRequest) Validate() error {
 	if r.VoiceSettings != nil {
 		if err := r.VoiceSettings.Validate(); err != nil {
 			return err
+		}
+	}
+	if r.OutputFormat != "" && !ValidOutputFormats[r.OutputFormat] {
+		return &ValidationError{
+			Field:   "OutputFormat",
+			Message: "invalid format, use mp3_44100_128, pcm_16000, etc.",
 		}
 	}
 	return nil

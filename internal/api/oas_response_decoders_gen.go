@@ -99,6 +99,9 @@ func decodeAddDocumentationToKnowledgeBaseResponse(resp *http.Response) (res Add
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -193,6 +196,9 @@ func decodeAddFromFileResponse(resp *http.Response) (res AddFromFileRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -278,6 +284,9 @@ func decodeAddLanguageResponse(resp *http.Response) (res AddLanguageRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -363,6 +372,9 @@ func decodeAddMemberResponse(resp *http.Response) (res AddMemberRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -457,6 +469,9 @@ func decodeAddProjectResponse(resp *http.Response) (res AddProjectRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -551,6 +566,9 @@ func decodeAddPvcVoiceSamplesResponse(resp *http.Response) (res AddPvcVoiceSampl
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -636,6 +654,9 @@ func decodeAddSharingVoiceResponse(resp *http.Response) (res AddSharingVoiceRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -721,6 +742,9 @@ func decodeAddVoiceResponse(resp *http.Response) (res AddVoiceRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -790,6 +814,9 @@ func decodeAudioIsolationResponse(resp *http.Response) (res AudioIsolationRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -859,6 +886,9 @@ func decodeAudioIsolationStreamResponse(resp *http.Response) (res AudioIsolation
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -944,6 +974,9 @@ func decodeAudioNativeProjectUpdateContentEndpointResponse(resp *http.Response) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1038,6 +1071,9 @@ func decodeCancelBatchCallResponse(resp *http.Response) (res CancelBatchCallRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1147,6 +1183,9 @@ func decodeComposeDetailedResponse(resp *http.Response) (res ComposeDetailedRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1241,6 +1280,9 @@ func decodeComposePlanResponse(resp *http.Response) (res ComposePlanRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1326,6 +1368,9 @@ func decodeConvertChapterEndpointResponse(resp *http.Response) (res ConvertChapt
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1411,6 +1456,9 @@ func decodeConvertProjectEndpointResponse(resp *http.Response) (res ConvertProje
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1496,6 +1544,9 @@ func decodeCreateAgentResponseTestRouteResponse(resp *http.Response) (res Create
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1581,6 +1632,9 @@ func decodeCreateAudioNativeProjectResponse(resp *http.Response) (res CreateAudi
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1675,6 +1729,9 @@ func decodeCreateBatchCallResponse(resp *http.Response) (res CreateBatchCallRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1760,6 +1817,9 @@ func decodeCreateClipResponse(resp *http.Response) (res CreateClipRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1854,6 +1914,9 @@ func decodeCreateDubbingResponse(resp *http.Response) (res CreateDubbingRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -1939,6 +2002,9 @@ func decodeCreateFileDocumentRouteResponse(resp *http.Response) (res CreateFileD
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2024,6 +2090,9 @@ func decodeCreatePvcVoiceResponse(resp *http.Response) (res CreatePvcVoiceRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2118,6 +2187,9 @@ func decodeCreateSecretRouteResponse(resp *http.Response) (res CreateSecretRoute
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2203,6 +2275,9 @@ func decodeCreateServiceAccountAPIKeyResponse(resp *http.Response) (res CreateSe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2288,6 +2363,9 @@ func decodeCreateSpeakerResponse(resp *http.Response) (res CreateSpeakerRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2373,6 +2451,9 @@ func decodeCreateTextDocumentRouteResponse(resp *http.Response) (res CreateTextD
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2458,6 +2539,9 @@ func decodeCreateURLDocumentRouteResponse(resp *http.Response) (res CreateURLDoc
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2552,6 +2636,9 @@ func decodeCreateVoiceResponse(resp *http.Response) (res CreateVoiceRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2646,6 +2733,9 @@ func decodeCreateVoiceOldResponse(resp *http.Response) (res CreateVoiceOldRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2731,6 +2821,9 @@ func decodeCreateWorkspaceWebhookRouteResponse(resp *http.Response) (res CreateW
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2787,6 +2880,9 @@ func decodeDeleteAgentRouteResponse(resp *http.Response) (res DeleteAgentRouteRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2872,6 +2968,9 @@ func decodeDeleteChapterEndpointResponse(resp *http.Response) (res DeleteChapter
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -2957,6 +3056,9 @@ func decodeDeleteChatResponseTestRouteResponse(resp *http.Response) (res DeleteC
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3042,6 +3144,9 @@ func decodeDeleteConversationRouteResponse(resp *http.Response) (res DeleteConve
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3127,6 +3232,9 @@ func decodeDeleteDubbingResponse(resp *http.Response) (res DeleteDubbingRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3212,6 +3320,9 @@ func decodeDeleteInviteResponse(resp *http.Response) (res DeleteInviteRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3297,6 +3408,9 @@ func decodeDeleteKnowledgeBaseDocumentResponse(resp *http.Response) (res DeleteK
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3382,6 +3496,9 @@ func decodeDeleteMcpServerRouteResponse(resp *http.Response) (res DeleteMcpServe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3467,6 +3584,9 @@ func decodeDeletePhoneNumberRouteResponse(resp *http.Response) (res DeletePhoneN
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3552,6 +3672,9 @@ func decodeDeleteProjectResponse(resp *http.Response) (res DeleteProjectRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3637,6 +3760,9 @@ func decodeDeletePvcVoiceSampleResponse(resp *http.Response) (res DeletePvcVoice
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3731,6 +3857,9 @@ func decodeDeleteRagIndexResponse(resp *http.Response) (res DeleteRagIndexRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3816,6 +3945,9 @@ func decodeDeleteSampleResponse(resp *http.Response) (res DeleteSampleRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3869,6 +4001,9 @@ func decodeDeleteSecretRouteResponse(resp *http.Response) (res DeleteSecretRoute
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -3954,6 +4089,9 @@ func decodeDeleteSegmentResponse(resp *http.Response) (res DeleteSegmentRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4039,6 +4177,9 @@ func decodeDeleteServiceAccountAPIKeyResponse(resp *http.Response) (res DeleteSe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4124,6 +4265,9 @@ func decodeDeleteSpeechHistoryItemResponse(resp *http.Response) (res DeleteSpeec
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4209,6 +4353,9 @@ func decodeDeleteToolRouteResponse(resp *http.Response) (res DeleteToolRouteRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4329,6 +4476,9 @@ func decodeDeleteTranscriptByIDResponse(resp *http.Response) (res DeleteTranscri
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4414,6 +4564,9 @@ func decodeDeleteVoiceResponse(resp *http.Response) (res DeleteVoiceRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4499,6 +4652,9 @@ func decodeDeleteWhatsappAccountResponse(resp *http.Response) (res DeleteWhatsap
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4584,6 +4740,9 @@ func decodeDeleteWorkspaceWebhookRouteResponse(resp *http.Response) (res DeleteW
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4688,6 +4847,9 @@ func decodeDownloadSpeechHistoryItemsResponse(resp *http.Response) (res Download
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4773,6 +4935,9 @@ func decodeDubResponse(resp *http.Response) (res DubRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4858,6 +5023,9 @@ func decodeDuplicateAgentRouteResponse(resp *http.Response) (res DuplicateAgentR
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -4952,6 +5120,9 @@ func decodeEditProjectResponse(resp *http.Response) (res EditProjectRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5046,6 +5217,9 @@ func decodeEditProjectContentResponse(resp *http.Response) (res EditProjectConte
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5131,6 +5305,9 @@ func decodeEditPvcVoiceResponse(resp *http.Response) (res EditPvcVoiceRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5216,6 +5393,9 @@ func decodeEditPvcVoiceSampleResponse(resp *http.Response) (res EditPvcVoiceSamp
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5301,6 +5481,9 @@ func decodeEditServiceAccountAPIKeyResponse(resp *http.Response) (res EditServic
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5386,6 +5569,9 @@ func decodeEditVoiceResponse(resp *http.Response) (res EditVoiceRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5471,6 +5657,9 @@ func decodeEditVoiceSettingsResponse(resp *http.Response) (res EditVoiceSettings
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5556,6 +5745,9 @@ func decodeEditWorkspaceWebhookRouteResponse(resp *http.Response) (res EditWorks
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5650,6 +5842,9 @@ func decodeForcedAlignmentResponse(resp *http.Response) (res ForcedAlignmentRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5791,6 +5986,9 @@ func decodeGenerateResponse(resp *http.Response) (res GenerateRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5860,6 +6058,9 @@ func decodeGenerateRandomVoiceResponse(resp *http.Response) (res GenerateRandomV
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -5954,6 +6155,9 @@ func decodeGetAgentKnowledgeBaseSizeResponse(resp *http.Response) (res GetAgentK
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6048,6 +6252,9 @@ func decodeGetAgentKnowledgeBaseSummariesRouteResponse(resp *http.Response) (res
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6142,6 +6349,9 @@ func decodeGetAgentLinkRouteResponse(resp *http.Response) (res GetAgentLinkRoute
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6236,6 +6446,9 @@ func decodeGetAgentLlmExpectedCostCalculationResponse(resp *http.Response) (res 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6330,6 +6543,9 @@ func decodeGetAgentResponseTestRouteResponse(resp *http.Response) (res GetAgentR
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6424,6 +6640,9 @@ func decodeGetAgentResponseTestsSummariesRouteResponse(resp *http.Response) (res
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6518,6 +6737,9 @@ func decodeGetAgentsRouteResponse(resp *http.Response) (res GetAgentsRouteRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6622,6 +6844,9 @@ func decodeGetAudioFromSampleResponse(resp *http.Response) (res GetAudioFromSamp
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6691,6 +6916,9 @@ func decodeGetAudioFullFromSpeechHistoryItemResponse(resp *http.Response) (res G
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6785,6 +7013,9 @@ func decodeGetAudioNativeProjectSettingsEndpointResponse(resp *http.Response) (r
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6879,6 +7110,9 @@ func decodeGetBatchCallResponse(resp *http.Response) (res GetBatchCallRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -6973,6 +7207,9 @@ func decodeGetChapterSnapshotEndpointResponse(resp *http.Response) (res GetChapt
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7067,6 +7304,9 @@ func decodeGetChapterSnapshotsResponse(resp *http.Response) (res GetChapterSnaps
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7161,6 +7401,9 @@ func decodeGetChaptersResponse(resp *http.Response) (res GetChaptersRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7230,6 +7473,9 @@ func decodeGetConversationAudioRouteResponse(resp *http.Response) (res GetConver
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7324,6 +7570,9 @@ func decodeGetConversationHistoriesRouteResponse(resp *http.Response) (res GetCo
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7418,6 +7667,9 @@ func decodeGetConversationHistoryRouteResponse(resp *http.Response) (res GetConv
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7503,6 +7755,9 @@ func decodeGetConversationSignedLinkResponse(resp *http.Response) (res GetConver
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7597,6 +7852,9 @@ func decodeGetDashboardSettingsRouteResponse(resp *http.Response) (res GetDashbo
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7682,6 +7940,9 @@ func decodeGetDocumentationChunkFromKnowledgeBaseResponse(resp *http.Response) (
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7776,6 +8037,9 @@ func decodeGetDocumentationFromKnowledgeBaseResponse(resp *http.Response) (res G
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -7959,6 +8223,9 @@ func decodeGetDubbedFileResponse(resp *http.Response) (res GetDubbedFileRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8053,6 +8320,9 @@ func decodeGetDubbedMetadataResponse(resp *http.Response) (res GetDubbedMetadata
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8261,6 +8531,9 @@ func decodeGetDubbedTranscriptFileResponse(resp *http.Response) (res GetDubbedTr
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8355,6 +8628,9 @@ func decodeGetDubbingResourceResponse(resp *http.Response) (res GetDubbingResour
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8405,6 +8681,9 @@ func decodeGetGenerateVoiceParametersResponse(resp *http.Response) (res *VoiceGe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8474,6 +8753,9 @@ func decodeGetKnowledgeBaseContentResponse(resp *http.Response) (res GetKnowledg
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8568,6 +8850,9 @@ func decodeGetKnowledgeBaseDependentAgentsResponse(resp *http.Response) (res Get
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8662,6 +8947,9 @@ func decodeGetKnowledgeBaseListRouteResponse(resp *http.Response) (res GetKnowle
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8756,6 +9044,9 @@ func decodeGetLibraryVoicesResponse(resp *http.Response) (res GetLibraryVoicesRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8841,6 +9132,9 @@ func decodeGetLiveCountResponse(resp *http.Response) (res GetLiveCountRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -8926,6 +9220,9 @@ func decodeGetLivekitTokenResponse(resp *http.Response) (res GetLivekitTokenRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9023,6 +9320,9 @@ func decodeGetMcpToolConfigOverrideRouteResponse(resp *http.Response) (res GetMc
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9117,6 +9417,9 @@ func decodeGetModelsResponse(resp *http.Response) (res GetModelsRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9211,6 +9514,9 @@ func decodeGetOrCreateRagIndexesResponse(resp *http.Response) (res GetOrCreateRa
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9305,6 +9611,9 @@ func decodeGetPhoneNumberRouteResponse(resp *http.Response) (res GetPhoneNumberR
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9399,6 +9708,9 @@ func decodeGetProjectSnapshotEndpointResponse(resp *http.Response) (res GetProje
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9493,6 +9805,9 @@ func decodeGetProjectSnapshotsResponse(resp *http.Response) (res GetProjectSnaps
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9587,6 +9902,9 @@ func decodeGetProjectsResponse(resp *http.Response) (res GetProjectsRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9681,6 +9999,9 @@ func decodeGetPronunciationDictionariesMetadataResponse(resp *http.Response) (re
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9775,6 +10096,9 @@ func decodeGetPronunciationDictionaryMetadataResponse(resp *http.Response) (res 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9884,6 +10208,9 @@ func decodeGetPronunciationDictionaryVersionPlsResponse(resp *http.Response) (re
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -9978,6 +10305,9 @@ func decodeGetPublicLlmExpectedCostCalculationResponse(resp *http.Response) (res
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10072,6 +10402,9 @@ func decodeGetPvcSampleAudioResponse(resp *http.Response) (res GetPvcSampleAudio
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10166,6 +10499,9 @@ func decodeGetPvcSampleSpeakersResponse(resp *http.Response) (res GetPvcSampleSp
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10260,6 +10596,9 @@ func decodeGetPvcSampleVisualWaveformResponse(resp *http.Response) (res GetPvcSa
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10313,6 +10652,9 @@ func decodeGetPvcVoiceCaptchaResponse(resp *http.Response) (res GetPvcVoiceCaptc
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10407,6 +10749,9 @@ func decodeGetRagIndexOverviewResponse(resp *http.Response) (res GetRagIndexOver
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10501,6 +10846,9 @@ func decodeGetRagIndexesResponse(resp *http.Response) (res GetRagIndexesRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10595,6 +10943,9 @@ func decodeGetResourceMetadataResponse(resp *http.Response) (res GetResourceMeta
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10689,6 +11040,9 @@ func decodeGetSecretsRouteResponse(resp *http.Response) (res GetSecretsRouteRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10783,6 +11137,9 @@ func decodeGetServiceAccountAPIKeysRouteResponse(resp *http.Response) (res GetSe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10877,6 +11234,9 @@ func decodeGetSettingsRouteResponse(resp *http.Response) (res GetSettingsRouteRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -10962,6 +11322,9 @@ func decodeGetSignedURLDeprecatedResponse(resp *http.Response) (res GetSignedURL
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11056,6 +11419,9 @@ func decodeGetSimilarLibraryVoicesResponse(resp *http.Response) (res GetSimilarL
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11150,6 +11516,9 @@ func decodeGetSimilarVoicesForSpeakerResponse(resp *http.Response) (res GetSimil
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11235,6 +11604,9 @@ func decodeGetSingleUseTokenResponse(resp *http.Response) (res GetSingleUseToken
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11329,6 +11701,9 @@ func decodeGetSpeakerAudioResponse(resp *http.Response) (res GetSpeakerAudioRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11423,6 +11798,9 @@ func decodeGetSpeechHistoryResponse(resp *http.Response) (res GetSpeechHistoryRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11517,6 +11895,9 @@ func decodeGetSpeechHistoryItemByIDResponse(resp *http.Response) (res GetSpeechH
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11611,6 +11992,9 @@ func decodeGetTestInvocationRouteResponse(resp *http.Response) (res GetTestInvoc
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11705,6 +12089,9 @@ func decodeGetToolDependentAgentsRouteResponse(resp *http.Response) (res GetTool
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11869,6 +12256,9 @@ func decodeGetTranscriptByIDResponse(resp *http.Response) (res GetTranscriptByID
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -11963,6 +12353,9 @@ func decodeGetUserInfoResponse(resp *http.Response) (res GetUserInfoRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12057,6 +12450,9 @@ func decodeGetUserVoicesV2Response(resp *http.Response) (res GetUserVoicesV2Res,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12151,6 +12547,9 @@ func decodeGetVoiceByIDResponse(resp *http.Response) (res GetVoiceByIDRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12245,6 +12644,9 @@ func decodeGetVoiceSettingsResponse(resp *http.Response) (res GetVoiceSettingsRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12295,6 +12697,9 @@ func decodeGetVoiceSettingsDefaultResponse(resp *http.Response) (res *VoiceSetti
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12389,6 +12794,9 @@ func decodeGetVoicesResponse(resp *http.Response) (res GetVoicesRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12474,6 +12882,9 @@ func decodeGetWhatsappAccountResponse(resp *http.Response) (res GetWhatsappAccou
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12568,6 +12979,9 @@ func decodeGetWorkspaceBatchCallsResponse(resp *http.Response) (res GetWorkspace
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12662,6 +13076,9 @@ func decodeGetWorkspaceServiceAccountsResponse(resp *http.Response) (res GetWork
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12756,6 +13173,9 @@ func decodeGetWorkspaceWebhooksRouteResponse(resp *http.Response) (res GetWorksp
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12841,6 +13261,9 @@ func decodeHandleSipTrunkOutboundCallResponse(resp *http.Response) (res HandleSi
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -12926,6 +13349,9 @@ func decodeHandleTwilioOutboundCallResponse(resp *http.Response) (res HandleTwil
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13011,6 +13437,9 @@ func decodeImportWhatsappAccountResponse(resp *http.Response) (res ImportWhatsap
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13096,6 +13525,9 @@ func decodeInviteUserResponse(resp *http.Response) (res InviteUserRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13181,6 +13613,9 @@ func decodeInviteUsersBulkResponse(resp *http.Response) (res InviteUsersBulkRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13275,6 +13710,9 @@ func decodeListChatResponseTestsRouteResponse(resp *http.Response) (res ListChat
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13369,6 +13807,9 @@ func decodeListDubsResponse(resp *http.Response) (res ListDubsRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13463,6 +13904,9 @@ func decodeListMcpServerToolsRouteResponse(resp *http.Response) (res ListMcpServ
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13557,6 +14001,9 @@ func decodeListPhoneNumbersRouteResponse(resp *http.Response) (res ListPhoneNumb
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13651,6 +14098,9 @@ func decodeListTestInvocationsRouteResponse(resp *http.Response) (res ListTestIn
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13745,6 +14195,9 @@ func decodeListWhatsappAccountsResponse(resp *http.Response) (res ListWhatsappAc
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13830,6 +14283,9 @@ func decodeMigrateSegmentsResponse(resp *http.Response) (res MigrateSegmentsRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -13924,6 +14380,9 @@ func decodePatchPronunciationDictionaryResponse(resp *http.Response) (res PatchP
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14009,6 +14468,9 @@ func decodePostAgentAvatarRouteResponse(resp *http.Response) (res PostAgentAvata
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14094,6 +14556,9 @@ func decodePostConversationFeedbackRouteResponse(resp *http.Response) (res PostC
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14188,6 +14653,9 @@ func decodeRagIndexStatusResponse(resp *http.Response) (res RagIndexStatusRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14231,6 +14699,9 @@ func decodeRedirectToMintlifyResponse(resp *http.Response) (res jx.Raw, _ error)
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14300,6 +14771,9 @@ func decodeRegisterTwilioCallResponse(resp *http.Response) (res RegisterTwilioCa
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14385,6 +14859,9 @@ func decodeRemoveMemberResponse(resp *http.Response) (res RemoveMemberRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14470,6 +14947,9 @@ func decodeRemoveRulesResponse(resp *http.Response) (res RemoveRulesRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14555,6 +15035,9 @@ func decodeRequestPvcManualVerificationResponse(resp *http.Response) (res Reques
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14649,6 +15132,9 @@ func decodeRetryBatchCallResponse(resp *http.Response) (res RetryBatchCallRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14734,6 +15220,9 @@ func decodeRunPvcVoiceTrainingResponse(resp *http.Response) (res RunPvcVoiceTrai
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14828,6 +15317,9 @@ func decodeSearchGroupsResponse(resp *http.Response) (res SearchGroupsRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -14937,6 +15429,9 @@ func decodeSeparateSongStemsResponse(resp *http.Response) (res SeparateSongStems
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15022,6 +15517,9 @@ func decodeShareResourceEndpointResponse(resp *http.Response) (res ShareResource
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15131,6 +15629,9 @@ func decodeSoundGenerationResponse(resp *http.Response) (res SoundGenerationRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15200,6 +15701,9 @@ func decodeSpeechToSpeechFullResponse(resp *http.Response) (res SpeechToSpeechFu
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15269,6 +15773,9 @@ func decodeSpeechToSpeechStreamResponse(resp *http.Response) (res SpeechToSpeech
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15398,6 +15905,9 @@ func decodeSpeechToTextResponse(resp *http.Response) (res SpeechToTextRes, _ err
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15483,6 +15993,9 @@ func decodeStartSpeakerSeparationResponse(resp *http.Response) (res StartSpeaker
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15552,6 +16065,9 @@ func decodeStreamChapterSnapshotAudioResponse(resp *http.Response) (res StreamCh
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15693,6 +16209,9 @@ func decodeStreamComposeResponse(resp *http.Response) (res StreamComposeRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15762,6 +16281,9 @@ func decodeStreamProjectSnapshotArchiveEndpointResponse(resp *http.Response) (re
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15815,6 +16337,9 @@ func decodeStreamProjectSnapshotAudioEndpointResponse(resp *http.Response) (res 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15884,6 +16409,9 @@ func decodeTextToDialogueResponse(resp *http.Response) (res TextToDialogueRes, _
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -15978,6 +16506,9 @@ func decodeTextToDialogueFullWithTimestampsResponse(resp *http.Response) (res Te
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16047,6 +16578,9 @@ func decodeTextToDialogueStreamResponse(resp *http.Response) (res TextToDialogue
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16141,6 +16675,9 @@ func decodeTextToDialogueStreamWithTimestampsResponse(resp *http.Response) (res 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16210,6 +16747,9 @@ func decodeTextToSpeechFullResponse(resp *http.Response) (res TextToSpeechFullRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16304,6 +16844,9 @@ func decodeTextToSpeechFullWithTimestampsResponse(resp *http.Response) (res Text
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16373,6 +16916,9 @@ func decodeTextToSpeechStreamResponse(resp *http.Response) (res TextToSpeechStre
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16467,6 +17013,9 @@ func decodeTextToSpeechStreamWithTimestampsResponse(resp *http.Response) (res Te
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16561,6 +17110,9 @@ func decodeTextToVoiceResponse(resp *http.Response) (res TextToVoiceRes, _ error
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16655,6 +17207,9 @@ func decodeTextToVoiceDesignResponse(resp *http.Response) (res TextToVoiceDesign
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16724,6 +17279,9 @@ func decodeTextToVoicePreviewStreamResponse(resp *http.Response) (res TextToVoic
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16818,6 +17376,9 @@ func decodeTextToVoiceRemixResponse(resp *http.Response) (res TextToVoiceRemixRe
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16903,6 +17464,9 @@ func decodeTranscribeResponse(resp *http.Response) (res TranscribeRes, _ error) 
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -16988,6 +17552,9 @@ func decodeTranslateResponse(resp *http.Response) (res TranslateRes, _ error) {
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17073,6 +17640,9 @@ func decodeUnshareResourceEndpointResponse(resp *http.Response) (res UnshareReso
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17167,6 +17737,9 @@ func decodeUpdateAgentResponseTestRouteResponse(resp *http.Response) (res Update
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17261,6 +17834,9 @@ func decodeUpdateDashboardSettingsRouteResponse(resp *http.Response) (res Update
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17355,6 +17931,9 @@ func decodeUpdateDocumentRouteResponse(resp *http.Response) (res UpdateDocumentR
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17449,6 +18028,9 @@ func decodeUpdatePhoneNumberRouteResponse(resp *http.Response) (res UpdatePhoneN
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17534,6 +18116,9 @@ func decodeUpdatePronunciationDictionariesResponse(resp *http.Response) (res Upd
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17628,6 +18213,9 @@ func decodeUpdateSecretRouteResponse(resp *http.Response) (res UpdateSecretRoute
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17713,6 +18301,9 @@ func decodeUpdateSegmentLanguageResponse(resp *http.Response) (res UpdateSegment
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17807,6 +18398,9 @@ func decodeUpdateSettingsRouteResponse(resp *http.Response) (res UpdateSettingsR
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17892,6 +18486,9 @@ func decodeUpdateSpeakerResponse(resp *http.Response) (res UpdateSpeakerRes, _ e
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -17977,6 +18574,9 @@ func decodeUpdateWhatsappAccountResponse(resp *http.Response) (res UpdateWhatsap
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -18062,6 +18662,9 @@ func decodeUpdateWorkspaceMemberResponse(resp *http.Response) (res UpdateWorkspa
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -18156,6 +18759,9 @@ func decodeUsageCharactersResponse(resp *http.Response) (res UsageCharactersRes,
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -18241,6 +18847,9 @@ func decodeVerifyPvcVoiceCaptchaResponse(resp *http.Response) (res VerifyPvcVoic
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }
 
@@ -18326,5 +18935,8 @@ func decodeWhatsappOutboundCallResponse(resp *http.Response) (res WhatsappOutbou
 			return res, validate.InvalidContentType(ct)
 		}
 	}
+	// Buffer the response body so it survives resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body = io.NopCloser(bytes.NewReader(body))
 	return res, validate.UnexpectedStatusCodeWithResponse(resp)
 }

@@ -48,6 +48,16 @@ echo ""
 echo "Generating API code with ogen..."
 ogen --package api --target internal/api --clean openapi/openapi-v3.0.json
 
+# Post-process: Fix ogen null handling bug (https://github.com/ogen-go/ogen/issues/1358)
+echo ""
+echo "Post-processing: Fixing Opt* null handling..."
+go run github.com/agentplexus/ogen-tools/cmd/ogen-fixnull@latest internal/api/oas_json_gen.go
+
+# Post-process: Fix error body preservation (body gets closed before caller can read it)
+echo ""
+echo "Post-processing: Fixing error body preservation..."
+go run github.com/agentplexus/ogen-tools/cmd/ogen-fixerror@latest internal/api/oas_response_decoders_gen.go
+
 echo ""
 echo "Running go mod tidy..."
 go mod tidy

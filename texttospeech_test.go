@@ -116,6 +116,44 @@ func TestTTSRequestValidate(t *testing.T) {
 	}
 }
 
+func TestTTSRequestValidate_OutputFormat(t *testing.T) {
+	tests := []struct {
+		name       string
+		format     string
+		shouldPass bool
+	}{
+		{"empty (default)", "", true},
+		{"mp3_44100_128", "mp3_44100_128", true},
+		{"mp3_44100_192 (highest mp3)", "mp3_44100_192", true},
+		{"mp3_22050_32", "mp3_22050_32", true},
+		{"pcm_16000", "pcm_16000", true},
+		{"pcm_48000 (highest quality)", "pcm_48000", true},
+		{"ulaw_8000", "ulaw_8000", true},
+		{"alaw_8000", "alaw_8000", true},
+		{"opus_48000_192", "opus_48000_192", true},
+		{"invalid mp3", "mp3", false},
+		{"invalid wav", "wav", false},
+		{"invalid random", "foo_bar", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &TTSRequest{
+				VoiceID:      "test-voice",
+				Text:         "Hello",
+				OutputFormat: tt.format,
+			}
+			err := req.Validate()
+			if tt.shouldPass && err != nil {
+				t.Errorf("Validate() error = %v, want nil", err)
+			}
+			if !tt.shouldPass && err == nil {
+				t.Errorf("Validate() error = nil, want error for format %q", tt.format)
+			}
+		})
+	}
+}
+
 func TestDefaultVoiceSettings(t *testing.T) {
 	vs := DefaultVoiceSettings()
 	if vs == nil {

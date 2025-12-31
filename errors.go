@@ -1,8 +1,11 @@
 package elevenlabs
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+
+	"github.com/agentplexus/ogen-tools/ogenerror"
 )
 
 // Common errors
@@ -80,4 +83,75 @@ func IsRateLimitError(err error) bool {
 		return apiErr.StatusCode == 429
 	}
 	return false
+}
+
+// IsForbiddenError returns true if the error is a 403 Forbidden error.
+func IsForbiddenError(err error) bool {
+	var apiErr *APIError
+	if errors.As(err, &apiErr) {
+		return apiErr.StatusCode == 403
+	}
+	return false
+}
+
+// ParseAPIError extracts API error details from an error returned by the SDK.
+// It handles ogen's UnexpectedStatusCodeError and parses the response body
+// to extract the ElevenLabs error message.
+//
+// Usage:
+//
+//	resp, err := client.TextToSpeech().Generate(ctx, req)
+//	if err != nil {
+//	    if apiErr := elevenlabs.ParseAPIError(err); apiErr != nil {
+//	        fmt.Printf("Status: %d, Message: %s\n", apiErr.StatusCode, apiErr.Message)
+//	    }
+//	    log.Fatal(err)
+//	}
+func ParseAPIError(err error) *APIError {
+	if err == nil {
+		return nil
+	}
+
+	// Check if it's already an APIError
+	var existing *APIError
+	if errors.As(err, &existing) {
+		return existing
+	}
+
+	// Use ogen-tools to extract status code and body
+	status := ogenerror.Parse(err)
+	if status == nil {
+		return nil
+	}
+
+	apiErr := &APIError{
+		StatusCode: status.StatusCode,
+		Message:    fmt.Sprintf("HTTP %d", status.StatusCode),
+	}
+
+	// Parse ElevenLabs-specific error format
+	if len(status.Body) > 0 {
+		var errResp struct {
+			Detail interface{} `json:"detail"`
+		}
+		if json.Unmarshal(status.Body, &errResp) == nil {
+			switch d := errResp.Detail.(type) {
+			case string:
+				apiErr.Detail = d
+			case map[string]interface{}:
+				if msg, ok := d["message"].(string); ok {
+					apiErr.Message = msg
+				}
+				if detail, ok := d["status"].(string); ok {
+					apiErr.Detail = detail
+				}
+			}
+		}
+		// If parsing failed, use raw body as detail
+		if apiErr.Detail == "" && apiErr.Message == fmt.Sprintf("HTTP %d", status.StatusCode) {
+			apiErr.Detail = string(status.Body)
+		}
+	}
+
+	return apiErr
 }

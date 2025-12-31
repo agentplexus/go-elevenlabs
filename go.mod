@@ -3,6 +3,7 @@ module github.com/agentplexus/go-elevenlabs
 go 1.24.0
 
 require (
+	github.com/agentplexus/ogen-tools v0.0.0-00010101000000-000000000000
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
 	github.com/gorilla/websocket v1.5.3
@@ -22,6 +23,8 @@ require (
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/huandu/xstrings v1.5.0 // indirect
+	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
@@ -36,3 +39,5 @@ require (
 	golang.org/x/text v0.32.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
+
+replace github.com/agentplexus/ogen-tools => ../ogen-tools
