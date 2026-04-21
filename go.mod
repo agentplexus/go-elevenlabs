@@ -6,7 +6,7 @@ require (
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.2.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/grokify/mogo v0.74.1
+	github.com/grokify/mogo v0.74.2
 	github.com/ogen-go/ogen v1.20.3
 	github.com/plexusone/ogen-tools v0.2.1
 	github.com/plexusone/omnivoice-core v0.8.0
