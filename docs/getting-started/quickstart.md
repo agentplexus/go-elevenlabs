@@ -5,7 +5,7 @@ This guide will have you generating audio in under 5 minutes.
 ## Create a Client
 
 ```go
-import elevenlabs "github.com/agentplexus/go-elevenlabs"
+import elevenlabs "github.com/plexusone/elevenlabs-go"
 
 // Uses ELEVENLABS_API_KEY environment variable
 client, err := elevenlabs.NewClient()
@@ -102,7 +102,7 @@ import (
     "log"
     "os"
 
-    elevenlabs "github.com/agentplexus/go-elevenlabs"
+    elevenlabs "github.com/plexusone/elevenlabs-go"
 )
 
 func main() {

@@ -83,7 +83,7 @@ For GitHub Actions, add the API key as a secret and run integration tests:
 
 The SDK uses [ogen](https://github.com/ogen-go/ogen) to generate API client code from the ElevenLabs OpenAPI spec. There's a known issue ([ogen-go/ogen#1358](https://github.com/ogen-go/ogen/issues/1358)) where nullable `$ref` fields don't decode `null` values correctly.
 
-We use [ogen-tools](https://github.com/agentplexus/ogen-tools) to post-process the generated code, and integration tests verify these fixes work against the real API.
+We use [ogen-tools](https://github.com/plexusone/ogen-tools) to post-process the generated code, and integration tests verify these fixes work against the real API.
 
 ### Example: Null Handling Issue
 

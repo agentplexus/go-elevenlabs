@@ -186,7 +186,7 @@ import (
     "log"
     "net/http"
 
-    elevenlabs "github.com/agentplexus/go-elevenlabs"
+    elevenlabs "github.com/plexusone/elevenlabs-go"
 )
 
 var client *elevenlabs.Client

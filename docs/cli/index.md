@@ -5,7 +5,7 @@ The `elevenlabs` CLI provides command-line access to ElevenLabs text-to-speech s
 ## Installation
 
 ```bash
-go install github.com/agentplexus/go-elevenlabs/cmd/elevenlabs@latest
+go install github.com/plexusone/elevenlabs-go/cmd/elevenlabs@latest
 ```
 
 ## Environment

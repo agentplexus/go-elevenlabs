@@ -163,7 +163,7 @@ voice_settings:
 The config structs can be used programmatically:
 
 ```go
-import "github.com/agentplexus/go-elevenlabs/cmd/elevenlabs"
+import "github.com/plexusone/elevenlabs-go/cmd/elevenlabs"
 
 // Load config
 config, err := main.LoadTTSConfig("tts-config.yaml")

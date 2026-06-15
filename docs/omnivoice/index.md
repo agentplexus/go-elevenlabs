@@ -4,7 +4,7 @@ OmniVoice is a vendor-agnostic abstraction layer for voice AI services. The `omn
 
 ## What is OmniVoice?
 
-[OmniVoice](https://github.com/agentplexus/omnivoice) defines standard interfaces for:
+[OmniVoice](https://github.com/plexusone/omnivoice-core) defines standard interfaces for:
 
 - **Text-to-Speech (TTS)** - Convert text to spoken audio
 - **Speech-to-Text (STT)** - Transcribe audio to text
@@ -17,13 +17,13 @@ By coding against OmniVoice interfaces, you can swap voice providers (ElevenLabs
 The OmniVoice providers are included in the go-elevenlabs SDK:
 
 ```bash
-go get github.com/agentplexus/go-elevenlabs
+go get github.com/plexusone/elevenlabs-go
 ```
 
 You'll also need the OmniVoice interfaces:
 
 ```bash
-go get github.com/agentplexus/omnivoice
+go get github.com/plexusone/omnivoice-core
 ```
 
 ## Quick Start
@@ -32,8 +32,8 @@ go get github.com/agentplexus/omnivoice
 
 ```go
 import (
-    "github.com/agentplexus/omnivoice/tts"
-    eleventts "github.com/agentplexus/go-elevenlabs/omnivoice/tts"
+    "github.com/plexusone/omnivoice-core/tts"
+    eleventts "github.com/plexusone/elevenlabs-go/omnivoice/tts"
 )
 
 // Create provider (uses ELEVENLABS_API_KEY env var)
@@ -53,8 +53,8 @@ result, err := client.Synthesize(ctx, "Hello world", tts.SynthesisConfig{
 
 ```go
 import (
-    "github.com/agentplexus/omnivoice/stt"
-    elevenstt "github.com/agentplexus/go-elevenlabs/omnivoice/stt"
+    "github.com/plexusone/omnivoice-core/stt"
+    elevenstt "github.com/plexusone/elevenlabs-go/omnivoice/stt"
 )
 
 // Create provider
@@ -74,8 +74,8 @@ fmt.Println(result.Text)
 
 ```go
 import (
-    "github.com/agentplexus/omnivoice/agent"
-    elevenagent "github.com/agentplexus/go-elevenlabs/omnivoice/agent"
+    "github.com/plexusone/omnivoice-core/agent"
+    elevenagent "github.com/plexusone/elevenlabs-go/omnivoice/agent"
 )
 
 // Create provider

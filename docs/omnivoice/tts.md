@@ -13,7 +13,7 @@ The TTS provider implements `tts.Provider` and `tts.StreamingProvider` interface
 ## Installation
 
 ```go
-import eleventts "github.com/agentplexus/go-elevenlabs/omnivoice/tts"
+import eleventts "github.com/plexusone/elevenlabs-go/omnivoice/tts"
 ```
 
 ## Creating a Provider

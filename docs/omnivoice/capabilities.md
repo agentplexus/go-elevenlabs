@@ -4,7 +4,7 @@ This page documents OmniVoice interface capabilities and their implementation st
 
 ## Overview
 
-[OmniVoice](https://github.com/agentplexus/omnivoice) provides vendor-agnostic interfaces for voice AI services. The go-elevenlabs SDK implements these interfaces, allowing ElevenLabs to be used as a drop-in provider.
+[OmniVoice](https://github.com/plexusone/omnivoice-core) provides vendor-agnostic interfaces for voice AI services. The go-elevenlabs SDK implements these interfaces, allowing ElevenLabs to be used as a drop-in provider.
 
 ## TTS (Text-to-Speech) Provider
 
@@ -189,4 +189,4 @@ go test -v ./omnivoice/...
 - [TTS Provider](tts.md) - Detailed TTS documentation
 - [STT Provider](stt.md) - Detailed STT documentation
 - [Agent Provider](agent.md) - Detailed Agent documentation
-- [OmniVoice GitHub](https://github.com/agentplexus/omnivoice) - Main OmniVoice repository
+- [OmniVoice GitHub](https://github.com/plexusone/omnivoice-core) - Main OmniVoice repository

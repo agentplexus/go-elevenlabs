@@ -13,7 +13,7 @@ The STT provider implements `stt.Provider` and `stt.StreamingProvider` interface
 ## Installation
 
 ```go
-import elevenstt "github.com/agentplexus/go-elevenlabs/omnivoice/stt"
+import elevenstt "github.com/plexusone/elevenlabs-go/omnivoice/stt"
 ```
 
 ## Creating a Provider

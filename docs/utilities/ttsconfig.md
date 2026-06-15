@@ -5,7 +5,7 @@ The `ttsconfig` package provides configuration types and utilities for ElevenLab
 ## Import
 
 ```go
-import "github.com/agentplexus/go-elevenlabs/ttsconfig"
+import "github.com/plexusone/elevenlabs-go/ttsconfig"
 ```
 
 ## Types

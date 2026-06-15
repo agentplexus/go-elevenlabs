@@ -13,7 +13,7 @@ The Agent provider implements `agent.Provider` interface for building interactiv
 ## Installation
 
 ```go
-import elevenagent "github.com/agentplexus/go-elevenlabs/omnivoice/agent"
+import elevenagent "github.com/plexusone/elevenlabs-go/omnivoice/agent"
 ```
 
 ## Creating a Provider
@@ -222,8 +222,8 @@ import (
     "fmt"
     "log"
 
-    "github.com/agentplexus/omnivoice/agent"
-    elevenagent "github.com/agentplexus/go-elevenlabs/omnivoice/agent"
+    "github.com/plexusone/omnivoice-core/agent"
+    elevenagent "github.com/plexusone/elevenlabs-go/omnivoice/agent"
 )
 
 func main() {

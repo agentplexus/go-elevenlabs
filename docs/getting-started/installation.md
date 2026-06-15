@@ -8,7 +8,7 @@
 ## Install the SDK
 
 ```bash
-go get github.com/agentplexus/go-elevenlabs
+go get github.com/plexusone/elevenlabs-go
 ```
 
 ## Get Your API Key
@@ -43,7 +43,7 @@ import (
     "fmt"
     "log"
 
-    elevenlabs "github.com/agentplexus/go-elevenlabs"
+    elevenlabs "github.com/plexusone/elevenlabs-go"
 )
 
 func main() {

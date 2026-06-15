@@ -468,4 +468,4 @@ Want to help expand SDK coverage? Contributions are welcome! Priority areas:
 3. **Professional Voice Cloning** - Premium voice training features
 4. **Knowledge Base / RAG** - Document management for agent context
 
-See the [Contributing Guide](https://github.com/agentplexus/go-elevenlabs/blob/main/CONTRIBUTING.md) for details.
+See the [Contributing Guide](https://github.com/plexusone/elevenlabs-go/blob/main/CONTRIBUTING.md) for details.

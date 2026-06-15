@@ -7,7 +7,7 @@ The `ttsscript` package provides a structured format for authoring multilingual 
 The package is included with go-elevenlabs:
 
 ```go
-import "github.com/agentplexus/go-elevenlabs/ttsscript"
+import "github.com/plexusone/elevenlabs-go/ttsscript"
 ```
 
 ## Package Overview
@@ -234,8 +234,8 @@ import (
     "io"
     "os"
 
-    elevenlabs "github.com/agentplexus/go-elevenlabs"
-    "github.com/agentplexus/go-elevenlabs/ttsscript"
+    elevenlabs "github.com/plexusone/elevenlabs-go"
+    "github.com/plexusone/elevenlabs-go/ttsscript"
 )
 
 func main() {

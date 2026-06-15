@@ -18,15 +18,23 @@ fmt.Printf("Language: %s\n", result.LanguageCode)
 ## Transcribe with File Upload
 
 ```go
-file, _ := os.Open("audio.mp3")
-defer file.Close()
+audioData, _ := os.ReadFile("audio.mp3")
 
 result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
-    File:     file,
-    Filename: "audio.mp3",
-    ModelID:  "scribe_v1",
+    FileBytes: audioData,
+    FileName:  "audio.mp3",
+    ModelID:   "scribe_v1",
 })
 ```
+
+Or use the convenience method:
+
+```go
+audioData, _ := os.ReadFile("audio.mp3")
+result, err := client.SpeechToText().TranscribeFile(ctx, audioData)
+```
+
+Note: `TranscribeFile` takes raw bytes. To transcribe from a file path, read the file first with `os.ReadFile()`.
 
 ## Speaker Diarization
 
@@ -47,14 +55,16 @@ for _, word := range result.Words {
 ## Full Options
 
 ```go
+audioData, _ := os.ReadFile("interview.mp3")
+
 result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
-    File:              file,
-    Filename:          "interview.mp3",
-    ModelID:           "scribe_v1",
-    LanguageCode:      "en",           // ISO 639-1 code
-    Diarize:           true,           // Enable speaker detection
-    TagAudioEvents:    true,           // Tag laughter, music, etc.
-    NumSpeakers:       2,              // Expected number of speakers
+    FileBytes:      audioData,
+    FileName:       "interview.mp3",
+    ModelID:        "scribe_v1",
+    LanguageCode:   "en",           // ISO 639-1 code
+    Diarize:        true,           // Enable speaker detection
+    TagAudioEvents: true,           // Tag laughter, music, etc.
+    NumSpeakers:    2,              // Expected number of speakers
 })
 ```
 
@@ -62,9 +72,9 @@ result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRe
 
 | Option | Type | Description |
 |--------|------|-------------|
-| `File` | io.Reader | Audio file to transcribe |
-| `Filename` | string | Name of the audio file |
-| `AudioURL` | string | URL to audio (alternative to file) |
+| `FileBytes` | []byte | Raw audio file bytes to transcribe |
+| `FileName` | string | Filename hint (defaults to "audio.wav") |
+| `FileURL` | string | URL to audio (alternative to FileBytes) |
 | `ModelID` | string | Transcription model (default: scribe_v1) |
 | `LanguageCode` | string | ISO 639-1 language code |
 | `Diarize` | bool | Enable speaker diarization |
@@ -93,9 +103,11 @@ type TranscriptionWord struct {
 ### Meeting Transcription
 
 ```go
+meetingData, _ := os.ReadFile("meeting.mp3")
+
 result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
-    File:        meetingFile,
-    Filename:    "meeting.mp3",
+    FileBytes:   meetingData,
+    FileName:    "meeting.mp3",
     Diarize:     true,
     NumSpeakers: 4,
 })
@@ -124,9 +136,11 @@ for i, word := range result.Words {
 
 ```go
 // Transcribe podcast episode
+podcastData, _ := os.ReadFile("episode.mp3")
+
 result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
-    File:           podcastFile,
-    Filename:       "episode.mp3",
+    FileBytes:      podcastData,
+    FileName:       "episode.mp3",
     Diarize:        true,
     TagAudioEvents: true,  // Detect music, laughter, etc.
 })
