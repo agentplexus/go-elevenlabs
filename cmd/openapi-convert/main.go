@@ -77,20 +77,23 @@ func fixValue(v any) {
 
 // fixObject processes a JSON object to convert 3.1 -> 3.0 patterns
 func fixObject(obj map[string]any) {
-	// Handle exclusiveMinimum (number in 3.1 -> remove, use minimum)
+	// Handle exclusiveMinimum (number in 3.1 -> boolean + minimum in 3.0)
+	// In 3.1: exclusiveMinimum: 0 means "value > 0"
+	// In 3.0: minimum: 0, exclusiveMinimum: true means "value > 0"
 	if exMin, ok := obj["exclusiveMinimum"]; ok {
-		if _, isNum := exMin.(float64); isNum {
-			// In 3.1, exclusiveMinimum is a number (the exclusive bound)
-			// In 3.0, exclusiveMinimum is a boolean
-			// Convert: remove exclusiveMinimum, keep minimum if exists
-			delete(obj, "exclusiveMinimum")
+		if num, isNum := exMin.(float64); isNum {
+			obj["minimum"] = num
+			obj["exclusiveMinimum"] = true
 		}
 	}
 
-	// Handle exclusiveMaximum (number in 3.1 -> remove, use maximum)
+	// Handle exclusiveMaximum (number in 3.1 -> boolean + maximum in 3.0)
+	// In 3.1: exclusiveMaximum: 100 means "value < 100"
+	// In 3.0: maximum: 100, exclusiveMaximum: true means "value < 100"
 	if exMax, ok := obj["exclusiveMaximum"]; ok {
-		if _, isNum := exMax.(float64); isNum {
-			delete(obj, "exclusiveMaximum")
+		if num, isNum := exMax.(float64); isNum {
+			obj["maximum"] = num
+			obj["exclusiveMaximum"] = true
 		}
 	}
 
@@ -110,6 +113,8 @@ func fixObject(obj map[string]any) {
 				if schemaMap["type"] == "null" {
 					hasNull = true
 				} else {
+					// Fix the inner schema BEFORE merging
+					fixObject(schemaMap)
 					nonNullSchemas = append(nonNullSchemas, schema)
 				}
 			} else {
@@ -149,6 +154,8 @@ func fixObject(obj map[string]any) {
 				if schemaMap["type"] == "null" {
 					hasNull = true
 				} else {
+					// Fix the inner schema BEFORE merging
+					fixObject(schemaMap)
 					nonNullSchemas = append(nonNullSchemas, schema)
 				}
 			} else {

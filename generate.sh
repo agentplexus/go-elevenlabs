@@ -51,12 +51,17 @@ ogen --package api --target internal/api --clean openapi/openapi-v3.0.json
 # Post-process: Fix ogen null handling bug (https://github.com/ogen-go/ogen/issues/1358)
 echo ""
 echo "Post-processing: Fixing Opt* null handling..."
-go run github.com/agentplexus/ogen-tools/cmd/ogen-fixnull@latest internal/api/oas_json_gen.go
+go run github.com/plexusone/ogen-tools/cmd/ogen-fixnull@latest internal/api/oas_json_gen.go
 
 # Post-process: Fix error body preservation (body gets closed before caller can read it)
 echo ""
 echo "Post-processing: Fixing error body preservation..."
-go run github.com/agentplexus/ogen-tools/cmd/ogen-fixerror@latest internal/api/oas_response_decoders_gen.go
+go run github.com/plexusone/ogen-tools/cmd/ogen-fixerror@latest internal/api/oas_response_decoders_gen.go
+
+# Post-process: Fix form-data encoding of empty JSON arrays/objects
+echo ""
+echo "Post-processing: Fixing form-data empty JSON encoding..."
+go run github.com/plexusone/ogen-tools/cmd/ogen-fixformdata@latest internal/api/oas_request_encoders_gen.go
 
 echo ""
 echo "Running go mod tidy..."
