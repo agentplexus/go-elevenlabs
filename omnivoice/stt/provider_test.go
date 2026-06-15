@@ -17,15 +17,7 @@ import (
 const testAudioURL = "https://static.deepgram.com/examples/Bueller-Life-moves-pretty-fast.wav"
 
 func TestTranscribeURL(t *testing.T) {
-	apiKey := os.Getenv("ELEVENLABS_API_KEY")
-	if apiKey == "" {
-		t.Skip("ELEVENLABS_API_KEY not set")
-	}
-
-	p, err := New(WithAPIKey(apiKey))
-	if err != nil {
-		t.Fatalf("failed to create provider: %v", err)
-	}
+	p := newTestProvider(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -35,29 +27,11 @@ func TestTranscribeURL(t *testing.T) {
 		t.Fatalf("TranscribeURL failed: %v", err)
 	}
 
-	if result.Text == "" {
-		t.Error("TranscribeURL returned empty text")
-	}
-
-	// Check for expected content
-	lower := strings.ToLower(result.Text)
-	if !strings.Contains(lower, "life") && !strings.Contains(lower, "fast") {
-		t.Errorf("TranscribeURL text doesn't contain expected content: %q", result.Text)
-	}
-
-	t.Logf("TranscribeURL result: %q", result.Text)
+	assertTranscriptionResult(t, result, "TranscribeURL")
 }
 
 func TestTranscribeStream(t *testing.T) {
-	apiKey := os.Getenv("ELEVENLABS_API_KEY")
-	if apiKey == "" {
-		t.Skip("ELEVENLABS_API_KEY not set")
-	}
-
-	p, err := New(WithAPIKey(apiKey))
-	if err != nil {
-		t.Fatalf("failed to create provider: %v", err)
-	}
+	p := newTestProvider(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -84,17 +58,7 @@ func TestTranscribeStream(t *testing.T) {
 }
 
 func TestTranscribe(t *testing.T) {
-	apiKey := os.Getenv("ELEVENLABS_API_KEY")
-	if apiKey == "" {
-		t.Skip("ELEVENLABS_API_KEY not set")
-	}
-
-	p, err := New(WithAPIKey(apiKey))
-	if err != nil {
-		t.Fatalf("failed to create provider: %v", err)
-	}
-
-	// Download test audio for this test
+	p := newTestProvider(t)
 	audioData := downloadTestAudioBytes(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -105,31 +69,11 @@ func TestTranscribe(t *testing.T) {
 		t.Fatalf("Transcribe failed: %v", err)
 	}
 
-	if result.Text == "" {
-		t.Error("Transcribe returned empty text")
-	}
-
-	// Check for expected content
-	lower := strings.ToLower(result.Text)
-	if !strings.Contains(lower, "life") && !strings.Contains(lower, "fast") {
-		t.Errorf("Transcribe text doesn't contain expected content: %q", result.Text)
-	}
-
-	t.Logf("Transcribe result: %q", result.Text)
+	assertTranscriptionResult(t, result, "Transcribe")
 }
 
 func TestTranscribeFile(t *testing.T) {
-	apiKey := os.Getenv("ELEVENLABS_API_KEY")
-	if apiKey == "" {
-		t.Skip("ELEVENLABS_API_KEY not set")
-	}
-
-	p, err := New(WithAPIKey(apiKey))
-	if err != nil {
-		t.Fatalf("failed to create provider: %v", err)
-	}
-
-	// Download test audio to a file
+	p := newTestProvider(t)
 	audioFile := downloadTestAudioToFile(t)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -140,17 +84,39 @@ func TestTranscribeFile(t *testing.T) {
 		t.Fatalf("TranscribeFile failed: %v", err)
 	}
 
-	if result.Text == "" {
-		t.Error("TranscribeFile returned empty text")
+	assertTranscriptionResult(t, result, "TranscribeFile")
+}
+
+// newTestProvider creates a test provider, skipping if API key is not set.
+func newTestProvider(t *testing.T) *Provider {
+	t.Helper()
+
+	apiKey := os.Getenv("ELEVENLABS_API_KEY")
+	if apiKey == "" {
+		t.Skip("ELEVENLABS_API_KEY not set")
 	}
 
-	// Check for expected content
+	p, err := New(WithAPIKey(apiKey))
+	if err != nil {
+		t.Fatalf("failed to create provider: %v", err)
+	}
+	return p
+}
+
+// assertTranscriptionResult validates a transcription result contains expected content.
+func assertTranscriptionResult(t *testing.T, result *stt.TranscriptionResult, methodName string) {
+	t.Helper()
+
+	if result.Text == "" {
+		t.Errorf("%s returned empty text", methodName)
+	}
+
 	lower := strings.ToLower(result.Text)
 	if !strings.Contains(lower, "life") && !strings.Contains(lower, "fast") {
-		t.Errorf("TranscribeFile text doesn't contain expected content: %q", result.Text)
+		t.Errorf("%s text doesn't contain expected content: %q", methodName, result.Text)
 	}
 
-	t.Logf("TranscribeFile result: %q", result.Text)
+	t.Logf("%s result: %q", methodName, result.Text)
 }
 
 func TestProviderName(t *testing.T) {
@@ -199,7 +165,7 @@ func downloadTestAudioToFile(t *testing.T) string {
 	tmpDir := t.TempDir()
 	audioFile := filepath.Join(tmpDir, "test-audio.wav")
 
-	if err := os.WriteFile(audioFile, data, 0644); err != nil {
+	if err := os.WriteFile(audioFile, data, 0o600); err != nil {
 		t.Fatalf("failed to write test audio file: %v", err)
 	}
 

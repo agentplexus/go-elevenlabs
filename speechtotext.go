@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/plexusone/elevenlabs-go/internal/api"
@@ -23,7 +24,7 @@ func formatValidationLocation(loc []api.ValidationErrorLocItem) string {
 		if item.IsString() {
 			parts = append(parts, item.String)
 		} else if item.IsInt() {
-			parts = append(parts, string(rune('0'+item.Int)))
+			parts = append(parts, strconv.Itoa(item.Int))
 		}
 	}
 	return strings.Join(parts, ".")
