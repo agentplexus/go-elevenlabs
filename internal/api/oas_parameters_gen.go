@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/ogen-go/ogen/conv"
@@ -856,6 +857,187 @@ func decodeAddVoiceParams(args [0]string, argsEscaped bool, r *http.Request) (pa
 	return params, nil
 }
 
+// AgentTestingBulkMoveRouteParams is parameters of agent_testing_bulk_move_route operation.
+type AgentTestingBulkMoveRouteParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackAgentTestingBulkMoveRouteParams(packed middleware.Parameters) (params AgentTestingBulkMoveRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeAgentTestingBulkMoveRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params AgentTestingBulkMoveRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AssignConversationTagsRouteParams is parameters of assign_conversation_tags_route operation.
+type AssignConversationTagsRouteParams struct {
+	ConversationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackAssignConversationTagsRouteParams(packed middleware.Parameters) (params AssignConversationTagsRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
+		}
+		params.ConversationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeAssignConversationTagsRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params AssignConversationTagsRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: conversation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AudioIsolationParams is parameters of audio_isolation operation.
 type AudioIsolationParams struct {
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
@@ -1102,6 +1284,70 @@ func decodeAudioNativeProjectUpdateContentEndpointParams(args [1]string, argsEsc
 	return params, nil
 }
 
+// AudioNativeUpdateContentFromURLParams is parameters of audio_native_update_content_from_url operation.
+type AudioNativeUpdateContentFromURLParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackAudioNativeUpdateContentFromURLParams(packed middleware.Parameters) (params AudioNativeUpdateContentFromURLParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeAudioNativeUpdateContentFromURLParams(args [0]string, argsEscaped bool, r *http.Request) (params AudioNativeUpdateContentFromURLParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // CancelBatchCallParams is parameters of cancel_batch_call operation.
 type CancelBatchCallParams struct {
 	BatchID string
@@ -1219,28 +1465,29 @@ func decodeCancelBatchCallParams(args [1]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
-// ComposeDetailedParams is parameters of compose_detailed operation.
-type ComposeDetailedParams struct {
-	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
-	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptComposeDetailedOutputFormat `json:",omitempty,omitzero"`
+// CancelFileUploadRouteParams is parameters of cancel_file_upload_route operation.
+type CancelFileUploadRouteParams struct {
+	FileID         string
+	ConversationID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
-func unpackComposeDetailedParams(packed middleware.Parameters) (params ComposeDetailedParams) {
+func unpackCancelFileUploadRouteParams(packed middleware.Parameters) (params CancelFileUploadRouteParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "output_format",
-			In:   "query",
+			Name: "file_id",
+			In:   "path",
 		}
-		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptComposeDetailedOutputFormat)
+		params.FileID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
 		}
+		params.ConversationID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -1254,134 +1501,98 @@ func unpackComposeDetailedParams(packed middleware.Parameters) (params ComposeDe
 	return params
 }
 
-func decodeComposeDetailedParams(args [0]string, argsEscaped bool, r *http.Request) (params ComposeDetailedParams, _ error) {
-	q := uri.NewQueryDecoder(r.URL.Query())
+func decodeCancelFileUploadRouteParams(args [2]string, argsEscaped bool, r *http.Request) (params CancelFileUploadRouteParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
-	// Set default value for query: output_format.
-	{
-		val := ComposeDetailedOutputFormat("mp3_44100_128")
-		params.OutputFormat.SetTo(val)
-	}
-	// Decode query: output_format.
+	// Decode path: file_id.
 	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "output_format",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
 		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "file_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
 
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal ComposeDetailedOutputFormat
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotOutputFormatVal = ComposeDetailedOutputFormat(c)
-					return nil
-				}(); err != nil {
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.OutputFormat.SetTo(paramsDotOutputFormatVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.OutputFormat.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
 				}
+
+				params.FileID = c
 				return nil
 			}(); err != nil {
 				return err
 			}
+		} else {
+			return validate.ErrFieldRequired
 		}
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "output_format",
-			In:   "query",
+			Name: "file_id",
+			In:   "path",
 			Err:  err,
 		}
 	}
-	// Decode header: xi-api-key.
+	// Decode path: conversation_id.
 	if err := func() error {
-		cfg := uri.HeaderParameterDecodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
 		}
-		if err := h.HasParam(cfg); err == nil {
-			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotXiAPIKeyVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
 
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotXiAPIKeyVal = c
-					return nil
-				}(); err != nil {
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
 					return err
 				}
-				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
 				return nil
-			}); err != nil {
+			}(); err != nil {
 				return err
 			}
+		} else {
+			return validate.ErrFieldRequired
 		}
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "xi-api-key",
-			In:   "header",
+			Name: "conversation_id",
+			In:   "path",
 			Err:  err,
 		}
 	}
-	return params, nil
-}
-
-// ComposePlanParams is parameters of compose_plan operation.
-type ComposePlanParams struct {
-	// Your API key. This is required by most endpoints to access our API programmatically. You can view
-	// your xi-api-key using the 'Profile' tab on the website.
-	XiAPIKey OptNilString `json:",omitempty,omitzero"`
-}
-
-func unpackComposePlanParams(packed middleware.Parameters) (params ComposePlanParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "xi-api-key",
-			In:   "header",
-		}
-		if v, ok := packed[key]; ok {
-			params.XiAPIKey = v.(OptNilString)
-		}
-	}
-	return params
-}
-
-func decodeComposePlanParams(args [0]string, argsEscaped bool, r *http.Request) (params ComposePlanParams, _ error) {
-	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -1714,14 +1925,23 @@ func decodeConvertProjectEndpointParams(args [1]string, argsEscaped bool, r *htt
 	return params, nil
 }
 
-// CreateAgentResponseTestRouteParams is parameters of create_agent_response_test_route operation.
-type CreateAgentResponseTestRouteParams struct {
+// CreateAgentDeploymentRouteParams is parameters of create_agent_deployment_route operation.
+type CreateAgentDeploymentRouteParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
-func unpackCreateAgentResponseTestRouteParams(packed middleware.Parameters) (params CreateAgentResponseTestRouteParams) {
+func unpackCreateAgentDeploymentRouteParams(packed middleware.Parameters) (params CreateAgentDeploymentRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
 	{
 		key := middleware.ParameterKey{
 			Name: "xi-api-key",
@@ -1734,7 +1954,116 @@ func unpackCreateAgentResponseTestRouteParams(packed middleware.Parameters) (par
 	return params
 }
 
-func decodeCreateAgentResponseTestRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateAgentResponseTestRouteParams, _ error) {
+func decodeCreateAgentDeploymentRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params CreateAgentDeploymentRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// CreateAgentTestFolderRouteParams is parameters of create_agent_test_folder_route operation.
+type CreateAgentTestFolderRouteParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackCreateAgentTestFolderRouteParams(packed middleware.Parameters) (params CreateAgentTestFolderRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeCreateAgentTestFolderRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateAgentTestFolderRouteParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {
@@ -2078,6 +2407,70 @@ func decodeCreateClipParams(args [2]string, argsEscaped bool, r *http.Request) (
 	return params, nil
 }
 
+// CreateConversationTagRouteParams is parameters of create_conversation_tag_route operation.
+type CreateConversationTagRouteParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackCreateConversationTagRouteParams(packed middleware.Parameters) (params CreateConversationTagRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeCreateConversationTagRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateConversationTagRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // CreateDubbingParams is parameters of create_dubbing operation.
 type CreateDubbingParams struct {
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
@@ -2163,6 +2556,70 @@ func unpackCreateFileDocumentRouteParams(packed middleware.Parameters) (params C
 }
 
 func decodeCreateFileDocumentRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateFileDocumentRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// CreateFolderRouteParams is parameters of create_folder_route operation.
+type CreateFolderRouteParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackCreateFolderRouteParams(packed middleware.Parameters) (params CreateFolderRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeCreateFolderRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateFolderRouteParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {
@@ -2761,14 +3218,14 @@ func decodeCreateVoiceParams(args [0]string, argsEscaped bool, r *http.Request) 
 	return params, nil
 }
 
-// CreateVoiceOldParams is parameters of create_voice_old operation.
-type CreateVoiceOldParams struct {
+// CreateWorkspaceWebhookRouteParams is parameters of create_workspace_webhook_route operation.
+type CreateWorkspaceWebhookRouteParams struct {
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
-func unpackCreateVoiceOldParams(packed middleware.Parameters) (params CreateVoiceOldParams) {
+func unpackCreateWorkspaceWebhookRouteParams(packed middleware.Parameters) (params CreateWorkspaceWebhookRouteParams) {
 	{
 		key := middleware.ParameterKey{
 			Name: "xi-api-key",
@@ -2781,7 +3238,7 @@ func unpackCreateVoiceOldParams(packed middleware.Parameters) (params CreateVoic
 	return params
 }
 
-func decodeCreateVoiceOldParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateVoiceOldParams, _ error) {
+func decodeCreateWorkspaceWebhookRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateWorkspaceWebhookRouteParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {
@@ -2825,14 +3282,32 @@ func decodeCreateVoiceOldParams(args [0]string, argsEscaped bool, r *http.Reques
 	return params, nil
 }
 
-// CreateWorkspaceWebhookRouteParams is parameters of create_workspace_webhook_route operation.
-type CreateWorkspaceWebhookRouteParams struct {
+// DeleteAgentDraftRouteParams is parameters of delete_agent_draft_route operation.
+type DeleteAgentDraftRouteParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
+	// The ID of the agent branch to use.
+	BranchID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
-func unpackCreateWorkspaceWebhookRouteParams(packed middleware.Parameters) (params CreateWorkspaceWebhookRouteParams) {
+func unpackDeleteAgentDraftRouteParams(packed middleware.Parameters) (params DeleteAgentDraftRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		params.BranchID = packed[key].(string)
+	}
 	{
 		key := middleware.ParameterKey{
 			Name: "xi-api-key",
@@ -2845,8 +3320,90 @@ func unpackCreateWorkspaceWebhookRouteParams(packed middleware.Parameters) (para
 	return params
 }
 
-func decodeCreateWorkspaceWebhookRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params CreateWorkspaceWebhookRouteParams, _ error) {
+func decodeDeleteAgentDraftRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteAgentDraftRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.BranchID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -2961,6 +3518,534 @@ func decodeDeleteAgentRouteParams(args [1]string, argsEscaped bool, r *http.Requ
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DeleteAgentTestFolderRouteParams is parameters of delete_agent_test_folder_route operation.
+type DeleteAgentTestFolderRouteParams struct {
+	// The folder ID.
+	FolderID string
+	// Force delete. Required for deleting non-empty folders.
+	Force OptBool `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDeleteAgentTestFolderRouteParams(packed middleware.Parameters) (params DeleteAgentTestFolderRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "folder_id",
+			In:   "path",
+		}
+		params.FolderID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "force",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Force = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDeleteAgentTestFolderRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteAgentTestFolderRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: folder_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "folder_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.FolderID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "folder_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: force.
+	{
+		val := bool(false)
+		params.Force.SetTo(val)
+	}
+	// Decode query: force.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "force",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotForceVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotForceVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Force.SetTo(paramsDotForceVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "force",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DeleteAudioIsolationHistoryItemParams is parameters of delete_audio_isolation_history_item operation.
+type DeleteAudioIsolationHistoryItemParams struct {
+	// Identifier of the audio isolation history item.
+	HistoryItemID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDeleteAudioIsolationHistoryItemParams(packed middleware.Parameters) (params DeleteAudioIsolationHistoryItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "history_item_id",
+			In:   "path",
+		}
+		params.HistoryItemID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDeleteAudioIsolationHistoryItemParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteAudioIsolationHistoryItemParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: history_item_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "history_item_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.HistoryItemID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "history_item_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DeleteAuthConnectionParams is parameters of delete_auth_connection operation.
+type DeleteAuthConnectionParams struct {
+	AuthConnectionID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDeleteAuthConnectionParams(packed middleware.Parameters) (params DeleteAuthConnectionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "auth_connection_id",
+			In:   "path",
+		}
+		params.AuthConnectionID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDeleteAuthConnectionParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteAuthConnectionParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: auth_connection_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "auth_connection_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AuthConnectionID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "auth_connection_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DeleteBatchCallParams is parameters of delete_batch_call operation.
+type DeleteBatchCallParams struct {
+	BatchID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDeleteBatchCallParams(packed middleware.Parameters) (params DeleteBatchCallParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "batch_id",
+			In:   "path",
+		}
+		params.BatchID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDeleteBatchCallParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteBatchCallParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: batch_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "batch_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.BatchID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "batch_id",
 			In:   "path",
 			Err:  err,
 		}
@@ -3415,6 +4500,123 @@ func decodeDeleteConversationRouteParams(args [1]string, argsEscaped bool, r *ht
 	return params, nil
 }
 
+// DeleteConversationTagRouteParams is parameters of delete_conversation_tag_route operation.
+type DeleteConversationTagRouteParams struct {
+	TagID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDeleteConversationTagRouteParams(packed middleware.Parameters) (params DeleteConversationTagRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tag_id",
+			In:   "path",
+		}
+		params.TagID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDeleteConversationTagRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteConversationTagRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: tag_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tag_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TagID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tag_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteDubbingParams is parameters of delete_dubbing operation.
 type DeleteDubbingParams struct {
 	// ID of the dubbing project.
@@ -3601,8 +4803,9 @@ func decodeDeleteInviteParams(args [0]string, argsEscaped bool, r *http.Request)
 type DeleteKnowledgeBaseDocumentParams struct {
 	// The id of a document from the knowledge base. This is returned on document addition.
 	DocumentationID string
-	// If set to true, the document will be deleted regardless of whether it is used by any agents and it
-	// will be deleted from the dependent agents.
+	// If set to true, the document or folder will be deleted regardless of whether it is used by any
+	// agents and it will be removed from the dependent agents. For non-empty folders, this will also
+	// delete all child documents and folders.
 	Force OptBool `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -3894,7 +5097,7 @@ func decodeDeleteMcpServerRouteParams(args [1]string, argsEscaped bool, r *http.
 
 // DeletePhoneNumberRouteParams is parameters of delete_phone_number_route operation.
 type DeletePhoneNumberRouteParams struct {
-	// The id of an agent. This is returned on agent creation.
+	// The phone number ID. This is returned when a phone number is imported.
 	PhoneNumberID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -5106,6 +6309,124 @@ func decodeDeleteServiceAccountAPIKeyParams(args [2]string, argsEscaped bool, r 
 	return params, nil
 }
 
+// DeleteSpeechEngineParams is parameters of delete_speech_engine operation.
+type DeleteSpeechEngineParams struct {
+	// The speech engine ID (accepts seng_ or agent_ prefix).
+	SpeechEngineID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDeleteSpeechEngineParams(packed middleware.Parameters) (params DeleteSpeechEngineParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "speech_engine_id",
+			In:   "path",
+		}
+		params.SpeechEngineID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDeleteSpeechEngineParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteSpeechEngineParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: speech_engine_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "speech_engine_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SpeechEngineID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "speech_engine_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteSpeechHistoryItemParams is parameters of delete_speech_history_item operation.
 type DeleteSpeechHistoryItemParams struct {
 	// History item ID to be used, you can use GET https://api.elevenlabs.io/v1/history to receive a list
@@ -5229,6 +6550,9 @@ func decodeDeleteSpeechHistoryItemParams(args [1]string, argsEscaped bool, r *ht
 type DeleteToolRouteParams struct {
 	// ID of the requested tool.
 	ToolID string
+	// If set to true, the tool will be deleted regardless of whether it is used by any agents and it
+	// will be removed from the dependent agents and branches.
+	Force OptBool `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -5244,6 +6568,15 @@ func unpackDeleteToolRouteParams(packed middleware.Parameters) (params DeleteToo
 	}
 	{
 		key := middleware.ParameterKey{
+			Name: "force",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Force = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "xi-api-key",
 			In:   "header",
 		}
@@ -5255,6 +6588,7 @@ func unpackDeleteToolRouteParams(packed middleware.Parameters) (params DeleteToo
 }
 
 func decodeDeleteToolRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteToolRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode path: tool_id.
 	if err := func() error {
@@ -5298,6 +6632,52 @@ func decodeDeleteToolRouteParams(args [1]string, argsEscaped bool, r *http.Reque
 		return params, &ogenerrors.DecodeParamError{
 			Name: "tool_id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: force.
+	{
+		val := bool(false)
+		params.Force.SetTo(val)
+	}
+	// Decode query: force.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "force",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotForceVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotForceVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Force.SetTo(paramsDotForceVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "force",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -5770,6 +7150,117 @@ func decodeDeleteWorkspaceWebhookRouteParams(args [1]string, argsEscaped bool, r
 		return params, &ogenerrors.DecodeParamError{
 			Name: "webhook_id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DisableParams is parameters of disable operation.
+type DisableParams struct {
+	// Must be set to `self` to disable the API key used to authenticate this request. Required as an
+	// explicit confirmation to avoid accidentally disabling the wrong key.
+	APIKeyName string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackDisableParams(packed middleware.Parameters) (params DisableParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "api_key_name",
+			In:   "query",
+		}
+		params.APIKeyName = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeDisableParams(args [0]string, argsEscaped bool, r *http.Request) (params DisableParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: api_key_name.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "api_key_name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.APIKeyName = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "api_key_name",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -7233,211 +8724,6 @@ func decodeForcedAlignmentParams(args [0]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
-// GenerateParams is parameters of generate operation.
-type GenerateParams struct {
-	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
-	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptGenerateOutputFormat `json:",omitempty,omitzero"`
-	// Your API key. This is required by most endpoints to access our API programmatically. You can view
-	// your xi-api-key using the 'Profile' tab on the website.
-	XiAPIKey OptNilString `json:",omitempty,omitzero"`
-}
-
-func unpackGenerateParams(packed middleware.Parameters) (params GenerateParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "output_format",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptGenerateOutputFormat)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "xi-api-key",
-			In:   "header",
-		}
-		if v, ok := packed[key]; ok {
-			params.XiAPIKey = v.(OptNilString)
-		}
-	}
-	return params
-}
-
-func decodeGenerateParams(args [0]string, argsEscaped bool, r *http.Request) (params GenerateParams, _ error) {
-	q := uri.NewQueryDecoder(r.URL.Query())
-	h := uri.NewHeaderDecoder(r.Header)
-	// Set default value for query: output_format.
-	{
-		val := GenerateOutputFormat("mp3_44100_128")
-		params.OutputFormat.SetTo(val)
-	}
-	// Decode query: output_format.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "output_format",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal GenerateOutputFormat
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotOutputFormatVal = GenerateOutputFormat(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.OutputFormat.SetTo(paramsDotOutputFormatVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.OutputFormat.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "output_format",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode header: xi-api-key.
-	if err := func() error {
-		cfg := uri.HeaderParameterDecodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.HasParam(cfg); err == nil {
-			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotXiAPIKeyVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotXiAPIKeyVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "xi-api-key",
-			In:   "header",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
-// GenerateRandomVoiceParams is parameters of generate_random_voice operation.
-type GenerateRandomVoiceParams struct {
-	// Your API key. This is required by most endpoints to access our API programmatically. You can view
-	// your xi-api-key using the 'Profile' tab on the website.
-	XiAPIKey OptNilString `json:",omitempty,omitzero"`
-}
-
-func unpackGenerateRandomVoiceParams(packed middleware.Parameters) (params GenerateRandomVoiceParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "xi-api-key",
-			In:   "header",
-		}
-		if v, ok := packed[key]; ok {
-			params.XiAPIKey = v.(OptNilString)
-		}
-	}
-	return params
-}
-
-func decodeGenerateRandomVoiceParams(args [0]string, argsEscaped bool, r *http.Request) (params GenerateRandomVoiceParams, _ error) {
-	h := uri.NewHeaderDecoder(r.Header)
-	// Decode header: xi-api-key.
-	if err := func() error {
-		cfg := uri.HeaderParameterDecodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.HasParam(cfg); err == nil {
-			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotXiAPIKeyVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotXiAPIKeyVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "xi-api-key",
-			In:   "header",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
 // GetAgentKnowledgeBaseSizeParams is parameters of get_agent_knowledge_base_size operation.
 type GetAgentKnowledgeBaseSizeParams struct {
 	AgentID string
@@ -8107,6 +9393,369 @@ func decodeGetAgentResponseTestsSummariesRouteParams(args [0]string, argsEscaped
 	return params, nil
 }
 
+// GetAgentSummariesRouteParams is parameters of get_agent_summaries_route operation.
+type GetAgentSummariesRouteParams struct {
+	// List of agent IDs to fetch summaries for.
+	AgentIds []string `json:",omitempty"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetAgentSummariesRouteParams(packed middleware.Parameters) (params GetAgentSummariesRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_ids",
+			In:   "query",
+		}
+		params.AgentIds = packed[key].([]string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetAgentSummariesRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params GetAgentSummariesRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: agent_ids.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				return d.DecodeArray(func(d uri.Decoder) error {
+					var paramsDotAgentIdsVal string
+					if err := func() error {
+						val, err := d.DecodeValue()
+						if err != nil {
+							return err
+						}
+
+						c, err := conv.ToString(val)
+						if err != nil {
+							return err
+						}
+
+						paramsDotAgentIdsVal = c
+						return nil
+					}(); err != nil {
+						return err
+					}
+					params.AgentIds = append(params.AgentIds, paramsDotAgentIdsVal)
+					return nil
+				})
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if params.AgentIds == nil {
+					return errors.New("nil is invalid value")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_ids",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetAgentTestFolderRouteParams is parameters of get_agent_test_folder_route operation.
+type GetAgentTestFolderRouteParams struct {
+	// The folder ID.
+	FolderID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetAgentTestFolderRouteParams(packed middleware.Parameters) (params GetAgentTestFolderRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "folder_id",
+			In:   "path",
+		}
+		params.FolderID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetAgentTestFolderRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetAgentTestFolderRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: folder_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "folder_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.FolderID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "folder_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetAgentTopicsRouteParams is parameters of get_agent_topics_route operation.
+type GetAgentTopicsRouteParams struct {
+	// ID of the agent.
+	AgentID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetAgentTopicsRouteParams(packed middleware.Parameters) (params GetAgentTopicsRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetAgentTopicsRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetAgentTopicsRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetAgentsRouteParams is parameters of get_agents_route operation.
 type GetAgentsRouteParams struct {
 	// How many Agents to return at maximum. Can not exceed 100, defaults to 30.
@@ -8116,8 +9765,13 @@ type GetAgentsRouteParams struct {
 	// Filter agents by archived status.
 	Archived OptNilBool `json:",omitempty,omitzero"`
 	// If set to true, the endpoint will omit any agents that were shared with you by someone else and
-	// include only the ones you own.
+	// include only the ones you own. Deprecated: use created_by_user_id instead.
+	//
+	// Deprecated: schema marks this parameter as deprecated.
 	ShowOnlyOwnedAgents OptBool `json:",omitempty,omitzero"`
+	// Filter agents by creator user ID. When set, only agents created by this user are returned. Takes
+	// precedence over show_only_owned_agents. Use '@me' to refer to the authenticated user.
+	CreatedByUserID OptNilString `json:",omitempty,omitzero"`
 	// The direction to sort the results.
 	SortDirection OptSortDirection `json:",omitempty,omitzero"`
 	// The field to sort the results by.
@@ -8164,6 +9818,15 @@ func unpackGetAgentsRouteParams(packed middleware.Parameters) (params GetAgentsR
 		}
 		if v, ok := packed[key]; ok {
 			params.ShowOnlyOwnedAgents = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "created_by_user_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CreatedByUserID = v.(OptNilString)
 		}
 	}
 	{
@@ -8408,6 +10071,47 @@ func decodeGetAgentsRouteParams(args [0]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "show_only_owned_agents",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: created_by_user_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "created_by_user_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCreatedByUserIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCreatedByUserIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CreatedByUserID.SetTo(paramsDotCreatedByUserIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "created_by_user_id",
 			In:   "query",
 			Err:  err,
 		}
@@ -8905,6 +10609,287 @@ func decodeGetAudioFullFromSpeechHistoryItemParams(args [1]string, argsEscaped b
 	return params, nil
 }
 
+// GetAudioIsolationHistoryParams is parameters of get_audio_isolation_history operation.
+type GetAudioIsolationHistoryParams struct {
+	// How many history items to return at maximum. Defaults to 100.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Page number for search pagination (1-based). Only used when search is provided.
+	Page OptInt `json:",omitempty,omitzero"`
+	// Optional search term used for filtering audio isolation history (title/text).
+	Search OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetAudioIsolationHistoryParams(packed middleware.Parameters) (params GetAudioIsolationHistoryParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "search",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Search = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetAudioIsolationHistoryParams(args [0]string, argsEscaped bool, r *http.Request) (params GetAudioIsolationHistoryParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Set default value for query: page_size.
+	{
+		val := int(100)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           1000,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page.
+	{
+		val := int(1)
+		params.Page.SetTo(val)
+	}
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Page.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        false,
+							Max:           0,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: search.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSearchVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSearchVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Search.SetTo(paramsDotSearchVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "search",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetAudioNativeProjectSettingsEndpointParams is parameters of get_audio_native_project_settings_endpoint operation.
 type GetAudioNativeProjectSettingsEndpointParams struct {
 	// The ID of the Studio project.
@@ -9095,6 +11080,436 @@ func decodeGetBatchCallParams(args [1]string, argsEscaped bool, r *http.Request)
 		return params, &ogenerrors.DecodeParamError{
 			Name: "batch_id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetBranchRouteParams is parameters of get_branch_route operation.
+type GetBranchRouteParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
+	// Unique identifier for the branch.
+	BranchID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetBranchRouteParams(packed middleware.Parameters) (params GetBranchRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "path",
+		}
+		params.BranchID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetBranchRouteParams(args [2]string, argsEscaped bool, r *http.Request) (params GetBranchRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: branch_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "branch_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.BranchID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetBranchesRouteParams is parameters of get_branches_route operation.
+type GetBranchesRouteParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
+	// Whether archived branches should be included.
+	IncludeArchived OptBool `json:",omitempty,omitzero"`
+	// How many results at most should be returned.
+	Limit OptInt `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetBranchesRouteParams(packed middleware.Parameters) (params GetBranchesRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "include_archived",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.IncludeArchived = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Limit = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetBranchesRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetBranchesRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: include_archived.
+	{
+		val := bool(false)
+		params.IncludeArchived.SetTo(val)
+	}
+	// Decode query: include_archived.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "include_archived",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotIncludeArchivedVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotIncludeArchivedVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.IncludeArchived.SetTo(paramsDotIncludeArchivedVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "include_archived",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: limit.
+	{
+		val := int(100)
+		params.Limit.SetTo(val)
+	}
+	// Decode query: limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Limit.SetTo(paramsDotLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Limit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  true,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "limit",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -9778,7 +12193,8 @@ func decodeGetConversationAudioRouteParams(args [1]string, argsEscaped bool, r *
 type GetConversationHistoriesRouteParams struct {
 	// Used for fetching next page. Cursor is returned in the response.
 	Cursor OptNilString `json:",omitempty,omitzero"`
-	// The id of the agent you're taking the action on.
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
 	AgentID OptNilString `json:",omitempty,omitzero"`
 	// The result of the success evaluation.
 	CallSuccessful OptEvaluationSuccessResult `json:",omitempty,omitzero"`
@@ -9805,6 +12221,10 @@ type GetConversationHistoriesRouteParams struct {
 	DataCollectionParams OptNilStringArray `json:",omitempty,omitzero"`
 	// Filter conversations by tool names used during the call.
 	ToolNames OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations by tool names that had successful calls.
+	ToolNamesSuccessful OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations by tool names that had errored calls.
+	ToolNamesErrored OptNilStringArray `json:",omitempty,omitzero"`
 	// Filter conversations by detected main language (language code).
 	MainLanguages OptNilStringArray `json:",omitempty,omitzero"`
 	// How many conversations to return at maximum. Can not exceed 100, defaults to 30.
@@ -9812,7 +12232,22 @@ type GetConversationHistoriesRouteParams struct {
 	// Whether to include transcript summaries in the response.
 	SummaryMode OptGetConversationHistoriesRouteSummaryMode `json:",omitempty,omitzero"`
 	// Full-text or fuzzy search over transcript messages.
-	Search OptNilString `json:",omitempty,omitzero"`
+	//
+	// Deprecated: schema marks this parameter as deprecated.
+	Search                       OptNilString                    `json:",omitempty,omitzero"`
+	ConversationInitiationSource OptConversationInitiationSource `json:",omitempty,omitzero"`
+	TextOnly                     OptNilBool                      `json:",omitempty,omitzero"`
+	// Filter conversations by branch ID.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// Filter conversations by topic IDs assigned during topic discovery.
+	TopicIds OptNilStringArray `json:",omitempty,omitzero"`
+	// Exclude conversations with the given statuses. Useful for hiding in-progress / processing
+	// conversations from list views.
+	ExcludeStatuses OptNilGetConversationHistoriesRouteExcludeStatusesItemArray `json:",omitempty,omitzero"`
+	// Filter conversations by conversation tag IDs assigned via the conversation-tags endpoints.
+	TagIds OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations to only those that entered the given node.
+	WorkflowNodeEnteredID OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -9947,6 +12382,24 @@ func unpackGetConversationHistoriesRouteParams(packed middleware.Parameters) (pa
 	}
 	{
 		key := middleware.ParameterKey{
+			Name: "tool_names_successful",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ToolNamesSuccessful = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tool_names_errored",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ToolNamesErrored = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "main_languages",
 			In:   "query",
 		}
@@ -9979,6 +12432,69 @@ func unpackGetConversationHistoriesRouteParams(packed middleware.Parameters) (pa
 		}
 		if v, ok := packed[key]; ok {
 			params.Search = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_initiation_source",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ConversationInitiationSource = v.(OptConversationInitiationSource)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "text_only",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.TextOnly = v.(OptNilBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "topic_ids",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.TopicIds = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "exclude_statuses",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ExcludeStatuses = v.(OptNilGetConversationHistoriesRouteExcludeStatusesItemArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tag_ids",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.TagIds = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "workflow_node_entered_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.WorkflowNodeEnteredID = v.(OptNilString)
 		}
 	}
 	{
@@ -10707,6 +13223,136 @@ func decodeGetConversationHistoriesRouteParams(args [0]string, argsEscaped bool,
 			Err:  err,
 		}
 	}
+	// Decode query: tool_names_successful.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tool_names_successful",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotToolNamesSuccessfulVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotToolNamesSuccessfulValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotToolNamesSuccessfulValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotToolNamesSuccessfulVal = append(paramsDotToolNamesSuccessfulVal, paramsDotToolNamesSuccessfulValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.ToolNamesSuccessful.SetTo(paramsDotToolNamesSuccessfulVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ToolNamesSuccessful.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tool_names_successful",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: tool_names_errored.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tool_names_errored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotToolNamesErroredVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotToolNamesErroredValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotToolNamesErroredValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotToolNamesErroredVal = append(paramsDotToolNamesErroredVal, paramsDotToolNamesErroredValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.ToolNamesErrored.SetTo(paramsDotToolNamesErroredVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ToolNamesErrored.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tool_names_errored",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode query: main_languages.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -10945,6 +13591,402 @@ func decodeGetConversationHistoriesRouteParams(args [0]string, argsEscaped bool,
 			Err:  err,
 		}
 	}
+	// Set default value for query: conversation_initiation_source.
+	{
+		val := ConversationInitiationSource("unknown")
+		params.ConversationInitiationSource.SetTo(val)
+	}
+	// Decode query: conversation_initiation_source.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "conversation_initiation_source",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotConversationInitiationSourceVal ConversationInitiationSource
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotConversationInitiationSourceVal = ConversationInitiationSource(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.ConversationInitiationSource.SetTo(paramsDotConversationInitiationSourceVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ConversationInitiationSource.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_initiation_source",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: text_only.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "text_only",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTextOnlyVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotTextOnlyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.TextOnly.SetTo(paramsDotTextOnlyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "text_only",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: topic_ids.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "topic_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTopicIdsVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotTopicIdsValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotTopicIdsValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotTopicIdsVal = append(paramsDotTopicIdsVal, paramsDotTopicIdsValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.TopicIds.SetTo(paramsDotTopicIdsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.TopicIds.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "topic_ids",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: exclude_statuses.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "exclude_statuses",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotExcludeStatusesVal []GetConversationHistoriesRouteExcludeStatusesItem
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotExcludeStatusesValVal GetConversationHistoriesRouteExcludeStatusesItem
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotExcludeStatusesValVal = GetConversationHistoriesRouteExcludeStatusesItem(c)
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotExcludeStatusesVal = append(paramsDotExcludeStatusesVal, paramsDotExcludeStatusesValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.ExcludeStatuses.SetTo(paramsDotExcludeStatusesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ExcludeStatuses.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						var failures []validate.FieldError
+						for i, elem := range value {
+							if err := func() error {
+								if err := elem.Validate(); err != nil {
+									return err
+								}
+								return nil
+							}(); err != nil {
+								failures = append(failures, validate.FieldError{
+									Name:  fmt.Sprintf("[%d]", i),
+									Error: err,
+								})
+							}
+						}
+						if len(failures) > 0 {
+							return &validate.Error{Fields: failures}
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "exclude_statuses",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: tag_ids.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tag_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTagIdsVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotTagIdsValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotTagIdsValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotTagIdsVal = append(paramsDotTagIdsVal, paramsDotTagIdsValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.TagIds.SetTo(paramsDotTagIdsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.TagIds.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tag_ids",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: workflow_node_entered_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "workflow_node_entered_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotWorkflowNodeEnteredIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotWorkflowNodeEnteredIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.WorkflowNodeEnteredID.SetTo(paramsDotWorkflowNodeEnteredIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "workflow_node_entered_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -10991,6 +14033,9 @@ func decodeGetConversationHistoriesRouteParams(args [0]string, argsEscaped bool,
 type GetConversationHistoryRouteParams struct {
 	// The id of the conversation you're taking the action on.
 	ConversationID string
+	// Response format. Defaults to 'json'. Set to 'opentelemetry' for an OTLP-compatible trace payload
+	// using the same structure as the post-call webhook.
+	Format OptGetConversationHistoryRouteFormat `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -11006,6 +14051,15 @@ func unpackGetConversationHistoryRouteParams(packed middleware.Parameters) (para
 	}
 	{
 		key := middleware.ParameterKey{
+			Name: "format",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Format = v.(OptGetConversationHistoryRouteFormat)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "xi-api-key",
 			In:   "header",
 		}
@@ -11017,6 +14071,7 @@ func unpackGetConversationHistoryRouteParams(packed middleware.Parameters) (para
 }
 
 func decodeGetConversationHistoryRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetConversationHistoryRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode path: conversation_id.
 	if err := func() error {
@@ -11060,6 +14115,67 @@ func decodeGetConversationHistoryRouteParams(args [1]string, argsEscaped bool, r
 		return params, &ogenerrors.DecodeParamError{
 			Name: "conversation_id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: format.
+	{
+		val := GetConversationHistoryRouteFormat("json")
+		params.Format.SetTo(val)
+	}
+	// Decode query: format.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "format",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotFormatVal GetConversationHistoryRouteFormat
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotFormatVal = GetConversationHistoryRouteFormat(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Format.SetTo(paramsDotFormatVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Format.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "format",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -11107,11 +14223,17 @@ func decodeGetConversationHistoryRouteParams(args [1]string, argsEscaped bool, r
 
 // GetConversationSignedLinkParams is parameters of get_conversation_signed_link operation.
 type GetConversationSignedLinkParams struct {
-	// The id of the agent you're taking the action on.
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
 	AgentID string
 	// Whether to include a conversation_id with the response. If included, the conversation_signature
 	// cannot be used again.
 	IncludeConversationID OptBool `json:",omitempty,omitzero"`
+	// The ID of the branch to use.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// The environment to use for resolving environment variables (e.g. 'production', 'staging').
+	// Defaults to 'production'.
+	Environment OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -11132,6 +14254,24 @@ func unpackGetConversationSignedLinkParams(packed middleware.Parameters) (params
 		}
 		if v, ok := packed[key]; ok {
 			params.IncludeConversationID = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "environment",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Environment = v.(OptNilString)
 		}
 	}
 	{
@@ -11227,6 +14367,989 @@ func decodeGetConversationSignedLinkParams(args [0]string, argsEscaped bool, r *
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "include_conversation_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: environment.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "environment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEnvironmentVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEnvironmentVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Environment.SetTo(paramsDotEnvironmentVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "environment",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetConversationSipMessagesParams is parameters of get_conversation_sip_messages operation.
+type GetConversationSipMessagesParams struct {
+	// The id of the conversation you're taking the action on.
+	ConversationID string
+	PageSize       OptInt `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetConversationSipMessagesParams(packed middleware.Parameters) (params GetConversationSipMessagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
+		}
+		params.ConversationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetConversationSipMessagesParams(args [1]string, argsEscaped bool, r *http.Request) (params GetConversationSipMessagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: conversation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(20)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           20,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetConversationTagRouteParams is parameters of get_conversation_tag_route operation.
+type GetConversationTagRouteParams struct {
+	TagID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetConversationTagRouteParams(packed middleware.Parameters) (params GetConversationTagRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tag_id",
+			In:   "path",
+		}
+		params.TagID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetConversationTagRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetConversationTagRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: tag_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tag_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TagID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tag_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetConversationUsersRouteParams is parameters of get_conversation_users_route operation.
+type GetConversationUsersRouteParams struct {
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
+	AgentID OptNilString `json:",omitempty,omitzero"`
+	// Filter conversations by branch ID.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// Unix timestamp (in seconds) to filter conversations up to this start date.
+	CallStartBeforeUnix OptNilInt `json:",omitempty,omitzero"`
+	// Unix timestamp (in seconds) to filter conversations after to this start date.
+	CallStartAfterUnix OptNilInt `json:",omitempty,omitzero"`
+	// Search/filter by user ID (exact match).
+	Search OptNilString `json:",omitempty,omitzero"`
+	// How many users to return at maximum. Defaults to 30.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// The field to sort the results by. Defaults to last_contact_unix_secs.
+	SortBy OptUsersSortBy `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetConversationUsersRouteParams(packed middleware.Parameters) (params GetConversationUsersRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_start_before_unix",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallStartBeforeUnix = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_start_after_unix",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallStartAfterUnix = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "search",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Search = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort_by",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortBy = v.(OptUsersSortBy)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetConversationUsersRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params GetConversationUsersRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_start_before_unix.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_start_before_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallStartBeforeUnixVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallStartBeforeUnixVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallStartBeforeUnix.SetTo(paramsDotCallStartBeforeUnixVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "call_start_before_unix",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_start_after_unix.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_start_after_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallStartAfterUnixVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallStartAfterUnixVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallStartAfterUnix.SetTo(paramsDotCallStartAfterUnixVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "call_start_after_unix",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: search.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSearchVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSearchVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Search.SetTo(paramsDotSearchVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "search",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(30)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sort_by.
+	{
+		val := UsersSortBy("last_contact_unix_secs")
+		params.SortBy.SetTo(val)
+	}
+	// Decode query: sort_by.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortByVal UsersSortBy
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortByVal = UsersSortBy(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortBy.SetTo(paramsDotSortByVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortBy.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort_by",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
 			In:   "query",
 			Err:  err,
 		}
@@ -11343,6 +15466,8 @@ type GetDocumentationChunkFromKnowledgeBaseParams struct {
 	DocumentationID string
 	// The id of a document RAG chunk from the knowledge base.
 	ChunkID string
+	// The embedding model used to retrieve the chunk.
+	EmbeddingModel OptEmbeddingModelEnum `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -11365,6 +15490,15 @@ func unpackGetDocumentationChunkFromKnowledgeBaseParams(packed middleware.Parame
 	}
 	{
 		key := middleware.ParameterKey{
+			Name: "embedding_model",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EmbeddingModel = v.(OptEmbeddingModelEnum)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
 			Name: "xi-api-key",
 			In:   "header",
 		}
@@ -11376,6 +15510,7 @@ func unpackGetDocumentationChunkFromKnowledgeBaseParams(packed middleware.Parame
 }
 
 func decodeGetDocumentationChunkFromKnowledgeBaseParams(args [2]string, argsEscaped bool, r *http.Request) (params GetDocumentationChunkFromKnowledgeBaseParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode path: documentation_id.
 	if err := func() error {
@@ -11464,6 +15599,378 @@ func decodeGetDocumentationChunkFromKnowledgeBaseParams(args [2]string, argsEsca
 		return params, &ogenerrors.DecodeParamError{
 			Name: "chunk_id",
 			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: embedding_model.
+	{
+		val := EmbeddingModelEnum("e5_mistral_7b_instruct")
+		params.EmbeddingModel.SetTo(val)
+	}
+	// Decode query: embedding_model.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "embedding_model",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEmbeddingModelVal EmbeddingModelEnum
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEmbeddingModelVal = EmbeddingModelEnum(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.EmbeddingModel.SetTo(paramsDotEmbeddingModelVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.EmbeddingModel.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "embedding_model",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetDocumentationChunksFromKnowledgeBaseParams is parameters of get_documentation_chunks_from_knowledge_base operation.
+type GetDocumentationChunksFromKnowledgeBaseParams struct {
+	// The id of a document from the knowledge base. This is returned on document addition.
+	DocumentationID string
+	// The embedding model used to retrieve the chunk.
+	EmbeddingModel EmbeddingModelEnum
+	// How many documents to return at maximum. Can not exceed 100, defaults to 30.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetDocumentationChunksFromKnowledgeBaseParams(packed middleware.Parameters) (params GetDocumentationChunksFromKnowledgeBaseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "documentation_id",
+			In:   "path",
+		}
+		params.DocumentationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "embedding_model",
+			In:   "query",
+		}
+		params.EmbeddingModel = packed[key].(EmbeddingModelEnum)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetDocumentationChunksFromKnowledgeBaseParams(args [1]string, argsEscaped bool, r *http.Request) (params GetDocumentationChunksFromKnowledgeBaseParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: documentation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "documentation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DocumentationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "documentation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: embedding_model.
+	{
+		val := EmbeddingModelEnum("e5_mistral_7b_instruct")
+		params.EmbeddingModel = val
+	}
+	// Decode query: embedding_model.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "embedding_model",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.EmbeddingModel = EmbeddingModelEnum(c)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.EmbeddingModel.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "embedding_model",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(30)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
 			Err:  err,
 		}
 	}
@@ -11978,7 +16485,8 @@ func decodeGetDubbedMetadataParams(args [1]string, argsEscaped bool, r *http.Req
 type GetDubbedTranscriptFileParams struct {
 	// ID of the dubbing project.
 	DubbingID string
-	// ID of the language.
+	// ISO-693 language code to retrieve the transcript for. Use 'source' to fetch the transcript of the
+	// original media.
 	LanguageCode string
 	// Format to return transcript in. For subtitles use either 'srt' or 'webvtt', and for a full
 	// transcript use 'json'. The 'json' format is not yet supported for Dubbing Studio.
@@ -12296,6 +16804,306 @@ func decodeGetDubbingResourceParams(args [1]string, argsEscaped bool, r *http.Re
 			Err:  err,
 		}
 	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetDubbingTranscriptsParams is parameters of get_dubbing_transcripts operation.
+type GetDubbingTranscriptsParams struct {
+	// ID of the dubbing project.
+	DubbingID string
+	// ISO-693 language code to retrieve the transcript for. Use 'source' to fetch the transcript of the
+	// original media.
+	LanguageCode string
+	// Format to return transcript in. For subtitles use either 'srt' or 'webvtt', and for a full
+	// transcript use 'json'. The 'json' format is not yet supported for Dubbing Studio.
+	FormatType GetDubbingTranscriptsFormatType
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetDubbingTranscriptsParams(packed middleware.Parameters) (params GetDubbingTranscriptsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "dubbing_id",
+			In:   "path",
+		}
+		params.DubbingID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "language_code",
+			In:   "path",
+		}
+		params.LanguageCode = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "format_type",
+			In:   "path",
+		}
+		params.FormatType = packed[key].(GetDubbingTranscriptsFormatType)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetDubbingTranscriptsParams(args [3]string, argsEscaped bool, r *http.Request) (params GetDubbingTranscriptsParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: dubbing_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "dubbing_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DubbingID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "dubbing_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: language_code.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "language_code",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.LanguageCode = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "language_code",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: format_type.
+	if err := func() error {
+		param := args[2]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[2])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "format_type",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.FormatType = GetDubbingTranscriptsFormatType(c)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.FormatType.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "format_type",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetGroupsEndpointParams is parameters of get_groups_endpoint operation.
+type GetGroupsEndpointParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetGroupsEndpointParams(packed middleware.Parameters) (params GetGroupsEndpointParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetGroupsEndpointParams(args [0]string, argsEscaped bool, r *http.Request) (params GetGroupsEndpointParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -12789,8 +17597,13 @@ type GetKnowledgeBaseListRouteParams struct {
 	// string.
 	Search OptNilString `json:",omitempty,omitzero"`
 	// If set to true, the endpoint will return only documents owned by you (and not shared from somebody
-	// else).
+	// else). Deprecated: use created_by_user_id instead.
+	//
+	// Deprecated: schema marks this parameter as deprecated.
 	ShowOnlyOwnedDocuments OptBool `json:",omitempty,omitzero"`
+	// Filter documents by creator user ID. When set, only documents created by this user are returned.
+	// Takes precedence over show_only_owned_documents. Use '@me' to refer to the authenticated user.
+	CreatedByUserID OptNilString `json:",omitempty,omitzero"`
 	// If present, the endpoint will return only documents of the given types.
 	Types OptNilKnowledgeBaseDocumentTypeArray `json:",omitempty,omitzero"`
 	// If set, the endpoint will return only documents that are direct children of the given folder.
@@ -12803,10 +17616,6 @@ type GetKnowledgeBaseListRouteParams struct {
 	SortDirection OptSortDirection `json:",omitempty,omitzero"`
 	// The field to sort the results by.
 	SortBy OptKnowledgeBaseSortBy `json:",omitempty,omitzero"`
-	// If set to true, the endpoint will use typesense DB to search for the documents).
-	//
-	// Deprecated: schema marks this parameter as deprecated.
-	UseTypesense OptBool `json:",omitempty,omitzero"`
 	// Used for fetching next page. Cursor is returned in the response.
 	Cursor OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
@@ -12840,6 +17649,15 @@ func unpackGetKnowledgeBaseListRouteParams(packed middleware.Parameters) (params
 		}
 		if v, ok := packed[key]; ok {
 			params.ShowOnlyOwnedDocuments = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "created_by_user_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CreatedByUserID = v.(OptNilString)
 		}
 	}
 	{
@@ -12894,15 +17712,6 @@ func unpackGetKnowledgeBaseListRouteParams(packed middleware.Parameters) (params
 		}
 		if v, ok := packed[key]; ok {
 			params.SortBy = v.(OptKnowledgeBaseSortBy)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "use_typesense",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.UseTypesense = v.(OptBool)
 		}
 	}
 	{
@@ -13083,6 +17892,47 @@ func decodeGetKnowledgeBaseListRouteParams(args [0]string, argsEscaped bool, r *
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "show_only_owned_documents",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: created_by_user_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "created_by_user_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCreatedByUserIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCreatedByUserIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CreatedByUserID.SetTo(paramsDotCreatedByUserIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "created_by_user_id",
 			In:   "query",
 			Err:  err,
 		}
@@ -13414,52 +18264,6 @@ func decodeGetKnowledgeBaseListRouteParams(args [0]string, argsEscaped bool, r *
 			Err:  err,
 		}
 	}
-	// Set default value for query: use_typesense.
-	{
-		val := bool(false)
-		params.UseTypesense.SetTo(val)
-	}
-	// Decode query: use_typesense.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "use_typesense",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotUseTypesenseVal bool
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToBool(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotUseTypesenseVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.UseTypesense.SetTo(paramsDotUseTypesenseVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "use_typesense",
-			In:   "query",
-			Err:  err,
-		}
-	}
 	// Decode query: cursor.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -13543,6 +18347,124 @@ func decodeGetKnowledgeBaseListRouteParams(args [0]string, argsEscaped bool, r *
 	return params, nil
 }
 
+// GetKnowledgeBaseSourceFileURLParams is parameters of get_knowledge_base_source_file_url operation.
+type GetKnowledgeBaseSourceFileURLParams struct {
+	// The id of a document from the knowledge base. This is returned on document addition.
+	DocumentationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetKnowledgeBaseSourceFileURLParams(packed middleware.Parameters) (params GetKnowledgeBaseSourceFileURLParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "documentation_id",
+			In:   "path",
+		}
+		params.DocumentationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetKnowledgeBaseSourceFileURLParams(args [1]string, argsEscaped bool, r *http.Request) (params GetKnowledgeBaseSourceFileURLParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: documentation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "documentation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DocumentationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "documentation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetLibraryVoicesParams is parameters of get_library_voices operation.
 type GetLibraryVoicesParams struct {
 	// How many shared voices to return at maximum. Can not exceed 100, defaults to 30.
@@ -13577,9 +18499,9 @@ type GetLibraryVoicesParams struct {
 	ReaderAppEnabled OptBool `json:",omitempty,omitzero"`
 	// Filter voices by public owner ID.
 	OwnerID OptNilString `json:",omitempty,omitzero"`
-	// Sort criteria.
-	Sort OptNilString `json:",omitempty,omitzero"`
-	Page OptInt       `json:",omitempty,omitzero"`
+	// Sort criteria. Must be one of: created_date, usage_character_count_1y, trending, cloned_by_count.
+	Sort OptNilGetLibraryVoicesSort `json:",omitempty,omitzero"`
+	Page OptInt                     `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -13736,7 +18658,7 @@ func unpackGetLibraryVoicesParams(packed middleware.Parameters) (params GetLibra
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.Sort = v.(OptNilString)
+			params.Sort = v.(OptNilGetLibraryVoicesSort)
 		}
 	}
 	{
@@ -14497,6 +19419,11 @@ func decodeGetLibraryVoicesParams(args [0]string, argsEscaped bool, r *http.Requ
 			Err:  err,
 		}
 	}
+	// Set default value for query: sort.
+	{
+		val := GetLibraryVoicesSort("created_date")
+		params.Sort.SetTo(val)
+	}
 	// Decode query: sort.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
@@ -14507,7 +19434,7 @@ func decodeGetLibraryVoicesParams(args [0]string, argsEscaped bool, r *http.Requ
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotSortVal string
+				var paramsDotSortVal GetLibraryVoicesSort
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -14519,7 +19446,7 @@ func decodeGetLibraryVoicesParams(args [0]string, argsEscaped bool, r *http.Requ
 						return err
 					}
 
-					paramsDotSortVal = c
+					paramsDotSortVal = GetLibraryVoicesSort(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -14527,6 +19454,21 @@ func decodeGetLibraryVoicesParams(args [0]string, argsEscaped bool, r *http.Requ
 				params.Sort.SetTo(paramsDotSortVal)
 				return nil
 			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Sort.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
 				return err
 			}
 		}
@@ -14745,10 +19687,16 @@ func decodeGetLiveCountParams(args [0]string, argsEscaped bool, r *http.Request)
 
 // GetLivekitTokenParams is parameters of get_livekit_token operation.
 type GetLivekitTokenParams struct {
-	// The id of the agent you're taking the action on.
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
 	AgentID string
 	// Optional custom participant name. If not provided, user ID will be used.
 	ParticipantName OptNilString `json:",omitempty,omitzero"`
+	// The ID of the branch to use.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// The environment to use for resolving environment variables (e.g. 'production', 'staging').
+	// Defaults to 'production'.
+	Environment OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -14769,6 +19717,24 @@ func unpackGetLivekitTokenParams(packed middleware.Parameters) (params GetLiveki
 		}
 		if v, ok := packed[key]; ok {
 			params.ParticipantName = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "environment",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Environment = v.(OptNilString)
 		}
 	}
 	{
@@ -14859,6 +19825,88 @@ func decodeGetLivekitTokenParams(args [0]string, argsEscaped bool, r *http.Reque
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "participant_name",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: environment.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "environment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEnvironmentVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEnvironmentVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Environment.SetTo(paramsDotEnvironmentVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "environment",
 			In:   "query",
 			Err:  err,
 		}
@@ -15207,7 +20255,7 @@ func decodeGetOrCreateRagIndexesParams(args [0]string, argsEscaped bool, r *http
 
 // GetPhoneNumberRouteParams is parameters of get_phone_number_route operation.
 type GetPhoneNumberRouteParams struct {
-	// The id of an agent. This is returned on agent creation.
+	// The phone number ID. This is returned when a phone number is imported.
 	PhoneNumberID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -15277,6 +20325,124 @@ func decodeGetPhoneNumberRouteParams(args [1]string, argsEscaped bool, r *http.R
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "phone_number_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetProjectMutedTracksEndpointParams is parameters of get_project_muted_tracks_endpoint operation.
+type GetProjectMutedTracksEndpointParams struct {
+	// The ID of the Studio project.
+	ProjectID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetProjectMutedTracksEndpointParams(packed middleware.Parameters) (params GetProjectMutedTracksEndpointParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "project_id",
+			In:   "path",
+		}
+		params.ProjectID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetProjectMutedTracksEndpointParams(args [1]string, argsEscaped bool, r *http.Request) (params GetProjectMutedTracksEndpointParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: project_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "project_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ProjectID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "project_id",
 			In:   "path",
 			Err:  err,
 		}
@@ -15960,124 +21126,6 @@ func decodeGetPronunciationDictionariesMetadataParams(args [0]string, argsEscape
 		return params, &ogenerrors.DecodeParamError{
 			Name: "sort_direction",
 			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode header: xi-api-key.
-	if err := func() error {
-		cfg := uri.HeaderParameterDecodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.HasParam(cfg); err == nil {
-			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotXiAPIKeyVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotXiAPIKeyVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "xi-api-key",
-			In:   "header",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
-// GetPronunciationDictionaryMetadataParams is parameters of get_pronunciation_dictionary_metadata operation.
-type GetPronunciationDictionaryMetadataParams struct {
-	// The id of the pronunciation dictionary.
-	PronunciationDictionaryID string
-	// Your API key. This is required by most endpoints to access our API programmatically. You can view
-	// your xi-api-key using the 'Profile' tab on the website.
-	XiAPIKey OptNilString `json:",omitempty,omitzero"`
-}
-
-func unpackGetPronunciationDictionaryMetadataParams(packed middleware.Parameters) (params GetPronunciationDictionaryMetadataParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "pronunciation_dictionary_id",
-			In:   "path",
-		}
-		params.PronunciationDictionaryID = packed[key].(string)
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "xi-api-key",
-			In:   "header",
-		}
-		if v, ok := packed[key]; ok {
-			params.XiAPIKey = v.(OptNilString)
-		}
-	}
-	return params
-}
-
-func decodeGetPronunciationDictionaryMetadataParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPronunciationDictionaryMetadataParams, _ error) {
-	h := uri.NewHeaderDecoder(r.Header)
-	// Decode path: pronunciation_dictionary_id.
-	if err := func() error {
-		param := args[0]
-		if argsEscaped {
-			unescaped, err := url.PathUnescape(args[0])
-			if err != nil {
-				return errors.Wrap(err, "unescape path")
-			}
-			param = unescaped
-		}
-		if len(param) > 0 {
-			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "pronunciation_dictionary_id",
-				Value:   param,
-				Style:   uri.PathStyleSimple,
-				Explode: false,
-			})
-
-			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
-					return err
-				}
-
-				c, err := conv.ToString(val)
-				if err != nil {
-					return err
-				}
-
-				params.PronunciationDictionaryID = c
-				return nil
-			}(); err != nil {
-				return err
-			}
-		} else {
-			return validate.ErrFieldRequired
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "pronunciation_dictionary_id",
-			In:   "path",
 			Err:  err,
 		}
 	}
@@ -17346,14 +22394,176 @@ func decodeGetResourceMetadataParams(args [1]string, argsEscaped bool, r *http.R
 	return params, nil
 }
 
+// GetSecretRouteParams is parameters of get_secret_route operation.
+type GetSecretRouteParams struct {
+	SecretID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetSecretRouteParams(packed middleware.Parameters) (params GetSecretRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "secret_id",
+			In:   "path",
+		}
+		params.SecretID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetSecretRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetSecretRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: secret_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "secret_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SecretID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "secret_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetSecretsRouteParams is parameters of get_secrets_route operation.
 type GetSecretsRouteParams struct {
+	// How many documents to return at maximum. Can not exceed 100. If not provided, returns all secrets.
+	PageSize OptNilInt `json:",omitempty,omitzero"`
+	// Maximum number of dependent resources (tools, agents, phone numbers) to return per secret. Can not
+	// exceed 100.
+	DependencyLimit OptNilInt `json:",omitempty,omitzero"`
+	// If specified, returns only secrets whose names start with this string.
+	Search OptNilString `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
 func unpackGetSecretsRouteParams(packed middleware.Parameters) (params GetSecretsRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "dependency_limit",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.DependencyLimit = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "search",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Search = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
 	{
 		key := middleware.ParameterKey{
 			Name: "xi-api-key",
@@ -17367,7 +22577,222 @@ func unpackGetSecretsRouteParams(packed middleware.Parameters) (params GetSecret
 }
 
 func decodeGetSecretsRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params GetSecretsRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: dependency_limit.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "dependency_limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDependencyLimitVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotDependencyLimitVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.DependencyLimit.SetTo(paramsDotDependencyLimitVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.DependencyLimit.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "dependency_limit",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: search.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSearchVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSearchVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Search.SetTo(paramsDotSearchVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "search",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -17593,11 +23018,17 @@ func decodeGetSettingsRouteParams(args [0]string, argsEscaped bool, r *http.Requ
 
 // GetSignedURLDeprecatedParams is parameters of get_signed_url_deprecated operation.
 type GetSignedURLDeprecatedParams struct {
-	// The id of the agent you're taking the action on.
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
 	AgentID string
 	// Whether to include a conversation_id with the response. If included, the conversation_signature
 	// cannot be used again.
 	IncludeConversationID OptBool `json:",omitempty,omitzero"`
+	// The ID of the branch to use.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// The environment to use for resolving environment variables (e.g. 'production', 'staging').
+	// Defaults to 'production'.
+	Environment OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -17618,6 +23049,24 @@ func unpackGetSignedURLDeprecatedParams(packed middleware.Parameters) (params Ge
 		}
 		if v, ok := packed[key]; ok {
 			params.IncludeConversationID = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "environment",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Environment = v.(OptNilString)
 		}
 	}
 	{
@@ -17713,6 +23162,88 @@ func decodeGetSignedURLDeprecatedParams(args [0]string, argsEscaped bool, r *htt
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "include_conversation_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: environment.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "environment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEnvironmentVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEnvironmentVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Environment.SetTo(paramsDotEnvironmentVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "environment",
 			In:   "query",
 			Err:  err,
 		}
@@ -19415,6 +24946,549 @@ func decodeGetToolDependentAgentsRouteParams(args [1]string, argsEscaped bool, r
 	return params, nil
 }
 
+// GetToolExecutionsRouteParams is parameters of get_tool_executions_route operation.
+type GetToolExecutionsRouteParams struct {
+	// ID of the requested tool.
+	ToolID string
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// How many documents to return at maximum. Can not exceed 100, defaults to 30.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Filter by error status. If not provided, returns all executions.
+	IsError OptNilBool `json:",omitempty,omitzero"`
+	// Filter by agent ID.
+	AgentID OptNilString `json:",omitempty,omitzero"`
+	// Filter by agent branch ID.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// Filter executions from this Unix timestamp (inclusive).
+	StartTime OptNilFloat64 `json:",omitempty,omitzero"`
+	// Filter executions until this Unix timestamp (inclusive).
+	EndTime OptNilFloat64 `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetToolExecutionsRouteParams(packed middleware.Parameters) (params GetToolExecutionsRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tool_id",
+			In:   "path",
+		}
+		params.ToolID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "is_error",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.IsError = v.(OptNilBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "start_time",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.StartTime = v.(OptNilFloat64)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "end_time",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EndTime = v.(OptNilFloat64)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetToolExecutionsRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params GetToolExecutionsRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: tool_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tool_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ToolID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tool_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(30)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: is_error.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "is_error",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotIsErrorVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotIsErrorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.IsError.SetTo(paramsDotIsErrorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "is_error",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: start_time.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "start_time",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotStartTimeVal float64
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToFloat64(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotStartTimeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.StartTime.SetTo(paramsDotStartTimeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.StartTime.Get(); ok {
+					if err := func() error {
+						if err := (validate.Float{}).Validate(float64(value)); err != nil {
+							return errors.Wrap(err, "float")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "start_time",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: end_time.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "end_time",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEndTimeVal float64
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToFloat64(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEndTimeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.EndTime.SetTo(paramsDotEndTimeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.EndTime.Get(); ok {
+					if err := func() error {
+						if err := (validate.Float{}).Validate(float64(value)); err != nil {
+							return errors.Wrap(err, "float")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "end_time",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetTranscriptByIDParams is parameters of get_transcript_by_id operation.
 type GetTranscriptByIDParams struct {
 	// The unique ID of the transcript to retrieve.
@@ -19613,7 +25687,9 @@ type GetUserVoicesV2Params struct {
 	// Which direction to sort the voices in. 'asc' or 'desc'.
 	SortDirection OptNilString `json:",omitempty,omitzero"`
 	// Type of the voice to filter by. One of 'personal', 'community', 'default', 'workspace',
-	// 'non-default'. 'non-default' is equal to all but 'default'.
+	// 'non-default', 'non-community', 'saved'. 'non-default' is equal to all but 'default'.
+	// 'non-community' is equal to 'personal' and 'workspace' combined (excludes library copies). 'saved'
+	// is equal to non-default, but includes default voices if they have been added to a collection.
 	VoiceType OptNilString `json:",omitempty,omitzero"`
 	// Category of the voice to filter by. One of 'premade', 'cloned', 'generated', 'professional'.
 	Category OptNilString `json:",omitempty,omitzero"`
@@ -20277,6 +26353,178 @@ func decodeGetUserVoicesV2Params(args [0]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
+// GetVersionMetadataRouteParams is parameters of get_version_metadata_route operation.
+type GetVersionMetadataRouteParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
+	// Unique identifier for the version.
+	VersionID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackGetVersionMetadataRouteParams(packed middleware.Parameters) (params GetVersionMetadataRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "version_id",
+			In:   "path",
+		}
+		params.VersionID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeGetVersionMetadataRouteParams(args [2]string, argsEscaped bool, r *http.Request) (params GetVersionMetadataRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: version_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "version_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.VersionID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "version_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetVoiceByIDParams is parameters of get_voice_by_id operation.
 type GetVoiceByIDParams struct {
 	// Voice ID to be used, you can use https://api.elevenlabs.io/v1/voices to list all the available
@@ -20818,6 +27066,8 @@ func decodeGetWhatsappAccountParams(args [1]string, argsEscaped bool, r *http.Re
 type GetWorkspaceBatchCallsParams struct {
 	Limit   OptInt       `json:",omitempty,omitzero"`
 	LastDoc OptNilString `json:",omitempty,omitzero"`
+	// Filter batch calls to a single agent.
+	AgentID OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -20840,6 +27090,15 @@ func unpackGetWorkspaceBatchCallsParams(packed middleware.Parameters) (params Ge
 		}
 		if v, ok := packed[key]; ok {
 			params.LastDoc = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
 		}
 	}
 	{
@@ -20940,6 +27199,47 @@ func decodeGetWorkspaceBatchCallsParams(args [0]string, argsEscaped bool, r *htt
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "last_doc",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
 			In:   "query",
 			Err:  err,
 		}
@@ -21172,6 +27472,70 @@ func decodeGetWorkspaceWebhooksRouteParams(args [0]string, argsEscaped bool, r *
 	return params, nil
 }
 
+// HandleExotelOutboundCallParams is parameters of handle_exotel_outbound_call operation.
+type HandleExotelOutboundCallParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackHandleExotelOutboundCallParams(packed middleware.Parameters) (params HandleExotelOutboundCallParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeHandleExotelOutboundCallParams(args [0]string, argsEscaped bool, r *http.Request) (params HandleExotelOutboundCallParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // HandleSipTrunkOutboundCallParams is parameters of handle_sip_trunk_outbound_call operation.
 type HandleSipTrunkOutboundCallParams struct {
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
@@ -21257,70 +27621,6 @@ func unpackHandleTwilioOutboundCallParams(packed middleware.Parameters) (params 
 }
 
 func decodeHandleTwilioOutboundCallParams(args [0]string, argsEscaped bool, r *http.Request) (params HandleTwilioOutboundCallParams, _ error) {
-	h := uri.NewHeaderDecoder(r.Header)
-	// Decode header: xi-api-key.
-	if err := func() error {
-		cfg := uri.HeaderParameterDecodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.HasParam(cfg); err == nil {
-			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotXiAPIKeyVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotXiAPIKeyVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "xi-api-key",
-			In:   "header",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
-// ImportWhatsappAccountParams is parameters of import_whatsapp_account operation.
-type ImportWhatsappAccountParams struct {
-	// Your API key. This is required by most endpoints to access our API programmatically. You can view
-	// your xi-api-key using the 'Profile' tab on the website.
-	XiAPIKey OptNilString `json:",omitempty,omitzero"`
-}
-
-func unpackImportWhatsappAccountParams(packed middleware.Parameters) (params ImportWhatsappAccountParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "xi-api-key",
-			In:   "header",
-		}
-		if v, ok := packed[key]; ok {
-			params.XiAPIKey = v.(OptNilString)
-		}
-	}
-	return params
-}
-
-func decodeImportWhatsappAccountParams(args [0]string, argsEscaped bool, r *http.Request) (params ImportWhatsappAccountParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {
@@ -21492,6 +27792,134 @@ func decodeInviteUsersBulkParams(args [0]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
+// ListAuthConnectionsParams is parameters of list_auth_connections operation.
+type ListAuthConnectionsParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackListAuthConnectionsParams(packed middleware.Parameters) (params ListAuthConnectionsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeListAuthConnectionsParams(args [0]string, argsEscaped bool, r *http.Request) (params ListAuthConnectionsParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListAvailableLlmsParams is parameters of list_available_llms operation.
+type ListAvailableLlmsParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackListAvailableLlmsParams(packed middleware.Parameters) (params ListAvailableLlmsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeListAvailableLlmsParams(args [0]string, argsEscaped bool, r *http.Request) (params ListAvailableLlmsParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // ListChatResponseTestsRouteParams is parameters of list_chat_response_tests_route operation.
 type ListChatResponseTestsRouteParams struct {
 	// Used for fetching next page. Cursor is returned in the response.
@@ -21500,6 +27928,19 @@ type ListChatResponseTestsRouteParams struct {
 	PageSize OptInt `json:",omitempty,omitzero"`
 	// Search query to filter tests by name.
 	Search OptNilString `json:",omitempty,omitzero"`
+	// Filter by parent folder ID. Use 'root' to get items in the root folder.
+	ParentFolderID OptNilString `json:",omitempty,omitzero"`
+	// If present, the endpoint will return only tests/folders of the given types.
+	Types OptNilTestTypeArray `json:",omitempty,omitzero"`
+	// Deprecated. Use the `types` query param and include `folder` instead.
+	//
+	// Deprecated: schema marks this parameter as deprecated.
+	IncludeFolders OptNilBool `json:",omitempty,omitzero"`
+	// Sort mode for listing tests. Use 'folders_first' to place folders before tests.
+	SortMode OptListChatResponseTestsRouteSortMode `json:",omitempty,omitzero"`
+	// Filter test visibility. Use `shared_with_me` to return only tests/folders shared with the current
+	// user that they did not create.
+	SharingMode OptTestSharingMode `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -21531,6 +27972,51 @@ func unpackListChatResponseTestsRouteParams(packed middleware.Parameters) (param
 		}
 		if v, ok := packed[key]; ok {
 			params.Search = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "parent_folder_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ParentFolderID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "types",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Types = v.(OptNilTestTypeArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "include_folders",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.IncludeFolders = v.(OptNilBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort_mode",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortMode = v.(OptListChatResponseTestsRouteSortMode)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sharing_mode",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SharingMode = v.(OptTestSharingMode)
 		}
 	}
 	{
@@ -21697,6 +28183,491 @@ func decodeListChatResponseTestsRouteParams(args [0]string, argsEscaped bool, r 
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "search",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: parent_folder_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "parent_folder_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotParentFolderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotParentFolderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.ParentFolderID.SetTo(paramsDotParentFolderIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "parent_folder_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: types.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "types",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTypesVal []TestType
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotTypesValVal TestType
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotTypesValVal = TestType(c)
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotTypesVal = append(paramsDotTypesVal, paramsDotTypesValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.Types.SetTo(paramsDotTypesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Types.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						var failures []validate.FieldError
+						for i, elem := range value {
+							if err := func() error {
+								if err := elem.Validate(); err != nil {
+									return err
+								}
+								return nil
+							}(); err != nil {
+								failures = append(failures, validate.FieldError{
+									Name:  fmt.Sprintf("[%d]", i),
+									Error: err,
+								})
+							}
+						}
+						if len(failures) > 0 {
+							return &validate.Error{Fields: failures}
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "types",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: include_folders.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "include_folders",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotIncludeFoldersVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotIncludeFoldersVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.IncludeFolders.SetTo(paramsDotIncludeFoldersVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "include_folders",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sort_mode.
+	{
+		val := ListChatResponseTestsRouteSortMode("default")
+		params.SortMode.SetTo(val)
+	}
+	// Decode query: sort_mode.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortModeVal ListChatResponseTestsRouteSortMode
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortModeVal = ListChatResponseTestsRouteSortMode(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortMode.SetTo(paramsDotSortModeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortMode.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort_mode",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sharing_mode.
+	{
+		val := TestSharingMode("all")
+		params.SharingMode.SetTo(val)
+	}
+	// Decode query: sharing_mode.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sharing_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSharingModeVal TestSharingMode
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSharingModeVal = TestSharingMode(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SharingMode.SetTo(paramsDotSharingModeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SharingMode.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sharing_mode",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListConversationTagsRouteParams is parameters of list_conversation_tags_route operation.
+type ListConversationTagsRouteParams struct {
+	// How many conversation tags to return. Can not exceed 100.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackListConversationTagsRouteParams(packed middleware.Parameters) (params ListConversationTagsRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeListConversationTagsRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params ListConversationTagsRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Set default value for query: page_size.
+	{
+		val := int(100)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
 			In:   "query",
 			Err:  err,
 		}
@@ -22346,12 +29317,45 @@ func decodeListMcpServerToolsRouteParams(args [1]string, argsEscaped bool, r *ht
 
 // ListPhoneNumbersRouteParams is parameters of list_phone_numbers_route operation.
 type ListPhoneNumbersRouteParams struct {
+	// Filter by telephony provider.
+	Provider OptTelephonyProvider `json:",omitempty,omitzero"`
+	// Filter by assigned agent ID.
+	AgentID OptNilString `json:",omitempty,omitzero"`
+	// Filter by assigned branch ID.
+	BranchID OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
 func unpackListPhoneNumbersRouteParams(packed middleware.Parameters) (params ListPhoneNumbersRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "provider",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Provider = v.(OptTelephonyProvider)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
 	{
 		key := middleware.ParameterKey{
 			Name: "xi-api-key",
@@ -22365,7 +29369,788 @@ func unpackListPhoneNumbersRouteParams(packed middleware.Parameters) (params Lis
 }
 
 func decodeListPhoneNumbersRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params ListPhoneNumbersRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: provider.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "provider",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotProviderVal TelephonyProvider
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotProviderVal = TelephonyProvider(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Provider.SetTo(paramsDotProviderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Provider.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "provider",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListSipMessagesParams is parameters of list_sip_messages operation.
+type ListSipMessagesParams struct {
+	// The phone number ID. This is returned when a phone number is imported.
+	PhoneNumberID string
+	PageSize      OptInt `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackListSipMessagesParams(packed middleware.Parameters) (params ListSipMessagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "phone_number_id",
+			In:   "path",
+		}
+		params.PhoneNumberID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeListSipMessagesParams(args [1]string, argsEscaped bool, r *http.Request) (params ListSipMessagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: phone_number_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "phone_number_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.PhoneNumberID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "phone_number_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(20)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           20,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListSpeechEnginesParams is parameters of list_speech_engines operation.
+type ListSpeechEnginesParams struct {
+	// How many Speech Engines to return at maximum. Can not exceed 100, defaults to 30.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Search term to filter Speech Engines by name.
+	Search OptNilString `json:",omitempty,omitzero"`
+	// The direction to sort the results.
+	SortDirection OptSortDirection `json:",omitempty,omitzero"`
+	// The field to sort the results by.
+	SortBy OptAgentSortBy `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackListSpeechEnginesParams(packed middleware.Parameters) (params ListSpeechEnginesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "search",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Search = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort_direction",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortDirection = v.(OptSortDirection)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort_by",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortBy = v.(OptAgentSortBy)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeListSpeechEnginesParams(args [0]string, argsEscaped bool, r *http.Request) (params ListSpeechEnginesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Set default value for query: page_size.
+	{
+		val := int(30)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        false,
+							Min:           0,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: search.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSearchVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSearchVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Search.SetTo(paramsDotSearchVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "search",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sort_direction.
+	{
+		val := SortDirection("desc")
+		params.SortDirection.SetTo(val)
+	}
+	// Decode query: sort_direction.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort_direction",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortDirectionVal SortDirection
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortDirectionVal = SortDirection(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortDirection.SetTo(paramsDotSortDirectionVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortDirection.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort_direction",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sort_by.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortByVal AgentSortBy
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortByVal = AgentSortBy(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortBy.SetTo(paramsDotSortByVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortBy.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort_by",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -22411,7 +30196,7 @@ func decodeListPhoneNumbersRouteParams(args [0]string, argsEscaped bool, r *http
 // ListTestInvocationsRouteParams is parameters of list_test_invocations_route operation.
 type ListTestInvocationsRouteParams struct {
 	// Filter by agent ID.
-	AgentID string
+	AgentID OptNilString `json:",omitempty,omitzero"`
 	// How many Tests to return at maximum. Can not exceed 100, defaults to 30.
 	PageSize OptInt `json:",omitempty,omitzero"`
 	// Used for fetching next page. Cursor is returned in the response.
@@ -22427,7 +30212,9 @@ func unpackListTestInvocationsRouteParams(packed middleware.Parameters) (params 
 			Name: "agent_id",
 			In:   "query",
 		}
-		params.AgentID = packed[key].(string)
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
+		}
 	}
 	{
 		key := middleware.ParameterKey{
@@ -22472,23 +30259,28 @@ func decodeListTestInvocationsRouteParams(args [0]string, argsEscaped bool, r *h
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				val, err := d.DecodeValue()
-				if err != nil {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
 					return err
 				}
-
-				c, err := conv.ToString(val)
-				if err != nil {
-					return err
-				}
-
-				params.AgentID = c
+				params.AgentID.SetTo(paramsDotAgentIDVal)
 				return nil
 			}); err != nil {
 				return err
 			}
-		} else {
-			return err
 		}
 		return nil
 	}(); err != nil {
@@ -22654,12 +30446,23 @@ func decodeListTestInvocationsRouteParams(args [0]string, argsEscaped bool, r *h
 
 // ListWhatsappAccountsParams is parameters of list_whatsapp_accounts operation.
 type ListWhatsappAccountsParams struct {
+	// Filter by assigned agent ID.
+	AgentID OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
 func unpackListWhatsappAccountsParams(packed middleware.Parameters) (params ListWhatsappAccountsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
+		}
+	}
 	{
 		key := middleware.ParameterKey{
 			Name: "xi-api-key",
@@ -22673,7 +30476,267 @@ func unpackListWhatsappAccountsParams(packed middleware.Parameters) (params List
 }
 
 func decodeListWhatsappAccountsParams(args [0]string, argsEscaped bool, r *http.Request) (params ListWhatsappAccountsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// MergeBranchIntoTargetParams is parameters of merge_branch_into_target operation.
+type MergeBranchIntoTargetParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
+	// Unique identifier for the source branch to merge from.
+	SourceBranchID string
+	// The ID of the target branch to merge into.
+	TargetBranchID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackMergeBranchIntoTargetParams(packed middleware.Parameters) (params MergeBranchIntoTargetParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "source_branch_id",
+			In:   "path",
+		}
+		params.SourceBranchID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "target_branch_id",
+			In:   "query",
+		}
+		params.TargetBranchID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeMergeBranchIntoTargetParams(args [2]string, argsEscaped bool, r *http.Request) (params MergeBranchIntoTargetParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: source_branch_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "source_branch_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SourceBranchID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "source_branch_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode query: target_branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "target_branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TargetBranchID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "target_branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
 	// Decode header: xi-api-key.
 	if err := func() error {
 		cfg := uri.HeaderParameterDecodingConfig{
@@ -23136,6 +31199,2006 @@ func decodePostConversationFeedbackRouteParams(args [1]string, argsEscaped bool,
 	return params, nil
 }
 
+// PostKnowledgeBaseBulkMoveRouteParams is parameters of post_knowledge_base_bulk_move_route operation.
+type PostKnowledgeBaseBulkMoveRouteParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPostKnowledgeBaseBulkMoveRouteParams(packed middleware.Parameters) (params PostKnowledgeBaseBulkMoveRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePostKnowledgeBaseBulkMoveRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params PostKnowledgeBaseBulkMoveRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PostKnowledgeBaseMoveRouteParams is parameters of post_knowledge_base_move_route operation.
+type PostKnowledgeBaseMoveRouteParams struct {
+	// The id of a document from the knowledge base. This is returned on document addition.
+	DocumentID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPostKnowledgeBaseMoveRouteParams(packed middleware.Parameters) (params PostKnowledgeBaseMoveRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "document_id",
+			In:   "path",
+		}
+		params.DocumentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePostKnowledgeBaseMoveRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params PostKnowledgeBaseMoveRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: document_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "document_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DocumentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "document_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicCreateOrderParams is parameters of public_create_order operation.
+type PublicCreateOrderParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicCreateOrderParams(packed middleware.Parameters) (params PublicCreateOrderParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicCreateOrderParams(args [0]string, argsEscaped bool, r *http.Request) (params PublicCreateOrderParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicGetAvailableLanguagesParams is parameters of public_get_available_languages operation.
+type PublicGetAvailableLanguagesParams struct {
+	// The kind of order item.
+	OrderItemKind OrderItemKind
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicGetAvailableLanguagesParams(packed middleware.Parameters) (params PublicGetAvailableLanguagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_item_kind",
+			In:   "path",
+		}
+		params.OrderItemKind = packed[key].(OrderItemKind)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicGetAvailableLanguagesParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicGetAvailableLanguagesParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_item_kind.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_item_kind",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.OrderItemKind = OrderItemKind(c)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderItemKind.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_item_kind",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicGetMediaInfoParams is parameters of public_get_media_info operation.
+type PublicGetMediaInfoParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// The ID of the media file.
+	MediaID MediaId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicGetMediaInfoParams(packed middleware.Parameters) (params PublicGetMediaInfoParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "media_id",
+			In:   "path",
+		}
+		params.MediaID = packed[key].(MediaId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicGetMediaInfoParams(args [2]string, argsEscaped bool, r *http.Request) (params PublicGetMediaInfoParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: media_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "media_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotMediaIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotMediaIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.MediaID = MediaId(paramsDotMediaIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.MediaID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "media_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicGetOrderParams is parameters of public_get_order operation.
+type PublicGetOrderParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicGetOrderParams(packed middleware.Parameters) (params PublicGetOrderParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicGetOrderParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicGetOrderParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicGetOrderDeliverablesParams is parameters of public_get_order_deliverables operation.
+type PublicGetOrderDeliverablesParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicGetOrderDeliverablesParams(packed middleware.Parameters) (params PublicGetOrderDeliverablesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicGetOrderDeliverablesParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicGetOrderDeliverablesParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicListOrdersParams is parameters of public_list_orders operation.
+type PublicListOrdersParams struct {
+	// Maximum number of orders to return per page.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Number of orders to skip for pagination.
+	Offset OptInt `json:",omitempty,omitzero"`
+	// Filter orders by one or more statuses.
+	Status OptNilOrderRequestStateArray `json:",omitempty,omitzero"`
+	// Filter orders created on or after this date.
+	StartDate OptNilDateTime `json:",omitempty,omitzero"`
+	// Filter orders created on or before this date.
+	EndDate OptNilDateTime `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicListOrdersParams(packed middleware.Parameters) (params PublicListOrdersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "offset",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Offset = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "status",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Status = v.(OptNilOrderRequestStateArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "start_date",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.StartDate = v.(OptNilDateTime)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "end_date",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EndDate = v.(OptNilDateTime)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicListOrdersParams(args [0]string, argsEscaped bool, r *http.Request) (params PublicListOrdersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Set default value for query: page_size.
+	{
+		val := int(20)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        false,
+							Min:           0,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: offset.
+	{
+		val := int(0)
+		params.Offset.SetTo(val)
+	}
+	// Decode query: offset.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotOffsetVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOffsetVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Offset.SetTo(paramsDotOffsetVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Offset.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           0,
+							MaxSet:        false,
+							Max:           0,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "offset",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: status.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "status",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotStatusVal []OrderRequestState
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotStatusValVal OrderRequestState
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotStatusValVal = OrderRequestState(c)
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotStatusVal = append(paramsDotStatusVal, paramsDotStatusValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.Status.SetTo(paramsDotStatusVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Status.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						var failures []validate.FieldError
+						for i, elem := range value {
+							if err := func() error {
+								if err := elem.Validate(); err != nil {
+									return err
+								}
+								return nil
+							}(); err != nil {
+								failures = append(failures, validate.FieldError{
+									Name:  fmt.Sprintf("[%d]", i),
+									Error: err,
+								})
+							}
+						}
+						if len(failures) > 0 {
+							return &validate.Error{Fields: failures}
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "status",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: start_date.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "start_date",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotStartDateVal time.Time
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToDateTime(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotStartDateVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.StartDate.SetTo(paramsDotStartDateVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "start_date",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: end_date.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "end_date",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEndDateVal time.Time
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToDateTime(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEndDateVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.EndDate.SetTo(paramsDotEndDateVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "end_date",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicRegisterMediaParams is parameters of public_register_media operation.
+type PublicRegisterMediaParams struct {
+	// The ID of the order to which this media will be attached.
+	OrderID OrderId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicRegisterMediaParams(packed middleware.Parameters) (params PublicRegisterMediaParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicRegisterMediaParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicRegisterMediaParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicRemoveOrderItemParams is parameters of public_remove_order_item operation.
+type PublicRemoveOrderItemParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// The ID of the order item.
+	ItemID ItemId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicRemoveOrderItemParams(packed middleware.Parameters) (params PublicRemoveOrderItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "item_id",
+			In:   "path",
+		}
+		params.ItemID = packed[key].(ItemId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicRemoveOrderItemParams(args [2]string, argsEscaped bool, r *http.Request) (params PublicRemoveOrderItemParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: item_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "item_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotItemIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotItemIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.ItemID = ItemId(paramsDotItemIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.ItemID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "item_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicSubmitOrderParams is parameters of public_submit_order operation.
+type PublicSubmitOrderParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicSubmitOrderParams(packed middleware.Parameters) (params PublicSubmitOrderParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicSubmitOrderParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicSubmitOrderParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicUpdateOrderParams is parameters of public_update_order operation.
+type PublicUpdateOrderParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicUpdateOrderParams(packed middleware.Parameters) (params PublicUpdateOrderParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicUpdateOrderParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicUpdateOrderParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// PublicUpsertOrderItemParams is parameters of public_upsert_order_item operation.
+type PublicUpsertOrderItemParams struct {
+	// The ID of the order.
+	OrderID OrderId
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackPublicUpsertOrderItemParams(packed middleware.Parameters) (params PublicUpsertOrderItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(OrderId)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodePublicUpsertOrderItemParams(args [1]string, argsEscaped bool, r *http.Request) (params PublicUpsertOrderItemParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				var paramsDotOrderIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOrderIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OrderID = OrderId(paramsDotOrderIDVal)
+				return nil
+			}(); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.OrderID.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // RagIndexStatusParams is parameters of rag_index_status operation.
 type RagIndexStatusParams struct {
 	// The id of a document from the knowledge base. This is returned on document addition.
@@ -23166,6 +33229,124 @@ func unpackRagIndexStatusParams(packed middleware.Parameters) (params RagIndexSt
 }
 
 func decodeRagIndexStatusParams(args [1]string, argsEscaped bool, r *http.Request) (params RagIndexStatusParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: documentation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "documentation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DocumentationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "documentation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RefreshURLDocumentRouteParams is parameters of refresh_url_document_route operation.
+type RefreshURLDocumentRouteParams struct {
+	// The id of a document from the knowledge base. This is returned on document addition.
+	DocumentationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackRefreshURLDocumentRouteParams(packed middleware.Parameters) (params RefreshURLDocumentRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "documentation_id",
+			In:   "path",
+		}
+		params.DocumentationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeRefreshURLDocumentRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params RefreshURLDocumentRouteParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode path: documentation_id.
 	if err := func() error {
@@ -23554,6 +33735,178 @@ func decodeRemoveRulesParams(args [1]string, argsEscaped bool, r *http.Request) 
 	return params, nil
 }
 
+// RenderParams is parameters of render operation.
+type RenderParams struct {
+	// ID of the dubbing project.
+	DubbingID string
+	// The target language code to render, eg. 'es'. To render the source track use 'original'.
+	Language string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackRenderParams(packed middleware.Parameters) (params RenderParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "dubbing_id",
+			In:   "path",
+		}
+		params.DubbingID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "language",
+			In:   "path",
+		}
+		params.Language = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeRenderParams(args [2]string, argsEscaped bool, r *http.Request) (params RenderParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: dubbing_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "dubbing_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DubbingID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "dubbing_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: language.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "language",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Language = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "language",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // RequestPvcManualVerificationParams is parameters of request_pvc_manual_verification operation.
 type RequestPvcManualVerificationParams struct {
 	// Voice ID to be used, you can use https://api.elevenlabs.io/v1/voices to list all the available
@@ -23744,6 +34097,242 @@ func decodeRetryBatchCallParams(args [1]string, argsEscaped bool, r *http.Reques
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "batch_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RunConversationAnalysisParams is parameters of run_conversation_analysis operation.
+type RunConversationAnalysisParams struct {
+	// ID of the conversation.
+	ConversationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackRunConversationAnalysisParams(packed middleware.Parameters) (params RunConversationAnalysisParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
+		}
+		params.ConversationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeRunConversationAnalysisParams(args [1]string, argsEscaped bool, r *http.Request) (params RunConversationAnalysisParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: conversation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RunConversationEvaluationsParams is parameters of run_conversation_evaluations operation.
+type RunConversationEvaluationsParams struct {
+	// ID of the conversation.
+	ConversationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackRunConversationEvaluationsParams(packed middleware.Parameters) (params RunConversationEvaluationsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
+		}
+		params.ConversationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeRunConversationEvaluationsParams(args [1]string, argsEscaped bool, r *http.Request) (params RunConversationEvaluationsParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: conversation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_id",
 			In:   "path",
 			Err:  err,
 		}
@@ -24019,6 +34608,343 @@ func decodeSearchGroupsParams(args [0]string, argsEscaped bool, r *http.Request)
 	return params, nil
 }
 
+// SearchKnowledgeBaseContentRouteParams is parameters of search_knowledge_base_content_route operation.
+type SearchKnowledgeBaseContentRouteParams struct {
+	// The search query text.
+	Query string
+	// How many documents to return at maximum. Can not exceed 100, defaults to 30.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// If present, the endpoint will return only documents of the given types.
+	Types OptNilKnowledgeBaseDocumentTypeArray `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackSearchKnowledgeBaseContentRouteParams(packed middleware.Parameters) (params SearchKnowledgeBaseContentRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "query",
+			In:   "query",
+		}
+		params.Query = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "types",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Types = v.(OptNilKnowledgeBaseDocumentTypeArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeSearchKnowledgeBaseContentRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params SearchKnowledgeBaseContentRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: query.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "query",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Query = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "query",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(30)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           100,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: types.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "types",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTypesVal []KnowledgeBaseDocumentType
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotTypesValVal KnowledgeBaseDocumentType
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotTypesValVal = KnowledgeBaseDocumentType(c)
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotTypesVal = append(paramsDotTypesVal, paramsDotTypesValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.Types.SetTo(paramsDotTypesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.Types.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						var failures []validate.FieldError
+						for i, elem := range value {
+							if err := func() error {
+								if err := elem.Validate(); err != nil {
+									return err
+								}
+								return nil
+							}(); err != nil {
+								failures = append(failures, validate.FieldError{
+									Name:  fmt.Sprintf("[%d]", i),
+									Error: err,
+								})
+							}
+						}
+						if len(failures) > 0 {
+							return &validate.Error{Fields: failures}
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "types",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // SeparateSongStemsParams is parameters of separate_song_stems operation.
 type SeparateSongStemsParams struct {
 	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
@@ -24026,7 +34952,7 @@ type SeparateSongStemsParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptSeparateSongStemsOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -24039,7 +34965,7 @@ func unpackSeparateSongStemsParams(packed middleware.Parameters) (params Separat
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptSeparateSongStemsOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
 		}
 	}
 	{
@@ -24059,7 +34985,7 @@ func decodeSeparateSongStemsParams(args [0]string, argsEscaped bool, r *http.Req
 	h := uri.NewHeaderDecoder(r.Header)
 	// Set default value for query: output_format.
 	{
-		val := SeparateSongStemsOutputFormat("mp3_44100_128")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -24072,7 +34998,7 @@ func decodeSeparateSongStemsParams(args [0]string, argsEscaped bool, r *http.Req
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal SeparateSongStemsOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -24084,7 +35010,7 @@ func decodeSeparateSongStemsParams(args [0]string, argsEscaped bool, r *http.Req
 						return err
 					}
 
-					paramsDotOutputFormatVal = SeparateSongStemsOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -24278,6 +35204,303 @@ func decodeShareResourceEndpointParams(args [1]string, argsEscaped bool, r *http
 	return params, nil
 }
 
+// SmartSearchConversationMessagesRouteParams is parameters of smart_search_conversation_messages_route operation.
+type SmartSearchConversationMessagesRouteParams struct {
+	// The search query text for semantic similarity matching.
+	TextQuery string
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
+	AgentID OptNilString `json:",omitempty,omitzero"`
+	// Number of results per page. Max 50.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackSmartSearchConversationMessagesRouteParams(packed middleware.Parameters) (params SmartSearchConversationMessagesRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "text_query",
+			In:   "query",
+		}
+		params.TextQuery = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.AgentID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeSmartSearchConversationMessagesRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params SmartSearchConversationMessagesRouteParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode query: text_query.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "text_query",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TextQuery = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "text_query",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotAgentIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(20)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           50,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // SoundGenerationParams is parameters of sound_generation operation.
 type SoundGenerationParams struct {
 	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
@@ -24285,7 +35508,7 @@ type SoundGenerationParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptSoundGenerationOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -24298,7 +35521,7 @@ func unpackSoundGenerationParams(packed middleware.Parameters) (params SoundGene
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptSoundGenerationOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
 		}
 	}
 	{
@@ -24318,7 +35541,7 @@ func decodeSoundGenerationParams(args [0]string, argsEscaped bool, r *http.Reque
 	h := uri.NewHeaderDecoder(r.Header)
 	// Set default value for query: output_format.
 	{
-		val := SoundGenerationOutputFormat("mp3_44100_128")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -24331,7 +35554,7 @@ func decodeSoundGenerationParams(args [0]string, argsEscaped bool, r *http.Reque
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal SoundGenerationOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -24343,7 +35566,7 @@ func decodeSoundGenerationParams(args [0]string, argsEscaped bool, r *http.Reque
 						return err
 					}
 
-					paramsDotOutputFormatVal = SoundGenerationOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -24442,9 +35665,9 @@ type SpeechToSpeechFullParams struct {
 	OptimizeStreamingLatency OptNilInt `json:",omitempty,omitzero"`
 	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
 	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
+	// to be subscribed to Creator tier or above. PCM and WAV formats with 44.1kHz sample rate requires
+	// you to be subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law,
+	// often approximated as u-law) is commonly used for Twilio audio inputs.
 	OutputFormat OptSpeechToSpeechFullOutputFormat `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -25576,147 +36799,6 @@ func decodeStreamChapterSnapshotAudioParams(args [3]string, argsEscaped bool, r 
 	return params, nil
 }
 
-// StreamComposeParams is parameters of stream_compose operation.
-type StreamComposeParams struct {
-	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
-	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptStreamComposeOutputFormat `json:",omitempty,omitzero"`
-	// Your API key. This is required by most endpoints to access our API programmatically. You can view
-	// your xi-api-key using the 'Profile' tab on the website.
-	XiAPIKey OptNilString `json:",omitempty,omitzero"`
-}
-
-func unpackStreamComposeParams(packed middleware.Parameters) (params StreamComposeParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "output_format",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptStreamComposeOutputFormat)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "xi-api-key",
-			In:   "header",
-		}
-		if v, ok := packed[key]; ok {
-			params.XiAPIKey = v.(OptNilString)
-		}
-	}
-	return params
-}
-
-func decodeStreamComposeParams(args [0]string, argsEscaped bool, r *http.Request) (params StreamComposeParams, _ error) {
-	q := uri.NewQueryDecoder(r.URL.Query())
-	h := uri.NewHeaderDecoder(r.Header)
-	// Set default value for query: output_format.
-	{
-		val := StreamComposeOutputFormat("mp3_44100_128")
-		params.OutputFormat.SetTo(val)
-	}
-	// Decode query: output_format.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "output_format",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal StreamComposeOutputFormat
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotOutputFormatVal = StreamComposeOutputFormat(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.OutputFormat.SetTo(paramsDotOutputFormatVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.OutputFormat.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "output_format",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode header: xi-api-key.
-	if err := func() error {
-		cfg := uri.HeaderParameterDecodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.HasParam(cfg); err == nil {
-			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotXiAPIKeyVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotXiAPIKeyVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "xi-api-key",
-			In:   "header",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
 // StreamProjectSnapshotArchiveEndpointParams is parameters of stream_project_snapshot_archive_endpoint operation.
 type StreamProjectSnapshotArchiveEndpointParams struct {
 	// The ID of the Studio project.
@@ -26061,27 +37143,286 @@ func decodeStreamProjectSnapshotAudioEndpointParams(args [2]string, argsEscaped 
 	return params, nil
 }
 
-// TextToDialogueParams is parameters of text_to_dialogue operation.
-type TextToDialogueParams struct {
-	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
-	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToDialogueOutputFormat `json:",omitempty,omitzero"`
+// TextSearchConversationMessagesRouteParams is parameters of text_search_conversation_messages_route operation.
+type TextSearchConversationMessagesRouteParams struct {
+	// The search query text for full-text and fuzzy matching.
+	TextQuery string
+	// Agent id (agent_…) or speech engine external id (seng_), resolved to the same underlying
+	// resource.
+	AgentID OptNilString `json:",omitempty,omitzero"`
+	// The result of the success evaluation.
+	CallSuccessful OptEvaluationSuccessResult `json:",omitempty,omitzero"`
+	// Unix timestamp (in seconds) to filter conversations up to this start date.
+	CallStartBeforeUnix OptNilInt `json:",omitempty,omitzero"`
+	// Unix timestamp (in seconds) to filter conversations after to this start date.
+	CallStartAfterUnix OptNilInt `json:",omitempty,omitzero"`
+	// Minimum call duration in seconds.
+	CallDurationMinSecs OptNilInt `json:",omitempty,omitzero"`
+	// Maximum call duration in seconds.
+	CallDurationMaxSecs OptNilInt `json:",omitempty,omitzero"`
+	// Maximum overall rating (1-5).
+	RatingMax OptNilInt `json:",omitempty,omitzero"`
+	// Minimum overall rating (1-5).
+	RatingMin OptNilInt `json:",omitempty,omitzero"`
+	// Filter conversations with user feedback comments.
+	HasFeedbackComment OptNilBool `json:",omitempty,omitzero"`
+	// Filter conversations by the user ID who initiated them.
+	UserID OptNilString `json:",omitempty,omitzero"`
+	// Evaluation filters. Repeat param. Format: criteria_id:result. Example: eval=value_framing:success.
+	EvaluationParams OptNilStringArray `json:",omitempty,omitzero"`
+	// Data collection filters. Repeat param. Format: id:op:value where op is one of
+	// eq|neq|gt|gte|lt|lte|in|exists|missing. For in, pipe-delimit values.
+	DataCollectionParams OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations by tool names used during the call.
+	ToolNames OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations by tool names that had successful calls.
+	ToolNamesSuccessful OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations by tool names that had errored calls.
+	ToolNamesErrored OptNilStringArray `json:",omitempty,omitzero"`
+	// Filter conversations by detected main language (language code).
+	MainLanguages OptNilStringArray `json:",omitempty,omitzero"`
+	// Number of results per page. Max 50.
+	PageSize OptInt `json:",omitempty,omitzero"`
+	// Whether to include transcript summaries in the response.
+	SummaryMode                  OptTextSearchConversationMessagesRouteSummaryMode `json:",omitempty,omitzero"`
+	ConversationInitiationSource OptConversationInitiationSource                   `json:",omitempty,omitzero"`
+	TextOnly                     OptNilBool                                        `json:",omitempty,omitzero"`
+	// Filter conversations by branch ID.
+	BranchID OptNilString `json:",omitempty,omitzero"`
+	// Filter conversations by topic IDs assigned during topic discovery.
+	TopicIds OptNilStringArray `json:",omitempty,omitzero"`
+	// Sort order for search results. 'search_score' sorts by search score, 'created_at' sorts by
+	// conversation start time.
+	SortBy OptMessageSearchSortBy `json:",omitempty,omitzero"`
+	// Used for fetching next page. Cursor is returned in the response.
+	Cursor OptNilString `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
-func unpackTextToDialogueParams(packed middleware.Parameters) (params TextToDialogueParams) {
+func unpackTextSearchConversationMessagesRouteParams(packed middleware.Parameters) (params TextSearchConversationMessagesRouteParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "output_format",
+			Name: "text_query",
+			In:   "query",
+		}
+		params.TextQuery = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToDialogueOutputFormat)
+			params.AgentID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_successful",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallSuccessful = v.(OptEvaluationSuccessResult)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_start_before_unix",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallStartBeforeUnix = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_start_after_unix",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallStartAfterUnix = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_duration_min_secs",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallDurationMinSecs = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "call_duration_max_secs",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.CallDurationMaxSecs = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "rating_max",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.RatingMax = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "rating_min",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.RatingMin = v.(OptNilInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "has_feedback_comment",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.HasFeedbackComment = v.(OptNilBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "user_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.UserID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "evaluation_params",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EvaluationParams = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "data_collection_params",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.DataCollectionParams = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tool_names",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ToolNames = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tool_names_successful",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ToolNamesSuccessful = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tool_names_errored",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ToolNamesErrored = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "main_languages",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.MainLanguages = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "page_size",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PageSize = v.(OptInt)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "summary_mode",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SummaryMode = v.(OptTextSearchConversationMessagesRouteSummaryMode)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_initiation_source",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.ConversationInitiationSource = v.(OptConversationInitiationSource)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "text_only",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.TextOnly = v.(OptNilBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.BranchID = v.(OptNilString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "topic_ids",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.TopicIds = v.(OptNilStringArray)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort_by",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortBy = v.(OptMessageSearchSortBy)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "cursor",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cursor = v.(OptNilString)
 		}
 	}
 	{
@@ -26096,25 +37437,56 @@ func unpackTextToDialogueParams(packed middleware.Parameters) (params TextToDial
 	return params
 }
 
-func decodeTextToDialogueParams(args [0]string, argsEscaped bool, r *http.Request) (params TextToDialogueParams, _ error) {
+func decodeTextSearchConversationMessagesRouteParams(args [0]string, argsEscaped bool, r *http.Request) (params TextSearchConversationMessagesRouteParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
-	// Set default value for query: output_format.
-	{
-		val := TextToDialogueOutputFormat("mp3_44100_128")
-		params.OutputFormat.SetTo(val)
-	}
-	// Decode query: output_format.
+	// Decode query: text_query.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "output_format",
+			Name:    "text_query",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToDialogueOutputFormat
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TextQuery = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "text_query",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: agent_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotAgentIDVal string
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -26126,18 +37498,59 @@ func decodeTextToDialogueParams(args [0]string, argsEscaped bool, r *http.Reques
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToDialogueOutputFormat(c)
+					paramsDotAgentIDVal = c
 					return nil
 				}(); err != nil {
 					return err
 				}
-				params.OutputFormat.SetTo(paramsDotOutputFormatVal)
+				params.AgentID.SetTo(paramsDotAgentIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_successful.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_successful",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallSuccessfulVal EvaluationSuccessResult
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallSuccessfulVal = EvaluationSuccessResult(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallSuccessful.SetTo(paramsDotCallSuccessfulVal)
 				return nil
 			}); err != nil {
 				return err
 			}
 			if err := func() error {
-				if value, ok := params.OutputFormat.Get(); ok {
+				if value, ok := params.CallSuccessful.Get(); ok {
 					if err := func() error {
 						if err := value.Validate(); err != nil {
 							return err
@@ -26155,7 +37568,1341 @@ func decodeTextToDialogueParams(args [0]string, argsEscaped bool, r *http.Reques
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "output_format",
+			Name: "call_successful",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_start_before_unix.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_start_before_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallStartBeforeUnixVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallStartBeforeUnixVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallStartBeforeUnix.SetTo(paramsDotCallStartBeforeUnixVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "call_start_before_unix",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_start_after_unix.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_start_after_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallStartAfterUnixVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallStartAfterUnixVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallStartAfterUnix.SetTo(paramsDotCallStartAfterUnixVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "call_start_after_unix",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_duration_min_secs.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_duration_min_secs",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallDurationMinSecsVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallDurationMinSecsVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallDurationMinSecs.SetTo(paramsDotCallDurationMinSecsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "call_duration_min_secs",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: call_duration_max_secs.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "call_duration_max_secs",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCallDurationMaxSecsVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCallDurationMaxSecsVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.CallDurationMaxSecs.SetTo(paramsDotCallDurationMaxSecsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "call_duration_max_secs",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: rating_max.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "rating_max",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotRatingMaxVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotRatingMaxVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.RatingMax.SetTo(paramsDotRatingMaxVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.RatingMax.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           5,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "rating_max",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: rating_min.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "rating_min",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotRatingMinVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotRatingMinVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.RatingMin.SetTo(paramsDotRatingMinVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.RatingMin.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           5,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "rating_min",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: has_feedback_comment.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "has_feedback_comment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotHasFeedbackCommentVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotHasFeedbackCommentVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.HasFeedbackComment.SetTo(paramsDotHasFeedbackCommentVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "has_feedback_comment",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: user_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "user_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotUserIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotUserIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.UserID.SetTo(paramsDotUserIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "user_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: evaluation_params.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "evaluation_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEvaluationParamsVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotEvaluationParamsValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotEvaluationParamsValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotEvaluationParamsVal = append(paramsDotEvaluationParamsVal, paramsDotEvaluationParamsValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.EvaluationParams.SetTo(paramsDotEvaluationParamsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.EvaluationParams.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "evaluation_params",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: data_collection_params.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "data_collection_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotDataCollectionParamsVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotDataCollectionParamsValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotDataCollectionParamsValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotDataCollectionParamsVal = append(paramsDotDataCollectionParamsVal, paramsDotDataCollectionParamsValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.DataCollectionParams.SetTo(paramsDotDataCollectionParamsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.DataCollectionParams.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "data_collection_params",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: tool_names.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tool_names",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotToolNamesVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotToolNamesValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotToolNamesValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotToolNamesVal = append(paramsDotToolNamesVal, paramsDotToolNamesValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.ToolNames.SetTo(paramsDotToolNamesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ToolNames.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tool_names",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: tool_names_successful.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tool_names_successful",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotToolNamesSuccessfulVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotToolNamesSuccessfulValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotToolNamesSuccessfulValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotToolNamesSuccessfulVal = append(paramsDotToolNamesSuccessfulVal, paramsDotToolNamesSuccessfulValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.ToolNamesSuccessful.SetTo(paramsDotToolNamesSuccessfulVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ToolNamesSuccessful.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tool_names_successful",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: tool_names_errored.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "tool_names_errored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotToolNamesErroredVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotToolNamesErroredValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotToolNamesErroredValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotToolNamesErroredVal = append(paramsDotToolNamesErroredVal, paramsDotToolNamesErroredValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.ToolNamesErrored.SetTo(paramsDotToolNamesErroredVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ToolNamesErrored.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tool_names_errored",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: main_languages.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "main_languages",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotMainLanguagesVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotMainLanguagesValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotMainLanguagesValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotMainLanguagesVal = append(paramsDotMainLanguagesVal, paramsDotMainLanguagesValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.MainLanguages.SetTo(paramsDotMainLanguagesVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.MainLanguages.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "main_languages",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: page_size.
+	{
+		val := int(20)
+		params.PageSize.SetTo(val)
+	}
+	// Decode query: page_size.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageSizeVal int
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageSizeVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PageSize.SetTo(paramsDotPageSizeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.PageSize.Get(); ok {
+					if err := func() error {
+						if err := (validate.Int{
+							MinSet:        true,
+							Min:           1,
+							MaxSet:        true,
+							Max:           50,
+							MinExclusive:  false,
+							MaxExclusive:  false,
+							MultipleOfSet: false,
+							MultipleOf:    0,
+							Pattern:       nil,
+						}).Validate(int64(value)); err != nil {
+							return errors.Wrap(err, "int")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page_size",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: summary_mode.
+	{
+		val := TextSearchConversationMessagesRouteSummaryMode("exclude")
+		params.SummaryMode.SetTo(val)
+	}
+	// Decode query: summary_mode.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "summary_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSummaryModeVal TextSearchConversationMessagesRouteSummaryMode
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSummaryModeVal = TextSearchConversationMessagesRouteSummaryMode(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SummaryMode.SetTo(paramsDotSummaryModeVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SummaryMode.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "summary_mode",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: conversation_initiation_source.
+	{
+		val := ConversationInitiationSource("unknown")
+		params.ConversationInitiationSource.SetTo(val)
+	}
+	// Decode query: conversation_initiation_source.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "conversation_initiation_source",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotConversationInitiationSourceVal ConversationInitiationSource
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotConversationInitiationSourceVal = ConversationInitiationSource(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.ConversationInitiationSource.SetTo(paramsDotConversationInitiationSourceVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.ConversationInitiationSource.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_initiation_source",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: text_only.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "text_only",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTextOnlyVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotTextOnlyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.TextOnly.SetTo(paramsDotTextOnlyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "text_only",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: branch_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotBranchIDVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotBranchIDVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.BranchID.SetTo(paramsDotBranchIDVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: topic_ids.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "topic_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotTopicIdsVal []string
+				if err := func() error {
+					return d.DecodeArray(func(d uri.Decoder) error {
+						var paramsDotTopicIdsValVal string
+						if err := func() error {
+							val, err := d.DecodeValue()
+							if err != nil {
+								return err
+							}
+
+							c, err := conv.ToString(val)
+							if err != nil {
+								return err
+							}
+
+							paramsDotTopicIdsValVal = c
+							return nil
+						}(); err != nil {
+							return err
+						}
+						paramsDotTopicIdsVal = append(paramsDotTopicIdsVal, paramsDotTopicIdsValVal)
+						return nil
+					})
+				}(); err != nil {
+					return err
+				}
+				params.TopicIds.SetTo(paramsDotTopicIdsVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.TopicIds.Get(); ok {
+					if err := func() error {
+						if value == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "topic_ids",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: sort_by.
+	{
+		val := MessageSearchSortBy("search_score")
+		params.SortBy.SetTo(val)
+	}
+	// Decode query: sort_by.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortByVal MessageSearchSortBy
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortByVal = MessageSearchSortBy(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortBy.SetTo(paramsDotSortByVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortBy.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort_by",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: cursor.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCursorVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCursorVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cursor.SetTo(paramsDotCursorVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "cursor",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// TextToDialogueParams is parameters of text_to_dialogue operation.
+type TextToDialogueParams struct {
+	// When enable_logging is set to false zero retention mode will be used for the request. This will
+	// mean history features are unavailable for this request, including request stitching. Zero
+	// retention mode may only be used by enterprise customers.
+	EnableLogging OptBool `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackTextToDialogueParams(packed middleware.Parameters) (params TextToDialogueParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "enable_logging",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EnableLogging = v.(OptBool)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeTextToDialogueParams(args [0]string, argsEscaped bool, r *http.Request) (params TextToDialogueParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Set default value for query: enable_logging.
+	{
+		val := bool(true)
+		params.EnableLogging.SetTo(val)
+	}
+	// Decode query: enable_logging.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "enable_logging",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEnableLoggingVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEnableLoggingVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.EnableLogging.SetTo(paramsDotEnableLoggingVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "enable_logging",
 			In:   "query",
 			Err:  err,
 		}
@@ -26204,12 +38951,10 @@ func decodeTextToDialogueParams(args [0]string, argsEscaped bool, r *http.Reques
 
 // TextToDialogueFullWithTimestampsParams is parameters of text_to_dialogue_full_with_timestamps operation.
 type TextToDialogueFullWithTimestampsParams struct {
-	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
-	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToDialogueFullWithTimestampsOutputFormat `json:",omitempty,omitzero"`
+	// When enable_logging is set to false zero retention mode will be used for the request. This will
+	// mean history features are unavailable for this request, including request stitching. Zero
+	// retention mode may only be used by enterprise customers.
+	EnableLogging OptBool `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -26218,11 +38963,11 @@ type TextToDialogueFullWithTimestampsParams struct {
 func unpackTextToDialogueFullWithTimestampsParams(packed middleware.Parameters) (params TextToDialogueFullWithTimestampsParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "output_format",
+			Name: "enable_logging",
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToDialogueFullWithTimestampsOutputFormat)
+			params.EnableLogging = v.(OptBool)
 		}
 	}
 	{
@@ -26240,63 +38985,48 @@ func unpackTextToDialogueFullWithTimestampsParams(packed middleware.Parameters) 
 func decodeTextToDialogueFullWithTimestampsParams(args [0]string, argsEscaped bool, r *http.Request) (params TextToDialogueFullWithTimestampsParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
 	h := uri.NewHeaderDecoder(r.Header)
-	// Set default value for query: output_format.
+	// Set default value for query: enable_logging.
 	{
-		val := TextToDialogueFullWithTimestampsOutputFormat("mp3_44100_128")
-		params.OutputFormat.SetTo(val)
+		val := bool(true)
+		params.EnableLogging.SetTo(val)
 	}
-	// Decode query: output_format.
+	// Decode query: enable_logging.
 	if err := func() error {
 		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "output_format",
+			Name:    "enable_logging",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToDialogueFullWithTimestampsOutputFormat
+				var paramsDotEnableLoggingVal bool
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
 						return err
 					}
 
-					c, err := conv.ToString(val)
+					c, err := conv.ToBool(val)
 					if err != nil {
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToDialogueFullWithTimestampsOutputFormat(c)
+					paramsDotEnableLoggingVal = c
 					return nil
 				}(); err != nil {
 					return err
 				}
-				params.OutputFormat.SetTo(paramsDotOutputFormatVal)
+				params.EnableLogging.SetTo(paramsDotEnableLoggingVal)
 				return nil
 			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if value, ok := params.OutputFormat.Get(); ok {
-					if err := func() error {
-						if err := value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
 				return err
 			}
 		}
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "output_format",
+			Name: "enable_logging",
 			In:   "query",
 			Err:  err,
 		}
@@ -26350,7 +39080,11 @@ type TextToDialogueStreamParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToDialogueStreamOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
+	// When enable_logging is set to false zero retention mode will be used for the request. This will
+	// mean history features are unavailable for this request, including request stitching. Zero
+	// retention mode may only be used by enterprise customers.
+	EnableLogging OptBool `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -26363,7 +39097,16 @@ func unpackTextToDialogueStreamParams(packed middleware.Parameters) (params Text
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToDialogueStreamOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "enable_logging",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EnableLogging = v.(OptBool)
 		}
 	}
 	{
@@ -26383,7 +39126,7 @@ func decodeTextToDialogueStreamParams(args [0]string, argsEscaped bool, r *http.
 	h := uri.NewHeaderDecoder(r.Header)
 	// Set default value for query: output_format.
 	{
-		val := TextToDialogueStreamOutputFormat("mp3_44100_128")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -26396,7 +39139,7 @@ func decodeTextToDialogueStreamParams(args [0]string, argsEscaped bool, r *http.
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToDialogueStreamOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -26408,7 +39151,7 @@ func decodeTextToDialogueStreamParams(args [0]string, argsEscaped bool, r *http.
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToDialogueStreamOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -26438,6 +39181,52 @@ func decodeTextToDialogueStreamParams(args [0]string, argsEscaped bool, r *http.
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "output_format",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: enable_logging.
+	{
+		val := bool(true)
+		params.EnableLogging.SetTo(val)
+	}
+	// Decode query: enable_logging.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "enable_logging",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEnableLoggingVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEnableLoggingVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.EnableLogging.SetTo(paramsDotEnableLoggingVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "enable_logging",
 			In:   "query",
 			Err:  err,
 		}
@@ -26491,7 +39280,11 @@ type TextToDialogueStreamWithTimestampsParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToDialogueStreamWithTimestampsOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
+	// When enable_logging is set to false zero retention mode will be used for the request. This will
+	// mean history features are unavailable for this request, including request stitching. Zero
+	// retention mode may only be used by enterprise customers.
+	EnableLogging OptBool `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -26504,7 +39297,16 @@ func unpackTextToDialogueStreamWithTimestampsParams(packed middleware.Parameters
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToDialogueStreamWithTimestampsOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "enable_logging",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.EnableLogging = v.(OptBool)
 		}
 	}
 	{
@@ -26524,7 +39326,7 @@ func decodeTextToDialogueStreamWithTimestampsParams(args [0]string, argsEscaped 
 	h := uri.NewHeaderDecoder(r.Header)
 	// Set default value for query: output_format.
 	{
-		val := TextToDialogueStreamWithTimestampsOutputFormat("mp3_44100_128")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -26537,7 +39339,7 @@ func decodeTextToDialogueStreamWithTimestampsParams(args [0]string, argsEscaped 
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToDialogueStreamWithTimestampsOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -26549,7 +39351,7 @@ func decodeTextToDialogueStreamWithTimestampsParams(args [0]string, argsEscaped 
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToDialogueStreamWithTimestampsOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -26579,6 +39381,52 @@ func decodeTextToDialogueStreamWithTimestampsParams(args [0]string, argsEscaped 
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "output_format",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Set default value for query: enable_logging.
+	{
+		val := bool(true)
+		params.EnableLogging.SetTo(val)
+	}
+	// Decode query: enable_logging.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "enable_logging",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotEnableLoggingVal bool
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToBool(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotEnableLoggingVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.EnableLogging.SetTo(paramsDotEnableLoggingVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "enable_logging",
 			In:   "query",
 			Err:  err,
 		}
@@ -26648,9 +39496,9 @@ type TextToSpeechFullParams struct {
 	OptimizeStreamingLatency OptNilInt `json:",omitempty,omitzero"`
 	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
 	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
+	// to be subscribed to Creator tier or above. PCM and WAV formats with 44.1kHz sample rate requires
+	// you to be subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law,
+	// often approximated as u-law) is commonly used for Twilio audio inputs.
 	OutputFormat OptTextToSpeechFullOutputFormat `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -26965,9 +39813,9 @@ type TextToSpeechFullWithTimestampsParams struct {
 	OptimizeStreamingLatency OptNilInt `json:",omitempty,omitzero"`
 	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
 	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
-	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
-	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
-	// approximated as u-law) is commonly used for Twilio audio inputs.
+	// to be subscribed to Creator tier or above. PCM and WAV formats with 44.1kHz sample rate requires
+	// you to be subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law,
+	// often approximated as u-law) is commonly used for Twilio audio inputs.
 	OutputFormat OptTextToSpeechFullWithTimestampsOutputFormat `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -27900,7 +40748,7 @@ type TextToVoiceParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToVoiceOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -27913,7 +40761,7 @@ func unpackTextToVoiceParams(packed middleware.Parameters) (params TextToVoicePa
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToVoiceOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
 		}
 	}
 	{
@@ -27933,7 +40781,7 @@ func decodeTextToVoiceParams(args [0]string, argsEscaped bool, r *http.Request) 
 	h := uri.NewHeaderDecoder(r.Header)
 	// Set default value for query: output_format.
 	{
-		val := TextToVoiceOutputFormat("mp3_44100_192")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -27946,7 +40794,7 @@ func decodeTextToVoiceParams(args [0]string, argsEscaped bool, r *http.Request) 
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToVoiceOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -27958,7 +40806,7 @@ func decodeTextToVoiceParams(args [0]string, argsEscaped bool, r *http.Request) 
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToVoiceOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -28041,7 +40889,7 @@ type TextToVoiceDesignParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToVoiceDesignOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -28054,7 +40902,7 @@ func unpackTextToVoiceDesignParams(packed middleware.Parameters) (params TextToV
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToVoiceDesignOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
 		}
 	}
 	{
@@ -28074,7 +40922,7 @@ func decodeTextToVoiceDesignParams(args [0]string, argsEscaped bool, r *http.Req
 	h := uri.NewHeaderDecoder(r.Header)
 	// Set default value for query: output_format.
 	{
-		val := TextToVoiceDesignOutputFormat("mp3_44100_192")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -28087,7 +40935,7 @@ func decodeTextToVoiceDesignParams(args [0]string, argsEscaped bool, r *http.Req
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToVoiceDesignOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -28099,7 +40947,7 @@ func decodeTextToVoiceDesignParams(args [0]string, argsEscaped bool, r *http.Req
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToVoiceDesignOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -28303,7 +41151,7 @@ type TextToVoiceRemixParams struct {
 	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
 	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
 	// approximated as u-law) is commonly used for Twilio audio inputs.
-	OutputFormat OptTextToVoiceRemixOutputFormat `json:",omitempty,omitzero"`
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
@@ -28323,7 +41171,7 @@ func unpackTextToVoiceRemixParams(packed middleware.Parameters) (params TextToVo
 			In:   "query",
 		}
 		if v, ok := packed[key]; ok {
-			params.OutputFormat = v.(OptTextToVoiceRemixOutputFormat)
+			params.OutputFormat = v.(OptAllowedOutputFormats)
 		}
 	}
 	{
@@ -28388,7 +41236,7 @@ func decodeTextToVoiceRemixParams(args [1]string, argsEscaped bool, r *http.Requ
 	}
 	// Set default value for query: output_format.
 	{
-		val := TextToVoiceRemixOutputFormat("mp3_44100_192")
+		val := AllowedOutputFormats("mp3_44100_192")
 		params.OutputFormat.SetTo(val)
 	}
 	// Decode query: output_format.
@@ -28401,7 +41249,7 @@ func decodeTextToVoiceRemixParams(args [1]string, argsEscaped bool, r *http.Requ
 
 		if err := q.HasParam(cfg); err == nil {
 			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotOutputFormatVal TextToVoiceRemixOutputFormat
+				var paramsDotOutputFormatVal AllowedOutputFormats
 				if err := func() error {
 					val, err := d.DecodeValue()
 					if err != nil {
@@ -28413,7 +41261,7 @@ func decodeTextToVoiceRemixParams(args [1]string, argsEscaped bool, r *http.Requ
 						return err
 					}
 
-					paramsDotOutputFormatVal = TextToVoiceRemixOutputFormat(c)
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
 					return nil
 				}(); err != nil {
 					return err
@@ -28725,6 +41573,176 @@ func decodeTranslateParams(args [1]string, argsEscaped bool, r *http.Request) (p
 	return params, nil
 }
 
+// UnassignConversationTagRouteParams is parameters of unassign_conversation_tag_route operation.
+type UnassignConversationTagRouteParams struct {
+	ConversationID string
+	TagID          string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackUnassignConversationTagRouteParams(packed middleware.Parameters) (params UnassignConversationTagRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
+		}
+		params.ConversationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "tag_id",
+			In:   "path",
+		}
+		params.TagID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeUnassignConversationTagRouteParams(args [2]string, argsEscaped bool, r *http.Request) (params UnassignConversationTagRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: conversation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: tag_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tag_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TagID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tag_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UnshareResourceEndpointParams is parameters of unshare_resource_endpoint operation.
 type UnshareResourceEndpointParams struct {
 	// The ID of the target resource.
@@ -28843,22 +41861,22 @@ func decodeUnshareResourceEndpointParams(args [1]string, argsEscaped bool, r *ht
 	return params, nil
 }
 
-// UpdateAgentResponseTestRouteParams is parameters of update_agent_response_test_route operation.
-type UpdateAgentResponseTestRouteParams struct {
-	// The id of a chat response test. This is returned on test creation.
-	TestID string
+// UpdateAgentTestFolderRouteParams is parameters of update_agent_test_folder_route operation.
+type UpdateAgentTestFolderRouteParams struct {
+	// The folder ID.
+	FolderID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
 	XiAPIKey OptNilString `json:",omitempty,omitzero"`
 }
 
-func unpackUpdateAgentResponseTestRouteParams(packed middleware.Parameters) (params UpdateAgentResponseTestRouteParams) {
+func unpackUpdateAgentTestFolderRouteParams(packed middleware.Parameters) (params UpdateAgentTestFolderRouteParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "test_id",
+			Name: "folder_id",
 			In:   "path",
 		}
-		params.TestID = packed[key].(string)
+		params.FolderID = packed[key].(string)
 	}
 	{
 		key := middleware.ParameterKey{
@@ -28872,9 +41890,9 @@ func unpackUpdateAgentResponseTestRouteParams(packed middleware.Parameters) (par
 	return params
 }
 
-func decodeUpdateAgentResponseTestRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateAgentResponseTestRouteParams, _ error) {
+func decodeUpdateAgentTestFolderRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateAgentTestFolderRouteParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
-	// Decode path: test_id.
+	// Decode path: folder_id.
 	if err := func() error {
 		param := args[0]
 		if argsEscaped {
@@ -28886,7 +41904,7 @@ func decodeUpdateAgentResponseTestRouteParams(args [1]string, argsEscaped bool, 
 		}
 		if len(param) > 0 {
 			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "test_id",
+				Param:   "folder_id",
 				Value:   param,
 				Style:   uri.PathStyleSimple,
 				Explode: false,
@@ -28903,7 +41921,7 @@ func decodeUpdateAgentResponseTestRouteParams(args [1]string, argsEscaped bool, 
 					return err
 				}
 
-				params.TestID = c
+				params.FolderID = c
 				return nil
 			}(); err != nil {
 				return err
@@ -28914,7 +41932,296 @@ func decodeUpdateAgentResponseTestRouteParams(args [1]string, argsEscaped bool, 
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "test_id",
+			Name: "folder_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateBranchRouteParams is parameters of update_branch_route operation.
+type UpdateBranchRouteParams struct {
+	// The id of an agent. This is returned on agent creation.
+	AgentID string
+	// Unique identifier for the branch.
+	BranchID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackUpdateBranchRouteParams(packed middleware.Parameters) (params UpdateBranchRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "agent_id",
+			In:   "path",
+		}
+		params.AgentID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "branch_id",
+			In:   "path",
+		}
+		params.BranchID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeUpdateBranchRouteParams(args [2]string, argsEscaped bool, r *http.Request) (params UpdateBranchRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: agent_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "agent_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.AgentID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "agent_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: branch_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "branch_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.BranchID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "branch_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateConversationTagRouteParams is parameters of update_conversation_tag_route operation.
+type UpdateConversationTagRouteParams struct {
+	TagID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackUpdateConversationTagRouteParams(packed middleware.Parameters) (params UpdateConversationTagRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "tag_id",
+			In:   "path",
+		}
+		params.TagID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeUpdateConversationTagRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateConversationTagRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: tag_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "tag_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.TagID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "tag_id",
 			In:   "path",
 			Err:  err,
 		}
@@ -29143,9 +42450,127 @@ func decodeUpdateDocumentRouteParams(args [1]string, argsEscaped bool, r *http.R
 	return params, nil
 }
 
+// UpdateFileDocumentRouteParams is parameters of update_file_document_route operation.
+type UpdateFileDocumentRouteParams struct {
+	// The id of a document from the knowledge base. This is returned on document addition.
+	DocumentationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackUpdateFileDocumentRouteParams(packed middleware.Parameters) (params UpdateFileDocumentRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "documentation_id",
+			In:   "path",
+		}
+		params.DocumentationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeUpdateFileDocumentRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateFileDocumentRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: documentation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "documentation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DocumentationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "documentation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UpdatePhoneNumberRouteParams is parameters of update_phone_number_route operation.
 type UpdatePhoneNumberRouteParams struct {
-	// The id of an agent. This is returned on agent creation.
+	// The phone number ID. This is returned when a phone number is imported.
 	PhoneNumberID string
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
 	// your xi-api-key using the 'Profile' tab on the website.
@@ -30139,6 +43564,123 @@ func decodeUpdateWorkspaceMemberParams(args [0]string, argsEscaped bool, r *http
 	return params, nil
 }
 
+// UploadFileRouteParams is parameters of upload_file_route operation.
+type UploadFileRouteParams struct {
+	ConversationID string
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackUploadFileRouteParams(packed middleware.Parameters) (params UploadFileRouteParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "conversation_id",
+			In:   "path",
+		}
+		params.ConversationID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeUploadFileRouteParams(args [1]string, argsEscaped bool, r *http.Request) (params UploadFileRouteParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode path: conversation_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "conversation_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ConversationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "conversation_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UsageCharactersParams is parameters of usage_characters operation.
 type UsageCharactersParams struct {
 	// UTC Unix timestamp for the start of the usage window, in milliseconds. To include the first day of
@@ -30740,6 +44282,147 @@ func decodeVerifyPvcVoiceCaptchaParams(args [1]string, argsEscaped bool, r *http
 	return params, nil
 }
 
+// VideoToMusicParams is parameters of video_to_music operation.
+type VideoToMusicParams struct {
+	// Output format of the generated audio. Formatted as codec_sample_rate_bitrate. So an mp3 with 22.
+	// 05kHz sample rate at 32kbs is represented as mp3_22050_32. MP3 with 192kbps bitrate requires you
+	// to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be
+	// subscribed to Pro tier or above. Note that the μ-law format (sometimes written mu-law, often
+	// approximated as u-law) is commonly used for Twilio audio inputs.
+	OutputFormat OptAllowedOutputFormats `json:",omitempty,omitzero"`
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackVideoToMusicParams(packed middleware.Parameters) (params VideoToMusicParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "output_format",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.OutputFormat = v.(OptAllowedOutputFormats)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeVideoToMusicParams(args [0]string, argsEscaped bool, r *http.Request) (params VideoToMusicParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	h := uri.NewHeaderDecoder(r.Header)
+	// Set default value for query: output_format.
+	{
+		val := AllowedOutputFormats("mp3_44100_192")
+		params.OutputFormat.SetTo(val)
+	}
+	// Decode query: output_format.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "output_format",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotOutputFormatVal AllowedOutputFormats
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotOutputFormatVal = AllowedOutputFormats(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.OutputFormat.SetTo(paramsDotOutputFormatVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.OutputFormat.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "output_format",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // WhatsappOutboundCallParams is parameters of whatsapp_outbound_call operation.
 type WhatsappOutboundCallParams struct {
 	// Your API key. This is required by most endpoints to access our API programmatically. You can view
@@ -30761,6 +44444,70 @@ func unpackWhatsappOutboundCallParams(packed middleware.Parameters) (params What
 }
 
 func decodeWhatsappOutboundCallParams(args [0]string, argsEscaped bool, r *http.Request) (params WhatsappOutboundCallParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: xi-api-key.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotXiAPIKeyVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotXiAPIKeyVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.XiAPIKey.SetTo(paramsDotXiAPIKeyVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "xi-api-key",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// WhatsappOutboundMessageParams is parameters of whatsapp_outbound_message operation.
+type WhatsappOutboundMessageParams struct {
+	// Your API key. This is required by most endpoints to access our API programmatically. You can view
+	// your xi-api-key using the 'Profile' tab on the website.
+	XiAPIKey OptNilString `json:",omitempty,omitzero"`
+}
+
+func unpackWhatsappOutboundMessageParams(packed middleware.Parameters) (params WhatsappOutboundMessageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "xi-api-key",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.XiAPIKey = v.(OptNilString)
+		}
+	}
+	return params
+}
+
+func decodeWhatsappOutboundMessageParams(args [0]string, argsEscaped bool, r *http.Request) (params WhatsappOutboundMessageParams, _ error) {
 	h := uri.NewHeaderDecoder(r.Header)
 	// Decode header: xi-api-key.
 	if err := func() error {

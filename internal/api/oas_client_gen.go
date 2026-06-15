@@ -17,7 +17,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -47,12 +47,13 @@ type Invoker interface {
 	// Adds the given ElevenLab Turbo V2/V2.5 language code to the resource. Does not automatically
 	// generate transcripts/translations/audio.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/language
 	AddLanguage(ctx context.Context, request *BodyAddALanguageToTheResourceV1DubbingResourceDubbingIDLanguagePost, params AddLanguageParams) (AddLanguageRes, error)
 	// AddMember invokes add_member operation.
 	//
-	// Adds a member of your workspace to the specified group. This endpoint may only be called by
-	// workspace administrators.
+	// Adds a member of your workspace to the specified group. Requires `group_members_manage` permission.
 	//
 	// POST /v1/workspace/groups/{group_id}/members
 	AddMember(ctx context.Context, request *BodyAddMemberToUserGroupV1WorkspaceGroupsGroupIDMembersPost, params AddMemberParams) (AddMemberRes, error)
@@ -80,6 +81,19 @@ type Invoker interface {
 	//
 	// POST /v1/voices/add
 	AddVoice(ctx context.Context, request *BodyAddVoiceV1VoicesAddPostMultipart, params AddVoiceParams) (AddVoiceRes, error)
+	// AgentTestingBulkMoveRoute invokes agent_testing_bulk_move_route operation.
+	//
+	// Moves multiple tests or folders from one folder to another.
+	//
+	// POST /v1/convai/agent-testing/bulk-move
+	AgentTestingBulkMoveRoute(ctx context.Context, request *BodyBulkMoveTestsToFolderV1ConvaiAgentTestingBulkMovePost, params AgentTestingBulkMoveRouteParams) (AgentTestingBulkMoveRouteRes, error)
+	// AssignConversationTagsRoute invokes assign_conversation_tags_route operation.
+	//
+	// Assign one or more conversation tags to a conversation. Tags that are already assigned are ignored.
+	//  Tags must belong to the same workspace.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/tags
+	AssignConversationTagsRoute(ctx context.Context, request *AssignConversationTagsRequestModel, params AssignConversationTagsRouteParams) (AssignConversationTagsRouteRes, error)
 	// AudioIsolation invokes audio_isolation operation.
 	//
 	// Removes background noise from audio.
@@ -98,24 +112,26 @@ type Invoker interface {
 	//
 	// POST /v1/audio-native/{project_id}/content
 	AudioNativeProjectUpdateContentEndpoint(ctx context.Context, request OptBodyUpdateAudioNativeProjectContentV1AudioNativeProjectIDContentPostMultipart, params AudioNativeProjectUpdateContentEndpointParams) (AudioNativeProjectUpdateContentEndpointRes, error)
+	// AudioNativeUpdateContentFromURL invokes audio_native_update_content_from_url operation.
+	//
+	// Finds an AudioNative project matching the provided URL, extracts content from the URL, updates the
+	// project content, and queues it for conversion and auto-publishing.
+	//
+	// POST /v1/audio-native/content
+	AudioNativeUpdateContentFromURL(ctx context.Context, request *BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPost, params AudioNativeUpdateContentFromURLParams) (AudioNativeUpdateContentFromURLRes, error)
 	// CancelBatchCall invokes cancel_batch_call operation.
 	//
 	// Cancel a running batch call and set all recipients to cancelled status.
 	//
 	// POST /v1/convai/batch-calling/{batch_id}/cancel
 	CancelBatchCall(ctx context.Context, params CancelBatchCallParams) (CancelBatchCallRes, error)
-	// ComposeDetailed invokes compose_detailed operation.
+	// CancelFileUploadRoute invokes cancel_file_upload_route operation.
 	//
-	// Compose a song from a prompt or a composition plan.
+	// Remove a file upload from a conversation. Only possible if the file hasn't already been used in
+	// the conversation.
 	//
-	// POST /v1/music/detailed
-	ComposeDetailed(ctx context.Context, request OptBodyComposeMusicWithADetailedResponseV1MusicDetailedPost, params ComposeDetailedParams) (ComposeDetailedRes, error)
-	// ComposePlan invokes compose_plan operation.
-	//
-	// Generate a composition plan from a prompt.
-	//
-	// POST /v1/music/plan
-	ComposePlan(ctx context.Context, request *BodyGenerateCompositionPlanV1MusicPlanPost, params ComposePlanParams) (ComposePlanRes, error)
+	// DELETE /v1/convai/conversations/{conversation_id}/files/{file_id}
+	CancelFileUploadRoute(ctx context.Context, params CancelFileUploadRouteParams) (CancelFileUploadRouteRes, error)
 	// ConvertChapterEndpoint invokes convert_chapter_endpoint operation.
 	//
 	// Starts conversion of a specific chapter.
@@ -128,12 +144,18 @@ type Invoker interface {
 	//
 	// POST /v1/studio/projects/{project_id}/convert
 	ConvertProjectEndpoint(ctx context.Context, params ConvertProjectEndpointParams) (ConvertProjectEndpointRes, error)
-	// CreateAgentResponseTestRoute invokes create_agent_response_test_route operation.
+	// CreateAgentDeploymentRoute invokes create_agent_deployment_route operation.
 	//
-	// Creates a new agent response test.
+	// Create a new deployment for an agent.
 	//
-	// POST /v1/convai/agent-testing/create
-	CreateAgentResponseTestRoute(ctx context.Context, request *CreateUnitTestRequest, params CreateAgentResponseTestRouteParams) (CreateAgentResponseTestRouteRes, error)
+	// POST /v1/convai/agents/{agent_id}/deployments
+	CreateAgentDeploymentRoute(ctx context.Context, request *BodyCreateOrUpdateDeploymentsV1ConvaiAgentsAgentIDDeploymentsPost, params CreateAgentDeploymentRouteParams) (CreateAgentDeploymentRouteRes, error)
+	// CreateAgentTestFolderRoute invokes create_agent_test_folder_route operation.
+	//
+	// Creates a folder for organizing agent tests.
+	//
+	// POST /v1/convai/agent-testing/folders
+	CreateAgentTestFolderRoute(ctx context.Context, request *BodyCreateAgentTestFolderV1ConvaiAgentTestingFoldersPost, params CreateAgentTestFolderRouteParams) (CreateAgentTestFolderRouteRes, error)
 	// CreateAudioNativeProject invokes create_audio_native_project operation.
 	//
 	// Creates Audio Native enabled project, optionally starts conversion and returns project ID and
@@ -152,8 +174,16 @@ type Invoker interface {
 	// Creates a new segment in dubbing resource with a start and end time for the speaker in every
 	// available language. Does not automatically generate transcripts/translations/audio.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/segment
 	CreateClip(ctx context.Context, request *SegmentCreatePayload, params CreateClipParams) (CreateClipRes, error)
+	// CreateConversationTagRoute invokes create_conversation_tag_route operation.
+	//
+	// Create a new conversation tag for the workspace.
+	//
+	// POST /v1/convai/tags
+	CreateConversationTagRoute(ctx context.Context, request *CreateConversationTagRequestModel, params CreateConversationTagRouteParams) (CreateConversationTagRouteRes, error)
 	// CreateDubbing invokes create_dubbing operation.
 	//
 	// Dubs a provided audio or video file into given language.
@@ -166,6 +196,12 @@ type Invoker interface {
 	//
 	// POST /v1/convai/knowledge-base/file
 	CreateFileDocumentRoute(ctx context.Context, request *BodyCreateFileDocumentV1ConvaiKnowledgeBaseFilePostMultipart, params CreateFileDocumentRouteParams) (CreateFileDocumentRouteRes, error)
+	// CreateFolderRoute invokes create_folder_route operation.
+	//
+	// Create a folder used for grouping documents together.
+	//
+	// POST /v1/convai/knowledge-base/folder
+	CreateFolderRoute(ctx context.Context, request *BodyCreateFolderV1ConvaiKnowledgeBaseFolderPost, params CreateFolderRouteParams) (CreateFolderRouteRes, error)
 	// CreatePvcVoice invokes create_pvc_voice operation.
 	//
 	// Creates a new PVC voice with metadata but no samples.
@@ -187,6 +223,8 @@ type Invoker interface {
 	// CreateSpeaker invokes create_speaker operation.
 	//
 	// Create A New Speaker.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/dubbing/resource/{dubbing_id}/speaker
 	CreateSpeaker(ctx context.Context, request OptBodyCreateANewSpeakerV1DubbingResourceDubbingIDSpeakerPost, params CreateSpeakerParams) (CreateSpeakerRes, error)
@@ -210,25 +248,49 @@ type Invoker interface {
 	//
 	// POST /v1/text-to-voice
 	CreateVoice(ctx context.Context, request *BodyCreateANewVoiceFromVoicePreviewV1TextToVoicePost, params CreateVoiceParams) (CreateVoiceRes, error)
-	// CreateVoiceOld invokes create_voice_old operation.
-	//
-	// Create a previously generated voice. This endpoint should be called after you fetched a
-	// generated_voice_id using /v1/voice-generation/generate-voice.
-	//
-	// POST /v1/voice-generation/create-voice
-	CreateVoiceOld(ctx context.Context, request *BodyCreateAPreviouslyGeneratedVoiceV1VoiceGenerationCreateVoicePost, params CreateVoiceOldParams) (CreateVoiceOldRes, error)
 	// CreateWorkspaceWebhookRoute invokes create_workspace_webhook_route operation.
 	//
 	// Create a new webhook for the workspace with the specified authentication type.
 	//
 	// POST /v1/workspace/webhooks
 	CreateWorkspaceWebhookRoute(ctx context.Context, request *BodyCreateWorkspaceWebhookV1WorkspaceWebhooksPost, params CreateWorkspaceWebhookRouteParams) (CreateWorkspaceWebhookRouteRes, error)
+	// DeleteAgentDraftRoute invokes delete_agent_draft_route operation.
+	//
+	// Delete a draft for an agent.
+	//
+	// DELETE /v1/convai/agents/{agent_id}/drafts
+	DeleteAgentDraftRoute(ctx context.Context, params DeleteAgentDraftRouteParams) (DeleteAgentDraftRouteRes, error)
 	// DeleteAgentRoute invokes delete_agent_route operation.
 	//
 	// Delete an agent.
 	//
 	// DELETE /v1/convai/agents/{agent_id}
 	DeleteAgentRoute(ctx context.Context, params DeleteAgentRouteParams) (DeleteAgentRouteRes, error)
+	// DeleteAgentTestFolderRoute invokes delete_agent_test_folder_route operation.
+	//
+	// Deletes an agent test folder by ID. Use force=true to delete a non-empty folder and all its
+	// contents.
+	//
+	// DELETE /v1/convai/agent-testing/folders/{folder_id}
+	DeleteAgentTestFolderRoute(ctx context.Context, params DeleteAgentTestFolderRouteParams) (DeleteAgentTestFolderRouteRes, error)
+	// DeleteAudioIsolationHistoryItem invokes delete_audio_isolation_history_item operation.
+	//
+	// Deletes a specific audio isolation history item and the associated media files.
+	//
+	// DELETE /v1/audio-isolation/history/{history_item_id}
+	DeleteAudioIsolationHistoryItem(ctx context.Context, params DeleteAudioIsolationHistoryItemParams) (DeleteAudioIsolationHistoryItemRes, error)
+	// DeleteAuthConnection invokes delete_auth_connection operation.
+	//
+	// Delete an auth connection.
+	//
+	// DELETE /v1/workspace/auth-connections/{auth_connection_id}
+	DeleteAuthConnection(ctx context.Context, params DeleteAuthConnectionParams) (DeleteAuthConnectionRes, error)
+	// DeleteBatchCall invokes delete_batch_call operation.
+	//
+	// Permanently delete a batch call and all recipient records. Conversations remain in history.
+	//
+	// DELETE /v1/convai/batch-calling/{batch_id}
+	DeleteBatchCall(ctx context.Context, params DeleteBatchCallParams) (DeleteBatchCallRes, error)
 	// DeleteChapterEndpoint invokes delete_chapter_endpoint operation.
 	//
 	// Deletes a chapter.
@@ -247,6 +309,12 @@ type Invoker interface {
 	//
 	// DELETE /v1/convai/conversations/{conversation_id}
 	DeleteConversationRoute(ctx context.Context, params DeleteConversationRouteParams) (DeleteConversationRouteRes, error)
+	// DeleteConversationTagRoute invokes delete_conversation_tag_route operation.
+	//
+	// Delete a conversation tag. Restricted to the tag owner or a workspace admin.
+	//
+	// DELETE /v1/convai/tags/{tag_id}
+	DeleteConversationTagRoute(ctx context.Context, params DeleteConversationTagRouteParams) (DeleteConversationTagRouteRes, error)
 	// DeleteDubbing invokes delete_dubbing operation.
 	//
 	// Deletes a dubbing project.
@@ -257,13 +325,13 @@ type Invoker interface {
 	//
 	// Invalidates an existing email invitation. The invitation will still show up in the inbox it has
 	// been delivered to, but activating it to join the workspace won't work. This endpoint may only be
-	// called by workspace administrators.
+	// called by workspace members with the WORKSPACE_MEMBERS_INVITE permission.
 	//
 	// DELETE /v1/workspace/invites
 	DeleteInvite(ctx context.Context, request *BodyDeleteExistingInvitationV1WorkspaceInvitesDelete, params DeleteInviteParams) (DeleteInviteRes, error)
 	// DeleteKnowledgeBaseDocument invokes delete_knowledge_base_document operation.
 	//
-	// Delete a document from the knowledge base.
+	// Delete a document or folder from the knowledge base.
 	//
 	// DELETE /v1/convai/knowledge-base/{documentation_id}
 	DeleteKnowledgeBaseDocument(ctx context.Context, params DeleteKnowledgeBaseDocumentParams) (DeleteKnowledgeBaseDocumentRes, error)
@@ -313,6 +381,8 @@ type Invoker interface {
 	//
 	// Deletes a single segment from the dubbing.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// DELETE /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}
 	DeleteSegment(ctx context.Context, params DeleteSegmentParams) (DeleteSegmentRes, error)
 	// DeleteServiceAccountAPIKey invokes delete_service_account_api_key operation.
@@ -321,6 +391,12 @@ type Invoker interface {
 	//
 	// DELETE /v1/service-accounts/{service_account_user_id}/api-keys/{api_key_id}
 	DeleteServiceAccountAPIKey(ctx context.Context, params DeleteServiceAccountAPIKeyParams) (DeleteServiceAccountAPIKeyRes, error)
+	// DeleteSpeechEngine invokes delete_speech_engine operation.
+	//
+	// Delete a Speech Engine resource.
+	//
+	// DELETE /v1/speech-engine/{speech_engine_id}
+	DeleteSpeechEngine(ctx context.Context, params DeleteSpeechEngineParams) (DeleteSpeechEngineRes, error)
 	// DeleteSpeechHistoryItem invokes delete_speech_history_item operation.
 	//
 	// Delete a history item by its ID.
@@ -357,6 +433,14 @@ type Invoker interface {
 	//
 	// DELETE /v1/workspace/webhooks/{webhook_id}
 	DeleteWorkspaceWebhookRoute(ctx context.Context, params DeleteWorkspaceWebhookRouteParams) (DeleteWorkspaceWebhookRouteRes, error)
+	// Disable invokes disable operation.
+	//
+	// Disable the API key used to authenticate this request. Requires the query parameter
+	// `api_key_name=self` as an explicit confirmation. This endpoint requires additional permissions and
+	// is not enabled by default. Reach out to your ElevenLabs contact to request access.
+	//
+	// POST /v1/workspaces/api-keys/disable
+	Disable(ctx context.Context, params DisableParams) (DisableRes, error)
 	// DownloadSpeechHistoryItems invokes download_speech_history_items operation.
 	//
 	// Download one or more history items. If one history item ID is provided, we will return a single
@@ -369,6 +453,8 @@ type Invoker interface {
 	//
 	// Regenerate the dubs for either the entire resource or the specified segments/languages. Will
 	// automatically transcribe and translate any missing transcriptions and translations.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/dubbing/resource/{dubbing_id}/dub
 	Dub(ctx context.Context, request *BodyDubsAllOrSomeSegmentsAndLanguagesV1DubbingResourceDubbingIDDubPost, params DubParams) (DubRes, error)
@@ -407,7 +493,7 @@ type Invoker interface {
 	// Update an existing API key for a service account.
 	//
 	// PATCH /v1/service-accounts/{service_account_user_id}/api-keys/{api_key_id}
-	EditServiceAccountAPIKey(ctx context.Context, request *BodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (EditServiceAccountAPIKeyRes, error)
+	EditServiceAccountAPIKey(ctx context.Context, request OptBodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (EditServiceAccountAPIKeyRes, error)
 	// EditVoice invokes edit_voice operation.
 	//
 	// Edit a voice created by you.
@@ -434,20 +520,6 @@ type Invoker interface {
 	//
 	// POST /v1/forced-alignment
 	ForcedAlignment(ctx context.Context, request *BodyCreateForcedAlignmentV1ForcedAlignmentPostMultipart, params ForcedAlignmentParams) (ForcedAlignmentRes, error)
-	// Generate invokes generate operation.
-	//
-	// Compose a song from a prompt or a composition plan.
-	//
-	// POST /v1/music
-	Generate(ctx context.Context, request OptBodyComposeMusicV1MusicPost, params GenerateParams) (GenerateRes, error)
-	// GenerateRandomVoice invokes generate_random_voice operation.
-	//
-	// Generate a random voice based on parameters. This method returns a generated_voice_id in the
-	// response header, and a sample of the voice in the body. If you like the generated voice call
-	// /v1/voice-generation/create-voice with the generated_voice_id to create the voice.
-	//
-	// POST /v1/voice-generation/generate-voice
-	GenerateRandomVoice(ctx context.Context, request *BodyGenerateARandomVoiceV1VoiceGenerationGenerateVoicePost, params GenerateRandomVoiceParams) (GenerateRandomVoiceRes, error)
 	// GetAgentKnowledgeBaseSize invokes get_agent_knowledge_base_size operation.
 	//
 	// Returns the number of pages in the agent's knowledge base.
@@ -485,6 +557,24 @@ type Invoker interface {
 	//
 	// POST /v1/convai/agent-testing/summaries
 	GetAgentResponseTestsSummariesRoute(ctx context.Context, request *ListTestsByIdsRequestModel, params GetAgentResponseTestsSummariesRouteParams) (GetAgentResponseTestsSummariesRouteRes, error)
+	// GetAgentSummariesRoute invokes get_agent_summaries_route operation.
+	//
+	// Returns summaries for the specified agents.
+	//
+	// GET /v1/convai/agents/summaries
+	GetAgentSummariesRoute(ctx context.Context, params GetAgentSummariesRouteParams) (GetAgentSummariesRouteRes, error)
+	// GetAgentTestFolderRoute invokes get_agent_test_folder_route operation.
+	//
+	// Gets an agent test folder by ID, including its folder path.
+	//
+	// GET /v1/convai/agent-testing/folders/{folder_id}
+	GetAgentTestFolderRoute(ctx context.Context, params GetAgentTestFolderRouteParams) (GetAgentTestFolderRouteRes, error)
+	// GetAgentTopicsRoute invokes get_agent_topics_route operation.
+	//
+	// Returns the latest topic discovery run results for a given agent.
+	//
+	// GET /v1/convai/agents/{agent_id}/topics
+	GetAgentTopicsRoute(ctx context.Context, params GetAgentTopicsRouteParams) (GetAgentTopicsRouteRes, error)
 	// GetAgentsRoute invokes get_agents_route operation.
 	//
 	// Returns a list of your agents and their metadata.
@@ -503,6 +593,12 @@ type Invoker interface {
 	//
 	// GET /v1/history/{history_item_id}/audio
 	GetAudioFullFromSpeechHistoryItem(ctx context.Context, params GetAudioFullFromSpeechHistoryItemParams) (GetAudioFullFromSpeechHistoryItemRes, error)
+	// GetAudioIsolationHistory invokes get_audio_isolation_history operation.
+	//
+	// Returns a list of all your audio isolation generations.
+	//
+	// GET /v1/audio-isolation/history
+	GetAudioIsolationHistory(ctx context.Context, params GetAudioIsolationHistoryParams) (GetAudioIsolationHistoryRes, error)
 	// GetAudioNativeProjectSettingsEndpoint invokes get_audio_native_project_settings_endpoint operation.
 	//
 	// Get player settings for the specific project.
@@ -515,6 +611,18 @@ type Invoker interface {
 	//
 	// GET /v1/convai/batch-calling/{batch_id}
 	GetBatchCall(ctx context.Context, params GetBatchCallParams) (GetBatchCallRes, error)
+	// GetBranchRoute invokes get_branch_route operation.
+	//
+	// Get information about a single agent branch.
+	//
+	// GET /v1/convai/agents/{agent_id}/branches/{branch_id}
+	GetBranchRoute(ctx context.Context, params GetBranchRouteParams) (GetBranchRouteRes, error)
+	// GetBranchesRoute invokes get_branches_route operation.
+	//
+	// Returns a list of branches an agent has.
+	//
+	// GET /v1/convai/agents/{agent_id}/branches
+	GetBranchesRoute(ctx context.Context, params GetBranchesRouteParams) (GetBranchesRouteRes, error)
 	// GetChapterSnapshotEndpoint invokes get_chapter_snapshot_endpoint operation.
 	//
 	// Returns the chapter snapshot.
@@ -558,6 +666,24 @@ type Invoker interface {
 	//
 	// GET /v1/convai/conversation/get-signed-url
 	GetConversationSignedLink(ctx context.Context, params GetConversationSignedLinkParams) (GetConversationSignedLinkRes, error)
+	// GetConversationSipMessages invokes get_conversation_sip_messages operation.
+	//
+	// Get SIP messages associated with a conversation's phone call.
+	//
+	// GET /v1/convai/conversations/{conversation_id}/sip-messages
+	GetConversationSipMessages(ctx context.Context, params GetConversationSipMessagesParams) (GetConversationSipMessagesRes, error)
+	// GetConversationTagRoute invokes get_conversation_tag_route operation.
+	//
+	// Get a conversation tag by ID.
+	//
+	// GET /v1/convai/tags/{tag_id}
+	GetConversationTagRoute(ctx context.Context, params GetConversationTagRouteParams) (GetConversationTagRouteRes, error)
+	// GetConversationUsersRoute invokes get_conversation_users_route operation.
+	//
+	// Get distinct users from conversations with pagination.
+	//
+	// GET /v1/convai/users
+	GetConversationUsersRoute(ctx context.Context, params GetConversationUsersRouteParams) (GetConversationUsersRouteRes, error)
 	// GetDashboardSettingsRoute invokes get_dashboard_settings_route operation.
 	//
 	// Retrieve Convai dashboard settings for the workspace.
@@ -570,6 +696,12 @@ type Invoker interface {
 	//
 	// GET /v1/convai/knowledge-base/{documentation_id}/chunk/{chunk_id}
 	GetDocumentationChunkFromKnowledgeBase(ctx context.Context, params GetDocumentationChunkFromKnowledgeBaseParams) (GetDocumentationChunkFromKnowledgeBaseRes, error)
+	// GetDocumentationChunksFromKnowledgeBase invokes get_documentation_chunks_from_knowledge_base operation.
+	//
+	// Get all RAG chunks for a specific knowledge base document.
+	//
+	// GET /v1/convai/knowledge-base/{documentation_id}/chunks
+	GetDocumentationChunksFromKnowledgeBase(ctx context.Context, params GetDocumentationChunksFromKnowledgeBaseParams) (GetDocumentationChunksFromKnowledgeBaseRes, error)
 	// GetDocumentationFromKnowledgeBase invokes get_documentation_from_knowledge_base operation.
 	//
 	// Get details about a specific documentation making up the agent's knowledge base.
@@ -594,6 +726,8 @@ type Invoker interface {
 	//
 	// Returns transcript for the dub as an SRT or WEBVTT file.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// GET /v1/dubbing/{dubbing_id}/transcript/{language_code}
 	GetDubbedTranscriptFile(ctx context.Context, params GetDubbedTranscriptFileParams) (GetDubbedTranscriptFileRes, error)
 	// GetDubbingResource invokes get_dubbing_resource operation.
@@ -601,14 +735,22 @@ type Invoker interface {
 	// Given a dubbing ID generated from the '/v1/dubbing' endpoint with studio enabled, returns the
 	// dubbing resource.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// GET /v1/dubbing/resource/{dubbing_id}
 	GetDubbingResource(ctx context.Context, params GetDubbingResourceParams) (GetDubbingResourceRes, error)
-	// GetGenerateVoiceParameters invokes get_generate_voice_parameters operation.
+	// GetDubbingTranscripts invokes get_dubbing_transcripts operation.
 	//
-	// Get possible parameters for the /v1/voice-generation/generate-voice endpoint.
+	// Fetch the transcript for one of the languages in a dub.
 	//
-	// GET /v1/voice-generation/generate-voice/parameters
-	GetGenerateVoiceParameters(ctx context.Context) (*VoiceGenerationParameterResponseModel, error)
+	// GET /v1/dubbing/{dubbing_id}/transcripts/{language_code}/format/{format_type}
+	GetDubbingTranscripts(ctx context.Context, params GetDubbingTranscriptsParams) (GetDubbingTranscriptsRes, error)
+	// GetGroupsEndpoint invokes get_groups_endpoint operation.
+	//
+	// Get all groups in the workspace.
+	//
+	// GET /v1/workspace/groups
+	GetGroupsEndpoint(ctx context.Context, params GetGroupsEndpointParams) (GetGroupsEndpointRes, error)
 	// GetKnowledgeBaseContent invokes get_knowledge_base_content operation.
 	//
 	// Get the entire content of a document from the knowledge base.
@@ -627,6 +769,13 @@ type Invoker interface {
 	//
 	// GET /v1/convai/knowledge-base
 	GetKnowledgeBaseListRoute(ctx context.Context, params GetKnowledgeBaseListRouteParams) (GetKnowledgeBaseListRouteRes, error)
+	// GetKnowledgeBaseSourceFileURL invokes get_knowledge_base_source_file_url operation.
+	//
+	// Get a signed URL to download the original source file of a file-type document from the knowledge
+	// base.
+	//
+	// GET /v1/convai/knowledge-base/{documentation_id}/source-file-url
+	GetKnowledgeBaseSourceFileURL(ctx context.Context, params GetKnowledgeBaseSourceFileURLParams) (GetKnowledgeBaseSourceFileURLRes, error)
 	// GetLibraryVoices invokes get_library_voices operation.
 	//
 	// Retrieves a list of shared voices.
@@ -660,6 +809,7 @@ type Invoker interface {
 	// GetOrCreateRagIndexes invokes get_or_create_rag_indexes operation.
 	//
 	// Retrieves and/or creates RAG indexes for multiple knowledge base documents in a single request.
+	// Maximum 100 items per request.
 	//
 	// POST /v1/convai/knowledge-base/rag-index
 	GetOrCreateRagIndexes(ctx context.Context, request *BodyComputeRAGIndexesInBatchV1ConvaiKnowledgeBaseRagIndexPost, params GetOrCreateRagIndexesParams) (GetOrCreateRagIndexesRes, error)
@@ -669,6 +819,12 @@ type Invoker interface {
 	//
 	// GET /v1/convai/phone-numbers/{phone_number_id}
 	GetPhoneNumberRoute(ctx context.Context, params GetPhoneNumberRouteParams) (GetPhoneNumberRouteRes, error)
+	// GetProjectMutedTracksEndpoint invokes get_project_muted_tracks_endpoint operation.
+	//
+	// Returns a list of chapter IDs that have muted tracks in a project.
+	//
+	// GET /v1/studio/projects/{project_id}/muted-tracks
+	GetProjectMutedTracksEndpoint(ctx context.Context, params GetProjectMutedTracksEndpointParams) (GetProjectMutedTracksEndpointRes, error)
 	// GetProjectSnapshotEndpoint invokes get_project_snapshot_endpoint operation.
 	//
 	// Returns the project snapshot.
@@ -693,12 +849,6 @@ type Invoker interface {
 	//
 	// GET /v1/pronunciation-dictionaries
 	GetPronunciationDictionariesMetadata(ctx context.Context, params GetPronunciationDictionariesMetadataParams) (GetPronunciationDictionariesMetadataRes, error)
-	// GetPronunciationDictionaryMetadata invokes get_pronunciation_dictionary_metadata operation.
-	//
-	// Get metadata for a pronunciation dictionary.
-	//
-	// GET /v1/pronunciation-dictionaries/{pronunciation_dictionary_id}
-	GetPronunciationDictionaryMetadata(ctx context.Context, params GetPronunciationDictionaryMetadataParams) (GetPronunciationDictionaryMetadataRes, error)
 	// GetPronunciationDictionaryVersionPls invokes get_pronunciation_dictionary_version_pls operation.
 	//
 	// Get a PLS file with a pronunciation dictionary version rules.
@@ -754,6 +904,12 @@ type Invoker interface {
 	//
 	// GET /v1/workspace/resources/{resource_id}
 	GetResourceMetadata(ctx context.Context, params GetResourceMetadataParams) (GetResourceMetadataRes, error)
+	// GetSecretRoute invokes get_secret_route operation.
+	//
+	// Get a workspace secret by ID.
+	//
+	// GET /v1/convai/secrets/{secret_id}
+	GetSecretRoute(ctx context.Context, params GetSecretRouteParams) (GetSecretRouteRes, error)
 	// GetSecretsRoute invokes get_secrets_route operation.
 	//
 	// Get all workspace secrets for the user.
@@ -791,6 +947,8 @@ type Invoker interface {
 	//
 	// Fetch the top 10 similar voices to a speaker, including the voice IDs, names, descriptions, and,
 	// where possible, a sample audio recording.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// GET /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/similar-voices
 	GetSimilarVoicesForSpeaker(ctx context.Context, params GetSimilarVoicesForSpeakerParams) (GetSimilarVoicesForSpeakerRes, error)
@@ -830,6 +988,12 @@ type Invoker interface {
 	//
 	// GET /v1/convai/tools/{tool_id}/dependent-agents
 	GetToolDependentAgentsRoute(ctx context.Context, params GetToolDependentAgentsRouteParams) (GetToolDependentAgentsRouteRes, error)
+	// GetToolExecutionsRoute invokes get_tool_executions_route operation.
+	//
+	// Get paginated list of tool executions for a specific tool.
+	//
+	// GET /v1/convai/tools/{tool_id}/executions
+	GetToolExecutionsRoute(ctx context.Context, params GetToolExecutionsRouteParams) (GetToolExecutionsRouteRes, error)
 	// GetTranscriptByID invokes get_transcript_by_id operation.
 	//
 	// Retrieve a previously generated transcript by its ID.
@@ -848,6 +1012,12 @@ type Invoker interface {
 	//
 	// GET /v2/voices
 	GetUserVoicesV2(ctx context.Context, params GetUserVoicesV2Params) (GetUserVoicesV2Res, error)
+	// GetVersionMetadataRoute invokes get_version_metadata_route operation.
+	//
+	// Get metadata for a specific agent version.
+	//
+	// GET /v1/convai/agents/{agent_id}/versions/{version_id}
+	GetVersionMetadataRoute(ctx context.Context, params GetVersionMetadataRouteParams) (GetVersionMetadataRouteRes, error)
 	// GetVoiceByID invokes get_voice_by_id operation.
 	//
 	// Returns metadata about a specific voice.
@@ -870,7 +1040,8 @@ type Invoker interface {
 	GetVoiceSettingsDefault(ctx context.Context) (*VoiceSettingsResponseModel, error)
 	// GetVoices invokes get_voices operation.
 	//
-	// Returns a list of all available voices for a user.
+	// Returns a list of all available voices for a user. Stops working once the user's workspace exceeds
+	// 500 voices.
 	//
 	// GET /v1/voices
 	GetVoices(ctx context.Context, params GetVoicesParams) (GetVoicesRes, error)
@@ -898,6 +1069,12 @@ type Invoker interface {
 	//
 	// GET /v1/workspace/webhooks
 	GetWorkspaceWebhooksRoute(ctx context.Context, params GetWorkspaceWebhooksRouteParams) (GetWorkspaceWebhooksRouteRes, error)
+	// HandleExotelOutboundCall invokes handle_exotel_outbound_call operation.
+	//
+	// Handle an outbound call via Exotel Connect API.
+	//
+	// POST /v1/convai/exotel/outbound-call
+	HandleExotelOutboundCall(ctx context.Context, request *BodyHandleAnOutboundCallViaExotelV1ConvaiExotelOutboundCallPost, params HandleExotelOutboundCallParams) (HandleExotelOutboundCallRes, error)
 	// HandleSipTrunkOutboundCall invokes handle_sip_trunk_outbound_call operation.
 	//
 	// Handle an outbound call via SIP trunk.
@@ -910,19 +1087,13 @@ type Invoker interface {
 	//
 	// POST /v1/convai/twilio/outbound-call
 	HandleTwilioOutboundCall(ctx context.Context, request *BodyHandleAnOutboundCallViaTwilioV1ConvaiTwilioOutboundCallPost, params HandleTwilioOutboundCallParams) (HandleTwilioOutboundCallRes, error)
-	// ImportWhatsappAccount invokes import_whatsapp_account operation.
-	//
-	// Import a WhatsApp account.
-	//
-	// POST /v1/convai/whatsapp-accounts
-	ImportWhatsappAccount(ctx context.Context, request *ImportWhatsAppAccountRequest, params ImportWhatsappAccountParams) (ImportWhatsappAccountRes, error)
 	// InviteUser invokes invite_user operation.
 	//
 	// Sends an email invitation to join your workspace to the provided email. If the user doesn't have
 	// an account they will be prompted to create one. If the user accepts this invite they will be added
 	// as a user to your workspace and your subscription using one of your seats. This endpoint may only
-	// be called by workspace administrators. If the user is already in the workspace a 400 error will be
-	// returned.
+	// be called by workspace members with the WORKSPACE_MEMBERS_INVITE permission. If the user is
+	// already in the workspace a 400 error will be returned.
 	//
 	// POST /v1/workspace/invites/add
 	InviteUser(ctx context.Context, request *BodyInviteUserV1WorkspaceInvitesAddPost, params InviteUserParams) (InviteUserRes, error)
@@ -932,16 +1103,36 @@ type Invoker interface {
 	// addresses to be part of a verified domain. If the users don't have an account they will be
 	// prompted to create one. If the users accept these invites they will be added as users to your
 	// workspace and your subscription using one of your seats. This endpoint may only be called by
-	// workspace administrators.
+	// workspace members with the WORKSPACE_MEMBERS_INVITE permission.
 	//
 	// POST /v1/workspace/invites/add-bulk
 	InviteUsersBulk(ctx context.Context, request *BodyInviteMultipleUsersV1WorkspaceInvitesAddBulkPost, params InviteUsersBulkParams) (InviteUsersBulkRes, error)
+	// ListAuthConnections invokes list_auth_connections operation.
+	//
+	// Get all auth connections for the workspace.
+	//
+	// GET /v1/workspace/auth-connections
+	ListAuthConnections(ctx context.Context, params ListAuthConnectionsParams) (ListAuthConnectionsRes, error)
+	// ListAvailableLlms invokes list_available_llms operation.
+	//
+	// Returns a list of available LLM models that can be used with agents, including their capabilities
+	// and any deprecation status. The response is filtered based on the data residency of the deployment
+	// and any compliance requirements (e.g. HIPAA) of the workspace subscription.
+	//
+	// GET /v1/convai/llm/list
+	ListAvailableLlms(ctx context.Context, params ListAvailableLlmsParams) (ListAvailableLlmsRes, error)
 	// ListChatResponseTestsRoute invokes list_chat_response_tests_route operation.
 	//
 	// Lists all agent response tests with pagination support and optional search filtering.
 	//
 	// GET /v1/convai/agent-testing
 	ListChatResponseTestsRoute(ctx context.Context, params ListChatResponseTestsRouteParams) (ListChatResponseTestsRouteRes, error)
+	// ListConversationTagsRoute invokes list_conversation_tags_route operation.
+	//
+	// List conversation tags for the workspace, ordered by most recently created first.
+	//
+	// GET /v1/convai/tags
+	ListConversationTagsRoute(ctx context.Context, params ListConversationTagsRouteParams) (ListConversationTagsRouteRes, error)
 	// ListDubs invokes list_dubs operation.
 	//
 	// List the dubs you have access to.
@@ -960,6 +1151,18 @@ type Invoker interface {
 	//
 	// GET /v1/convai/phone-numbers
 	ListPhoneNumbersRoute(ctx context.Context, params ListPhoneNumbersRouteParams) (ListPhoneNumbersRouteRes, error)
+	// ListSipMessages invokes list_sip_messages operation.
+	//
+	// Get SIP messages for a phone number.
+	//
+	// GET /v1/convai/phone-numbers/{phone_number_id}/sip-messages
+	ListSipMessages(ctx context.Context, params ListSipMessagesParams) (ListSipMessagesRes, error)
+	// ListSpeechEngines invokes list_speech_engines operation.
+	//
+	// Returns a paginated list of Speech Engine resources.
+	//
+	// GET /v1/speech-engine
+	ListSpeechEngines(ctx context.Context, params ListSpeechEnginesParams) (ListSpeechEnginesRes, error)
 	// ListTestInvocationsRoute invokes list_test_invocations_route operation.
 	//
 	// Lists all test invocations with pagination support and optional search filtering.
@@ -972,9 +1175,17 @@ type Invoker interface {
 	//
 	// GET /v1/convai/whatsapp-accounts
 	ListWhatsappAccounts(ctx context.Context, params ListWhatsappAccountsParams) (ListWhatsappAccountsRes, error)
+	// MergeBranchIntoTarget invokes merge_branch_into_target operation.
+	//
+	// Merge a branch into a target branch.
+	//
+	// POST /v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge
+	MergeBranchIntoTarget(ctx context.Context, request OptBodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIDBranchesSourceBranchIDMergePost, params MergeBranchIntoTargetParams) (MergeBranchIntoTargetRes, error)
 	// MigrateSegments invokes migrate_segments operation.
 	//
 	// Change the attribution of one or more segments to a different speaker.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/dubbing/resource/{dubbing_id}/migrate-segments
 	MigrateSegments(ctx context.Context, request *BodyMoveSegmentsBetweenSpeakersV1DubbingResourceDubbingIDMigrateSegmentsPost, params MigrateSegmentsParams) (MigrateSegmentsRes, error)
@@ -996,6 +1207,96 @@ type Invoker interface {
 	//
 	// POST /v1/convai/conversations/{conversation_id}/feedback
 	PostConversationFeedbackRoute(ctx context.Context, request *ConversationFeedbackRequestModel, params PostConversationFeedbackRouteParams) (PostConversationFeedbackRouteRes, error)
+	// PostKnowledgeBaseBulkMoveRoute invokes post_knowledge_base_bulk_move_route operation.
+	//
+	// Moves multiple entities from one folder to another.
+	//
+	// POST /v1/convai/knowledge-base/bulk-move
+	PostKnowledgeBaseBulkMoveRoute(ctx context.Context, request *BodyBulkMoveEntitiesToFolderV1ConvaiKnowledgeBaseBulkMovePost, params PostKnowledgeBaseBulkMoveRouteParams) (PostKnowledgeBaseBulkMoveRouteRes, error)
+	// PostKnowledgeBaseMoveRoute invokes post_knowledge_base_move_route operation.
+	//
+	// Moves the entity from one folder to another.
+	//
+	// POST /v1/convai/knowledge-base/{document_id}/move
+	PostKnowledgeBaseMoveRoute(ctx context.Context, request OptBodyMoveEntityToFolderV1ConvaiKnowledgeBaseDocumentIDMovePost, params PostKnowledgeBaseMoveRouteParams) (PostKnowledgeBaseMoveRouteRes, error)
+	// PublicCreateOrder invokes public_create_order operation.
+	//
+	// Creates a new Productions order in the workspace. The order starts in the open state and can be
+	// configured with items before submission.
+	//
+	// POST /v1/productions/orders
+	PublicCreateOrder(ctx context.Context, request OptCreateOrderRequest, params PublicCreateOrderParams) (PublicCreateOrderRes, error)
+	// PublicGetAvailableLanguages invokes public_get_available_languages operation.
+	//
+	// Returns the available languages for a given order item kind.
+	//
+	// GET /v1/productions/orders/languages/{order_item_kind}
+	PublicGetAvailableLanguages(ctx context.Context, params PublicGetAvailableLanguagesParams) (PublicGetAvailableLanguagesRes, error)
+	// PublicGetMediaInfo invokes public_get_media_info operation.
+	//
+	// Retrieves metadata and a time-limited download URL for a previously uploaded media file.
+	//
+	// GET /v1/productions/orders/{order_id}/media/{media_id}
+	PublicGetMediaInfo(ctx context.Context, params PublicGetMediaInfoParams) (PublicGetMediaInfoRes, error)
+	// PublicGetOrder invokes public_get_order operation.
+	//
+	// Retrieves full details for a Productions order.
+	// Quote and pricing information may not be available immediately; if you wish to see the quote
+	// before submission, you may need to poll the order details until it is ready.
+	//
+	// GET /v1/productions/orders/{order_id}
+	PublicGetOrder(ctx context.Context, params PublicGetOrderParams) (PublicGetOrderRes, error)
+	// PublicGetOrderDeliverables invokes public_get_order_deliverables operation.
+	//
+	// Retrieves the delivered files for a completed order. Returns an empty list if the order is not yet
+	// completed.
+	//
+	// GET /v1/productions/orders/{order_id}/deliverables
+	PublicGetOrderDeliverables(ctx context.Context, params PublicGetOrderDeliverablesParams) (PublicGetOrderDeliverablesRes, error)
+	// PublicListOrders invokes public_list_orders operation.
+	//
+	// Lists Productions orders in the workspace. Supports filtering by status and date range, with
+	// pagination.
+	//
+	// GET /v1/productions/orders
+	PublicListOrders(ctx context.Context, params PublicListOrdersParams) (PublicListOrdersRes, error)
+	// PublicRegisterMedia invokes public_register_media operation.
+	//
+	// Registers a media file with an order, either by uploading it directly or by providing a URL to
+	// fetch it from. Exactly one of `media` or `media_url` must be provided. The registered media can
+	// then be referenced when adding order items.
+	//
+	// POST /v1/productions/orders/{order_id}/media
+	PublicRegisterMedia(ctx context.Context, request *BodyRegisterMediaV1ProductionsOrdersOrderIDMediaPostMultipart, params PublicRegisterMediaParams) (PublicRegisterMediaRes, error)
+	// PublicRemoveOrderItem invokes public_remove_order_item operation.
+	//
+	// Removes an order item from an open order.
+	//
+	// DELETE /v1/productions/orders/{order_id}/items/{item_id}
+	PublicRemoveOrderItem(ctx context.Context, params PublicRemoveOrderItemParams) (PublicRemoveOrderItemRes, error)
+	// PublicSubmitOrder invokes public_submit_order operation.
+	//
+	// Submits an open order for processing. The order must have at least one item. Once submitted, items
+	// can no longer be modified.
+	// Upon submission, the workspace will be charged for the order. The quote is based on information
+	// extracted from the uploaded media, such as its duration. The quote may not be available
+	// immediately; if you wish to see the quote before submission, you may need to poll the order
+	// details until the quote is ready.
+	//
+	// POST /v1/productions/orders/{order_id}/submit
+	PublicSubmitOrder(ctx context.Context, params PublicSubmitOrderParams) (PublicSubmitOrderRes, error)
+	// PublicUpdateOrder invokes public_update_order operation.
+	//
+	// Updates an open order.
+	//
+	// PATCH /v1/productions/orders/{order_id}
+	PublicUpdateOrder(ctx context.Context, request *BodyUpdateOrderV1ProductionsOrdersOrderIDPatch, params PublicUpdateOrderParams) (PublicUpdateOrderRes, error)
+	// PublicUpsertOrderItem invokes public_upsert_order_item operation.
+	//
+	// Adds or updates an order item on an open order. Returns the item ID and the quoted price.
+	//
+	// POST /v1/productions/orders/{order_id}/items
+	PublicUpsertOrderItem(ctx context.Context, request *BodyUpsertOrderItemV1ProductionsOrdersOrderIDItemsPost, params PublicUpsertOrderItemParams) (PublicUpsertOrderItemRes, error)
 	// RagIndexStatus invokes rag_index_status operation.
 	//
 	// In case the document is not RAG indexed, it triggers rag indexing task, otherwise it just returns
@@ -1009,6 +1310,12 @@ type Invoker interface {
 	//
 	// GET /docs
 	RedirectToMintlify(ctx context.Context) (jx.Raw, error)
+	// RefreshURLDocumentRoute invokes refresh_url_document_route operation.
+	//
+	// Manually refresh a URL document by re-fetching its content from the source URL.
+	//
+	// POST /v1/convai/knowledge-base/{documentation_id}/refresh
+	RefreshURLDocumentRoute(ctx context.Context, params RefreshURLDocumentRouteParams) (RefreshURLDocumentRouteRes, error)
 	// RegisterTwilioCall invokes register_twilio_call operation.
 	//
 	// Register a Twilio call and return TwiML to connect the call.
@@ -1017,8 +1324,7 @@ type Invoker interface {
 	RegisterTwilioCall(ctx context.Context, request *BodyRegisterATwilioCallAndReturnTwiMLV1ConvaiTwilioRegisterCallPost, params RegisterTwilioCallParams) (RegisterTwilioCallRes, error)
 	// RemoveMember invokes remove_member operation.
 	//
-	// Removes a member from the specified group. This endpoint may only be called by workspace
-	// administrators.
+	// Removes a member from the specified group. Requires `group_members_manage` permission.
 	//
 	// POST /v1/workspace/groups/{group_id}/members/remove
 	RemoveMember(ctx context.Context, request *BodyDeleteMemberFromUserGroupV1WorkspaceGroupsGroupIDMembersRemovePost, params RemoveMemberParams) (RemoveMemberRes, error)
@@ -1028,6 +1334,17 @@ type Invoker interface {
 	//
 	// POST /v1/pronunciation-dictionaries/{pronunciation_dictionary_id}/remove-rules
 	RemoveRules(ctx context.Context, request *BodyRemoveRulesFromThePronunciationDictionaryV1PronunciationDictionariesPronunciationDictionaryIDRemoveRulesPost, params RemoveRulesParams) (RemoveRulesRes, error)
+	// Render invokes render operation.
+	//
+	// Regenerate the output media for a language using the latest Studio state. Please ensure all
+	// segments have been dubbed before rendering, otherwise they will be omitted. Renders are generated
+	// asynchronously, and to check the status of all renders please use the 'Get Dubbing Resource'
+	// endpoint.
+	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
+	// POST /v1/dubbing/resource/{dubbing_id}/render/{language}
+	Render(ctx context.Context, request *BodyRenderAudioOrVideoForTheGivenLanguageV1DubbingResourceDubbingIDRenderLanguagePost, params RenderParams) (RenderRes, error)
 	// RequestPvcManualVerification invokes request_pvc_manual_verification operation.
 	//
 	// Request manual verification for a PVC voice.
@@ -1040,6 +1357,19 @@ type Invoker interface {
 	//
 	// POST /v1/convai/batch-calling/{batch_id}/retry
 	RetryBatchCall(ctx context.Context, params RetryBatchCallParams) (RetryBatchCallRes, error)
+	// RunConversationAnalysis invokes run_conversation_analysis operation.
+	//
+	// Run the analysis for a conversation using the agent's current evaluation criteria and data
+	// collection settings.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/analysis/run
+	RunConversationAnalysis(ctx context.Context, params RunConversationAnalysisParams) (RunConversationAnalysisRes, error)
+	// RunConversationEvaluations invokes run_conversation_evaluations operation.
+	//
+	// Rerun a specific evaluation for a conversation.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/analysis/evaluations/run
+	RunConversationEvaluations(ctx context.Context, request *RunConversationEvaluationsRequest, params RunConversationEvaluationsParams) (RunConversationEvaluationsRes, error)
 	// RunPvcVoiceTraining invokes run_pvc_voice_training operation.
 	//
 	// Start PVC training process for a voice.
@@ -1052,6 +1382,12 @@ type Invoker interface {
 	//
 	// GET /v1/workspace/groups/search
 	SearchGroups(ctx context.Context, params SearchGroupsParams) (SearchGroupsRes, error)
+	// SearchKnowledgeBaseContentRoute invokes search_knowledge_base_content_route operation.
+	//
+	// Fuzzy text search over knowledge base document content.
+	//
+	// GET /v1/convai/knowledge-base/search
+	SearchKnowledgeBaseContentRoute(ctx context.Context, params SearchKnowledgeBaseContentRouteParams) (SearchKnowledgeBaseContentRouteRes, error)
 	// SeparateSongStems invokes separate_song_stems operation.
 	//
 	// Separate an audio file into individual stems. This endpoint might have high latency, depending on
@@ -1061,15 +1397,22 @@ type Invoker interface {
 	SeparateSongStems(ctx context.Context, request *BodyStemSeparationV1MusicStemSeparationPostMultipart, params SeparateSongStemsParams) (SeparateSongStemsRes, error)
 	// ShareResourceEndpoint invokes share_resource_endpoint operation.
 	//
-	// Grants a role on a workspace resource to a user or a group. It overrides any existing role this
-	// user/service account/group/workspace api key has on the resource. To target a user or service
-	// account, pass only the user email. The user must be in your workspace. To target a group, pass
-	// only the group id. To target a workspace api key, pass the api key id. The resource will be shared
-	// with the service account associated with the api key. You must have admin access to the resource
-	// to share it.
+	// Grants a role (one of 'admin', 'editor', 'commenter', or 'viewer') on a workspace resource to a
+	// user, group, or workspace (service account) API key. This overrides any existing role the target
+	// has on the resource. To target a user or service account, pass only the user email; the user must
+	// be in your workspace. To target a group, pass only the group id. To target a workspace (service
+	// account) API key, pass the api key id; the resource will be shared with the service account
+	// associated with that key. You must have admin access to the resource to share it.
 	//
 	// POST /v1/workspace/resources/{resource_id}/share
 	ShareResourceEndpoint(ctx context.Context, request *BodyShareWorkspaceResourceV1WorkspaceResourcesResourceIDSharePost, params ShareResourceEndpointParams) (ShareResourceEndpointRes, error)
+	// SmartSearchConversationMessagesRoute invokes smart_search_conversation_messages_route operation.
+	//
+	// Search conversation transcripts by semantic similarity to surface relevant messages based on
+	// meaning and intent, rather than exact keyword matches.
+	//
+	// GET /v1/convai/conversations/messages/smart-search
+	SmartSearchConversationMessagesRoute(ctx context.Context, params SmartSearchConversationMessagesRouteParams) (SmartSearchConversationMessagesRouteRes, error)
 	// SoundGeneration invokes sound_generation operation.
 	//
 	// Turn text into sound effects for your videos, voice-overs or video games using the most advanced
@@ -1114,12 +1457,6 @@ type Invoker interface {
 	//
 	// POST /v1/studio/projects/{project_id}/chapters/{chapter_id}/snapshots/{chapter_snapshot_id}/stream
 	StreamChapterSnapshotAudio(ctx context.Context, request OptBodyStreamChapterAudioV1StudioProjectsProjectIDChaptersChapterIDSnapshotsChapterSnapshotIDStreamPost, params StreamChapterSnapshotAudioParams) (StreamChapterSnapshotAudioRes, error)
-	// StreamCompose invokes stream_compose operation.
-	//
-	// Stream a composed song from a prompt or a composition plan.
-	//
-	// POST /v1/music/stream
-	StreamCompose(ctx context.Context, request OptBodyStreamComposedMusicV1MusicStreamPost, params StreamComposeParams) (StreamComposeRes, error)
 	// StreamProjectSnapshotArchiveEndpoint invokes stream_project_snapshot_archive_endpoint operation.
 	//
 	// Returns a compressed archive of the Studio project's audio.
@@ -1132,6 +1469,12 @@ type Invoker interface {
 	//
 	// POST /v1/studio/projects/{project_id}/snapshots/{project_snapshot_id}/stream
 	StreamProjectSnapshotAudioEndpoint(ctx context.Context, request OptBodyStreamStudioProjectAudioV1StudioProjectsProjectIDSnapshotsProjectSnapshotIDStreamPost, params StreamProjectSnapshotAudioEndpointParams) (StreamProjectSnapshotAudioEndpointRes, error)
+	// TextSearchConversationMessagesRoute invokes text_search_conversation_messages_route operation.
+	//
+	// Search through conversation transcript messages by full-text and fuzzy search.
+	//
+	// GET /v1/convai/conversations/messages/text-search
+	TextSearchConversationMessagesRoute(ctx context.Context, params TextSearchConversationMessagesRouteParams) (TextSearchConversationMessagesRouteRes, error)
 	// TextToDialogue invokes text_to_dialogue operation.
 	//
 	// Converts a list of text and voice ID pairs into speech (dialogue) and returns audio.
@@ -1186,10 +1529,12 @@ type Invoker interface {
 	TextToSpeechStreamWithTimestamps(ctx context.Context, request *BodyTextToSpeechStreamWithTimestamps, params TextToSpeechStreamWithTimestampsParams) (TextToSpeechStreamWithTimestampsRes, error)
 	// TextToVoice invokes text_to_voice operation.
 	//
-	// Generate a custom voice based on voice description. This method returns a list of voice previews.
-	// Each preview has a generated_voice_id and a sample of the voice as base64 encoded mp3 audio. If
-	// you like the a voice previewand want to create the voice call
-	// /v1/text-to-voice/create-voice-from-preview with the generated_voice_id to create the voice.
+	// **Deprecated.** Use `POST /v1/text-to-voice/design` instead. Generate a custom voice based on
+	// voice description. This method returns a list of voice previews. Each preview has a
+	// generated_voice_id and a sample of the voice as base64 encoded mp3 audio. To create the voice use
+	// `POST /v1/text-to-voice` with the chosen `generated_voice_id`.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/text-to-voice/create-previews
 	TextToVoice(ctx context.Context, request *VoicePreviewsRequestModel, params TextToVoiceParams) (TextToVoiceRes, error)
@@ -1220,6 +1565,8 @@ type Invoker interface {
 	// Regenerate the transcriptions for the specified segments. Does not automatically regenerate
 	// translations or dubs.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/transcribe
 	Transcribe(ctx context.Context, request *BodyTranscribesSegmentsV1DubbingResourceDubbingIDTranscribePost, params TranscribeParams) (TranscribeRes, error)
 	// Translate invokes translate operation.
@@ -1227,25 +1574,46 @@ type Invoker interface {
 	// Regenerate the translations for either the entire resource or the specified segments/languages.
 	// Will automatically transcribe missing transcriptions. Will not automatically regenerate the dubs.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/translate
 	Translate(ctx context.Context, request *BodyTranslatesAllOrSomeSegmentsAndLanguagesV1DubbingResourceDubbingIDTranslatePost, params TranslateParams) (TranslateRes, error)
+	// UnassignConversationTagRoute invokes unassign_conversation_tag_route operation.
+	//
+	// Remove a single conversation tag from a conversation.
+	//
+	// DELETE /v1/convai/conversations/{conversation_id}/tags/{tag_id}
+	UnassignConversationTagRoute(ctx context.Context, params UnassignConversationTagRouteParams) (UnassignConversationTagRouteRes, error)
 	// UnshareResourceEndpoint invokes unshare_resource_endpoint operation.
 	//
-	// Removes any existing role on a workspace resource from a user, service account, group or workspace
-	// api key. To target a user or service account, pass only the user email. The user must be in your
-	// workspace. To target a group, pass only the group id. To target a workspace api key, pass the api
-	// key id. The resource will be unshared from the service account associated with the api key. You
-	// must have admin access to the resource to unshare it. You cannot remove permissions from the user
-	// who created the resource.
+	// Removes any existing role on a workspace resource from a user, group, or workspace (service
+	// account) API key. To target a user or service account, pass only the user email; the user must be
+	// in your workspace. To target a group, pass only the group id. To target a workspace (service
+	// account) API key, pass the api key id; the resource will be unshared from the service account
+	// associated with that key. You must have admin access to the resource to unshare it. You cannot
+	// remove permissions from the user who created the resource.
 	//
 	// POST /v1/workspace/resources/{resource_id}/unshare
 	UnshareResourceEndpoint(ctx context.Context, request *BodyUnshareWorkspaceResourceV1WorkspaceResourcesResourceIDUnsharePost, params UnshareResourceEndpointParams) (UnshareResourceEndpointRes, error)
-	// UpdateAgentResponseTestRoute invokes update_agent_response_test_route operation.
+	// UpdateAgentTestFolderRoute invokes update_agent_test_folder_route operation.
 	//
-	// Updates an agent response test by ID.
+	// Updates an agent test folder. Currently only supports updating the folder name.
 	//
-	// PUT /v1/convai/agent-testing/{test_id}
-	UpdateAgentResponseTestRoute(ctx context.Context, request *UpdateUnitTestRequest, params UpdateAgentResponseTestRouteParams) (UpdateAgentResponseTestRouteRes, error)
+	// PATCH /v1/convai/agent-testing/folders/{folder_id}
+	UpdateAgentTestFolderRoute(ctx context.Context, request *BodyUpdateAgentTestFolderV1ConvaiAgentTestingFoldersFolderIDPatch, params UpdateAgentTestFolderRouteParams) (UpdateAgentTestFolderRouteRes, error)
+	// UpdateBranchRoute invokes update_branch_route operation.
+	//
+	// Update agent branch properties such as archiving status and protection level.
+	//
+	// PATCH /v1/convai/agents/{agent_id}/branches/{branch_id}
+	UpdateBranchRoute(ctx context.Context, request OptBodyUpdateAgentBranchV1ConvaiAgentsAgentIDBranchesBranchIDPatch, params UpdateBranchRouteParams) (UpdateBranchRouteRes, error)
+	// UpdateConversationTagRoute invokes update_conversation_tag_route operation.
+	//
+	// Update a conversation tag's title and/or description. Restricted to the tag owner or a workspace
+	// admin.
+	//
+	// PATCH /v1/convai/tags/{tag_id}
+	UpdateConversationTagRoute(ctx context.Context, request *PatchConversationTagRequestModel, params UpdateConversationTagRouteParams) (UpdateConversationTagRouteRes, error)
 	// UpdateDashboardSettingsRoute invokes update_dashboard_settings_route operation.
 	//
 	// Update Convai dashboard settings for the workspace.
@@ -1254,10 +1622,17 @@ type Invoker interface {
 	UpdateDashboardSettingsRoute(ctx context.Context, request *PatchConvAIDashboardSettingsRequest, params UpdateDashboardSettingsRouteParams) (UpdateDashboardSettingsRouteRes, error)
 	// UpdateDocumentRoute invokes update_document_route operation.
 	//
-	// Update the name of a document.
+	// Update the name and/or content of a document.
 	//
 	// PATCH /v1/convai/knowledge-base/{documentation_id}
-	UpdateDocumentRoute(ctx context.Context, request *BodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (UpdateDocumentRouteRes, error)
+	UpdateDocumentRoute(ctx context.Context, request OptBodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (UpdateDocumentRouteRes, error)
+	// UpdateFileDocumentRoute invokes update_file_document_route operation.
+	//
+	// Update the source file of a file document. The document name, content, and metadata are updated to
+	// reflect the new file. Any manual content edits will be overwritten.
+	//
+	// PATCH /v1/convai/knowledge-base/{documentation_id}/update-file
+	UpdateFileDocumentRoute(ctx context.Context, request *BodyUpdateFileDocumentV1ConvaiKnowledgeBaseDocumentationIDUpdateFilePatchMultipart, params UpdateFileDocumentRouteParams) (UpdateFileDocumentRouteRes, error)
 	// UpdatePhoneNumberRoute invokes update_phone_number_route operation.
 	//
 	// Update assigned agent of a phone number.
@@ -1283,6 +1658,8 @@ type Invoker interface {
 	// Modifies a single segment with new text and/or start/end times. Will update the values for only a
 	// specific language of a segment. Does not automatically regenerate the dub.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// PATCH /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}/{language}
 	UpdateSegmentLanguage(ctx context.Context, request *SegmentUpdatePayload, params UpdateSegmentLanguageParams) (UpdateSegmentLanguageRes, error)
 	// UpdateSettingsRoute invokes update_settings_route operation.
@@ -1295,6 +1672,8 @@ type Invoker interface {
 	//
 	// Amend the metadata associated with a speaker, such as their voice. Both voice cloning and using
 	// voices from the ElevenLabs library are supported.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// PATCH /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}
 	UpdateSpeaker(ctx context.Context, request OptBodyUpdateMetadataForASpeakerV1DubbingResourceDubbingIDSpeakerSpeakerIDPatch, params UpdateSpeakerParams) (UpdateSpeakerRes, error)
@@ -1311,13 +1690,24 @@ type Invoker interface {
 	//
 	// POST /v1/workspace/members
 	UpdateWorkspaceMember(ctx context.Context, request *BodyUpdateMemberV1WorkspaceMembersPost, params UpdateWorkspaceMemberParams) (UpdateWorkspaceMemberRes, error)
+	// UploadFileRoute invokes upload_file_route operation.
+	//
+	// Upload an image or PDF file for a conversation. Returns a unique file ID that can be used to
+	// reference the file in the conversation.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/files
+	UploadFileRoute(ctx context.Context, request *BodyUploadFileV1ConvaiConversationsConversationIDFilesPostMultipart, params UploadFileRouteParams) (UploadFileRouteRes, error)
 	// UsageCharacters invokes usage_characters operation.
 	//
-	// Returns the usage metrics for the current user or the entire workspace they are part of. The
-	// response provides a time axis based on the specified aggregation interval (default: day), with
-	// usage values for each interval along that axis. Usage is broken down by the selected breakdown
-	// type. For example, breakdown type "voice" will return the usage of each voice for each interval
-	// along the time axis.
+	// (Deprecated) This endpoint is deprecated. Use
+	// /v1/workspace/analytics/query/usage-by-product-over-time instead, which exposes the bucket size as
+	// `interval_seconds` (an integer in seconds) rather than `aggregation_interval`. Returns the usage
+	// metrics for the current user or the entire workspace they are part of. The response provides a
+	// time axis based on the specified aggregation interval (default: day), with usage values for each
+	// interval along that axis. Usage is broken down by the selected breakdown type. For example,
+	// breakdown type "voice" will return the usage of each voice for each interval along the time axis.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// GET /v1/usage/character-stats
 	UsageCharacters(ctx context.Context, params UsageCharactersParams) (UsageCharactersRes, error)
@@ -1327,12 +1717,25 @@ type Invoker interface {
 	//
 	// POST /v1/voices/pvc/{voice_id}/captcha
 	VerifyPvcVoiceCaptcha(ctx context.Context, request *BodyVerifyPVCVoiceCaptchaV1VoicesPvcVoiceIDCaptchaPostMultipart, params VerifyPvcVoiceCaptchaParams) (VerifyPvcVoiceCaptchaRes, error)
+	// VideoToMusic invokes video_to_music operation.
+	//
+	// Generate background music from one or more video files. Videos are combined in order. Optional
+	// description and style tags influence the generated music.
+	//
+	// POST /v1/music/video-to-music
+	VideoToMusic(ctx context.Context, request *BodyVideoToMusicV1MusicVideoToMusicPostMultipart, params VideoToMusicParams) (VideoToMusicRes, error)
 	// WhatsappOutboundCall invokes whatsapp_outbound_call operation.
 	//
 	// Make an outbound call via WhatsApp.
 	//
 	// POST /v1/convai/whatsapp/outbound-call
 	WhatsappOutboundCall(ctx context.Context, request *BodyMakeAnOutboundCallViaWhatsAppV1ConvaiWhatsappOutboundCallPost, params WhatsappOutboundCallParams) (WhatsappOutboundCallRes, error)
+	// WhatsappOutboundMessage invokes whatsapp_outbound_message operation.
+	//
+	// Send an outbound message via WhatsApp.
+	//
+	// POST /v1/convai/whatsapp/outbound-message
+	WhatsappOutboundMessage(ctx context.Context, request *BodySendAnOutboundMessageViaWhatsAppV1ConvaiWhatsappOutboundMessagePost, params WhatsappOutboundMessageParams) (WhatsappOutboundMessageRes, error)
 }
 
 // Client implements OAS client.
@@ -1340,10 +1743,6 @@ type Client struct {
 	serverURL *url.URL
 	baseClient
 }
-
-var _ Handler = struct {
-	*Client
-}{}
 
 // NewClient initializes new Client defined by OAS.
 func NewClient(serverURL string, opts ...ClientOption) (*Client, error) {
@@ -1483,7 +1882,8 @@ func (c *Client) sendAddDocumentationToKnowledgeBase(ctx context.Context, reques
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddDocumentationToKnowledgeBaseResponse(resp)
@@ -1576,7 +1976,8 @@ func (c *Client) sendAddFromFile(ctx context.Context, request *BodyAddAPronuncia
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddFromFileResponse(resp)
@@ -1591,6 +1992,8 @@ func (c *Client) sendAddFromFile(ctx context.Context, request *BodyAddAPronuncia
 //
 // Adds the given ElevenLab Turbo V2/V2.5 language code to the resource. Does not automatically
 // generate transcripts/translations/audio.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/language
 func (c *Client) AddLanguage(ctx context.Context, request *BodyAddALanguageToTheResourceV1DubbingResourceDubbingIDLanguagePost, params AddLanguageParams) (AddLanguageRes, error) {
@@ -1689,7 +2092,8 @@ func (c *Client) sendAddLanguage(ctx context.Context, request *BodyAddALanguageT
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddLanguageResponse(resp)
@@ -1702,8 +2106,7 @@ func (c *Client) sendAddLanguage(ctx context.Context, request *BodyAddALanguageT
 
 // AddMember invokes add_member operation.
 //
-// Adds a member of your workspace to the specified group. This endpoint may only be called by
-// workspace administrators.
+// Adds a member of your workspace to the specified group. Requires `group_members_manage` permission.
 //
 // POST /v1/workspace/groups/{group_id}/members
 func (c *Client) AddMember(ctx context.Context, request *BodyAddMemberToUserGroupV1WorkspaceGroupsGroupIDMembersPost, params AddMemberParams) (AddMemberRes, error) {
@@ -1802,7 +2205,8 @@ func (c *Client) sendAddMember(ctx context.Context, request *BodyAddMemberToUser
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddMemberResponse(resp)
@@ -1895,7 +2299,8 @@ func (c *Client) sendAddProject(ctx context.Context, request *BodyCreateStudioPr
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddProjectResponse(resp)
@@ -2007,7 +2412,8 @@ func (c *Client) sendAddPvcVoiceSamples(ctx context.Context, request *BodyAddSam
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddPvcVoiceSamplesResponse(resp)
@@ -2137,7 +2543,8 @@ func (c *Client) sendAddSharingVoice(ctx context.Context, request *BodyAddShared
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddSharingVoiceResponse(resp)
@@ -2230,10 +2637,220 @@ func (c *Client) sendAddVoice(ctx context.Context, request *BodyAddVoiceV1Voices
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAddVoiceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AgentTestingBulkMoveRoute invokes agent_testing_bulk_move_route operation.
+//
+// Moves multiple tests or folders from one folder to another.
+//
+// POST /v1/convai/agent-testing/bulk-move
+func (c *Client) AgentTestingBulkMoveRoute(ctx context.Context, request *BodyBulkMoveTestsToFolderV1ConvaiAgentTestingBulkMovePost, params AgentTestingBulkMoveRouteParams) (AgentTestingBulkMoveRouteRes, error) {
+	res, err := c.sendAgentTestingBulkMoveRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendAgentTestingBulkMoveRoute(ctx context.Context, request *BodyBulkMoveTestsToFolderV1ConvaiAgentTestingBulkMovePost, params AgentTestingBulkMoveRouteParams) (res AgentTestingBulkMoveRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("agent_testing_bulk_move_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/agent-testing/bulk-move"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AgentTestingBulkMoveRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/agent-testing/bulk-move"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAgentTestingBulkMoveRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAgentTestingBulkMoveRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AssignConversationTagsRoute invokes assign_conversation_tags_route operation.
+//
+// Assign one or more conversation tags to a conversation. Tags that are already assigned are ignored.
+//
+//	Tags must belong to the same workspace.
+//
+// POST /v1/convai/conversations/{conversation_id}/tags
+func (c *Client) AssignConversationTagsRoute(ctx context.Context, request *AssignConversationTagsRequestModel, params AssignConversationTagsRouteParams) (AssignConversationTagsRouteRes, error) {
+	res, err := c.sendAssignConversationTagsRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendAssignConversationTagsRoute(ctx context.Context, request *AssignConversationTagsRequestModel, params AssignConversationTagsRouteParams) (res AssignConversationTagsRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("assign_conversation_tags_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/tags"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AssignConversationTagsRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/tags"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAssignConversationTagsRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAssignConversationTagsRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -2323,7 +2940,8 @@ func (c *Client) sendAudioIsolation(ctx context.Context, request *BodyAudioIsola
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAudioIsolationResponse(resp)
@@ -2416,7 +3034,8 @@ func (c *Client) sendAudioIsolationStream(ctx context.Context, request *BodyAudi
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAudioIsolationStreamResponse(resp)
@@ -2528,10 +3147,106 @@ func (c *Client) sendAudioNativeProjectUpdateContentEndpoint(ctx context.Context
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeAudioNativeProjectUpdateContentEndpointResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AudioNativeUpdateContentFromURL invokes audio_native_update_content_from_url operation.
+//
+// Finds an AudioNative project matching the provided URL, extracts content from the URL, updates the
+// project content, and queues it for conversion and auto-publishing.
+//
+// POST /v1/audio-native/content
+func (c *Client) AudioNativeUpdateContentFromURL(ctx context.Context, request *BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPost, params AudioNativeUpdateContentFromURLParams) (AudioNativeUpdateContentFromURLRes, error) {
+	res, err := c.sendAudioNativeUpdateContentFromURL(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendAudioNativeUpdateContentFromURL(ctx context.Context, request *BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPost, params AudioNativeUpdateContentFromURLParams) (res AudioNativeUpdateContentFromURLRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("audio_native_update_content_from_url"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/audio-native/content"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AudioNativeUpdateContentFromURLOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/audio-native/content"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeAudioNativeUpdateContentFromURLRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeAudioNativeUpdateContentFromURLResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -2637,7 +3352,8 @@ func (c *Client) sendCancelBatchCall(ctx context.Context, params CancelBatchCall
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCancelBatchCallResponse(resp)
@@ -2648,21 +3364,22 @@ func (c *Client) sendCancelBatchCall(ctx context.Context, params CancelBatchCall
 	return result, nil
 }
 
-// ComposeDetailed invokes compose_detailed operation.
+// CancelFileUploadRoute invokes cancel_file_upload_route operation.
 //
-// Compose a song from a prompt or a composition plan.
+// Remove a file upload from a conversation. Only possible if the file hasn't already been used in
+// the conversation.
 //
-// POST /v1/music/detailed
-func (c *Client) ComposeDetailed(ctx context.Context, request OptBodyComposeMusicWithADetailedResponseV1MusicDetailedPost, params ComposeDetailedParams) (ComposeDetailedRes, error) {
-	res, err := c.sendComposeDetailed(ctx, request, params)
+// DELETE /v1/convai/conversations/{conversation_id}/files/{file_id}
+func (c *Client) CancelFileUploadRoute(ctx context.Context, params CancelFileUploadRouteParams) (CancelFileUploadRouteRes, error) {
+	res, err := c.sendCancelFileUploadRoute(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendComposeDetailed(ctx context.Context, request OptBodyComposeMusicWithADetailedResponseV1MusicDetailedPost, params ComposeDetailedParams) (res ComposeDetailedRes, err error) {
+func (c *Client) sendCancelFileUploadRoute(ctx context.Context, params CancelFileUploadRouteParams) (res CancelFileUploadRouteRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("compose_detailed"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/music/detailed"),
+		otelogen.OperationID("cancel_file_upload_route"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/files/{file_id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2678,7 +3395,7 @@ func (c *Client) sendComposeDetailed(ctx context.Context, request OptBodyCompose
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, ComposeDetailedOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, CancelFileUploadRouteOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -2695,38 +3412,51 @@ func (c *Client) sendComposeDetailed(ctx context.Context, request OptBodyCompose
 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/music/detailed"
+	var pathParts [4]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/files/"
+	{
+		// Encode "file_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "file_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.FileID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
 	uri.AddPathParts(u, pathParts[:]...)
 
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "output_format" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "output_format",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.OutputFormat.Get(); ok {
-				return e.EncodeValue(conv.StringToString(string(val)))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
 	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
+	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeComposeDetailedRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
 	}
 
 	stage = "EncodeHeaderParams"
@@ -2751,103 +3481,11 @@ func (c *Client) sendComposeDetailed(ctx context.Context, request OptBodyCompose
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeComposeDetailedResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// ComposePlan invokes compose_plan operation.
-//
-// Generate a composition plan from a prompt.
-//
-// POST /v1/music/plan
-func (c *Client) ComposePlan(ctx context.Context, request *BodyGenerateCompositionPlanV1MusicPlanPost, params ComposePlanParams) (ComposePlanRes, error) {
-	res, err := c.sendComposePlan(ctx, request, params)
-	return res, err
-}
-
-func (c *Client) sendComposePlan(ctx context.Context, request *BodyGenerateCompositionPlanV1MusicPlanPost, params ComposePlanParams) (res ComposePlanRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("compose_plan"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/music/plan"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, ComposePlanOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/music/plan"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeComposePlanRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeComposePlanResponse(resp)
+	result, err := decodeCancelFileUploadRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -2972,7 +3610,8 @@ func (c *Client) sendConvertChapterEndpoint(ctx context.Context, params ConvertC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeConvertChapterEndpointResponse(resp)
@@ -3081,7 +3720,8 @@ func (c *Client) sendConvertProjectEndpoint(ctx context.Context, params ConvertP
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeConvertProjectEndpointResponse(resp)
@@ -3092,21 +3732,21 @@ func (c *Client) sendConvertProjectEndpoint(ctx context.Context, params ConvertP
 	return result, nil
 }
 
-// CreateAgentResponseTestRoute invokes create_agent_response_test_route operation.
+// CreateAgentDeploymentRoute invokes create_agent_deployment_route operation.
 //
-// Creates a new agent response test.
+// Create a new deployment for an agent.
 //
-// POST /v1/convai/agent-testing/create
-func (c *Client) CreateAgentResponseTestRoute(ctx context.Context, request *CreateUnitTestRequest, params CreateAgentResponseTestRouteParams) (CreateAgentResponseTestRouteRes, error) {
-	res, err := c.sendCreateAgentResponseTestRoute(ctx, request, params)
+// POST /v1/convai/agents/{agent_id}/deployments
+func (c *Client) CreateAgentDeploymentRoute(ctx context.Context, request *BodyCreateOrUpdateDeploymentsV1ConvaiAgentsAgentIDDeploymentsPost, params CreateAgentDeploymentRouteParams) (CreateAgentDeploymentRouteRes, error) {
+	res, err := c.sendCreateAgentDeploymentRoute(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendCreateAgentResponseTestRoute(ctx context.Context, request *CreateUnitTestRequest, params CreateAgentResponseTestRouteParams) (res CreateAgentResponseTestRouteRes, err error) {
+func (c *Client) sendCreateAgentDeploymentRoute(ctx context.Context, request *BodyCreateOrUpdateDeploymentsV1ConvaiAgentsAgentIDDeploymentsPost, params CreateAgentDeploymentRouteParams) (res CreateAgentDeploymentRouteRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("create_agent_response_test_route"),
+		otelogen.OperationID("create_agent_deployment_route"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/convai/agent-testing/create"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/deployments"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3122,7 +3762,7 @@ func (c *Client) sendCreateAgentResponseTestRoute(ctx context.Context, request *
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, CreateAgentResponseTestRouteOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, CreateAgentDeploymentRouteOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -3139,8 +3779,27 @@ func (c *Client) sendCreateAgentResponseTestRoute(ctx context.Context, request *
 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/convai/agent-testing/create"
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/deployments"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -3148,7 +3807,7 @@ func (c *Client) sendCreateAgentResponseTestRoute(ctx context.Context, request *
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeCreateAgentResponseTestRouteRequest(request, r); err != nil {
+	if err := encodeCreateAgentDeploymentRouteRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -3174,10 +3833,105 @@ func (c *Client) sendCreateAgentResponseTestRoute(ctx context.Context, request *
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeCreateAgentResponseTestRouteResponse(resp)
+	result, err := decodeCreateAgentDeploymentRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateAgentTestFolderRoute invokes create_agent_test_folder_route operation.
+//
+// Creates a folder for organizing agent tests.
+//
+// POST /v1/convai/agent-testing/folders
+func (c *Client) CreateAgentTestFolderRoute(ctx context.Context, request *BodyCreateAgentTestFolderV1ConvaiAgentTestingFoldersPost, params CreateAgentTestFolderRouteParams) (CreateAgentTestFolderRouteRes, error) {
+	res, err := c.sendCreateAgentTestFolderRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendCreateAgentTestFolderRoute(ctx context.Context, request *BodyCreateAgentTestFolderV1ConvaiAgentTestingFoldersPost, params CreateAgentTestFolderRouteParams) (res CreateAgentTestFolderRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("create_agent_test_folder_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/agent-testing/folders"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, CreateAgentTestFolderRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/agent-testing/folders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateAgentTestFolderRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeCreateAgentTestFolderRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3268,7 +4022,8 @@ func (c *Client) sendCreateAudioNativeProject(ctx context.Context, request *Body
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateAudioNativeProjectResponse(resp)
@@ -3361,7 +4116,8 @@ func (c *Client) sendCreateBatchCall(ctx context.Context, request *BodySubmitABa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateBatchCallResponse(resp)
@@ -3376,6 +4132,8 @@ func (c *Client) sendCreateBatchCall(ctx context.Context, request *BodySubmitABa
 //
 // Creates a new segment in dubbing resource with a start and end time for the speaker in every
 // available language. Does not automatically generate transcripts/translations/audio.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/segment
 func (c *Client) CreateClip(ctx context.Context, request *SegmentCreatePayload, params CreateClipParams) (CreateClipRes, error) {
@@ -3493,10 +4251,105 @@ func (c *Client) sendCreateClip(ctx context.Context, request *SegmentCreatePaylo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateClipResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateConversationTagRoute invokes create_conversation_tag_route operation.
+//
+// Create a new conversation tag for the workspace.
+//
+// POST /v1/convai/tags
+func (c *Client) CreateConversationTagRoute(ctx context.Context, request *CreateConversationTagRequestModel, params CreateConversationTagRouteParams) (CreateConversationTagRouteRes, error) {
+	res, err := c.sendCreateConversationTagRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendCreateConversationTagRoute(ctx context.Context, request *CreateConversationTagRequestModel, params CreateConversationTagRouteParams) (res CreateConversationTagRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("create_conversation_tag_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/tags"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, CreateConversationTagRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/tags"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateConversationTagRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeCreateConversationTagRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3586,7 +4439,8 @@ func (c *Client) sendCreateDubbing(ctx context.Context, request OptBodyDubAVideo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateDubbingResponse(resp)
@@ -3679,10 +4533,105 @@ func (c *Client) sendCreateFileDocumentRoute(ctx context.Context, request *BodyC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateFileDocumentRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// CreateFolderRoute invokes create_folder_route operation.
+//
+// Create a folder used for grouping documents together.
+//
+// POST /v1/convai/knowledge-base/folder
+func (c *Client) CreateFolderRoute(ctx context.Context, request *BodyCreateFolderV1ConvaiKnowledgeBaseFolderPost, params CreateFolderRouteParams) (CreateFolderRouteRes, error) {
+	res, err := c.sendCreateFolderRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendCreateFolderRoute(ctx context.Context, request *BodyCreateFolderV1ConvaiKnowledgeBaseFolderPost, params CreateFolderRouteParams) (res CreateFolderRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("create_folder_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/folder"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, CreateFolderRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/knowledge-base/folder"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateFolderRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeCreateFolderRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -3772,7 +4721,8 @@ func (c *Client) sendCreatePvcVoice(ctx context.Context, request *BodyCreatePVCV
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreatePvcVoiceResponse(resp)
@@ -3865,7 +4815,8 @@ func (c *Client) sendCreateSecretRoute(ctx context.Context, request *PostWorkspa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateSecretRouteResponse(resp)
@@ -3977,7 +4928,8 @@ func (c *Client) sendCreateServiceAccountAPIKey(ctx context.Context, request *Bo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateServiceAccountAPIKeyResponse(resp)
@@ -3991,6 +4943,8 @@ func (c *Client) sendCreateServiceAccountAPIKey(ctx context.Context, request *Bo
 // CreateSpeaker invokes create_speaker operation.
 //
 // Create A New Speaker.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/speaker
 func (c *Client) CreateSpeaker(ctx context.Context, request OptBodyCreateANewSpeakerV1DubbingResourceDubbingIDSpeakerPost, params CreateSpeakerParams) (CreateSpeakerRes, error) {
@@ -4089,7 +5043,8 @@ func (c *Client) sendCreateSpeaker(ctx context.Context, request OptBodyCreateANe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateSpeakerResponse(resp)
@@ -4182,7 +5137,8 @@ func (c *Client) sendCreateTextDocumentRoute(ctx context.Context, request *BodyC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateTextDocumentRouteResponse(resp)
@@ -4275,7 +5231,8 @@ func (c *Client) sendCreateURLDocumentRoute(ctx context.Context, request *BodyCr
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateURLDocumentRouteResponse(resp)
@@ -4370,104 +5327,11 @@ func (c *Client) sendCreateVoice(ctx context.Context, request *BodyCreateANewVoi
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateVoiceResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// CreateVoiceOld invokes create_voice_old operation.
-//
-// Create a previously generated voice. This endpoint should be called after you fetched a
-// generated_voice_id using /v1/voice-generation/generate-voice.
-//
-// POST /v1/voice-generation/create-voice
-func (c *Client) CreateVoiceOld(ctx context.Context, request *BodyCreateAPreviouslyGeneratedVoiceV1VoiceGenerationCreateVoicePost, params CreateVoiceOldParams) (CreateVoiceOldRes, error) {
-	res, err := c.sendCreateVoiceOld(ctx, request, params)
-	return res, err
-}
-
-func (c *Client) sendCreateVoiceOld(ctx context.Context, request *BodyCreateAPreviouslyGeneratedVoiceV1VoiceGenerationCreateVoicePost, params CreateVoiceOldParams) (res CreateVoiceOldRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("create_voice_old"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/voice-generation/create-voice"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, CreateVoiceOldOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/voice-generation/create-voice"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreateVoiceOldRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeCreateVoiceOldResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4557,10 +5421,139 @@ func (c *Client) sendCreateWorkspaceWebhookRoute(ctx context.Context, request *B
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeCreateWorkspaceWebhookRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAgentDraftRoute invokes delete_agent_draft_route operation.
+//
+// Delete a draft for an agent.
+//
+// DELETE /v1/convai/agents/{agent_id}/drafts
+func (c *Client) DeleteAgentDraftRoute(ctx context.Context, params DeleteAgentDraftRouteParams) (DeleteAgentDraftRouteRes, error) {
+	res, err := c.sendDeleteAgentDraftRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAgentDraftRoute(ctx context.Context, params DeleteAgentDraftRouteParams) (res DeleteAgentDraftRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_agent_draft_route"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/drafts"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteAgentDraftRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/drafts"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.BranchID))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteAgentDraftRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4665,10 +5658,469 @@ func (c *Client) sendDeleteAgentRoute(ctx context.Context, params DeleteAgentRou
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteAgentRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAgentTestFolderRoute invokes delete_agent_test_folder_route operation.
+//
+// Deletes an agent test folder by ID. Use force=true to delete a non-empty folder and all its
+// contents.
+//
+// DELETE /v1/convai/agent-testing/folders/{folder_id}
+func (c *Client) DeleteAgentTestFolderRoute(ctx context.Context, params DeleteAgentTestFolderRouteParams) (DeleteAgentTestFolderRouteRes, error) {
+	res, err := c.sendDeleteAgentTestFolderRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAgentTestFolderRoute(ctx context.Context, params DeleteAgentTestFolderRouteParams) (res DeleteAgentTestFolderRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_agent_test_folder_route"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/convai/agent-testing/folders/{folder_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteAgentTestFolderRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/agent-testing/folders/"
+	{
+		// Encode "folder_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "folder_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.FolderID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "force" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "force",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Force.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteAgentTestFolderRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAudioIsolationHistoryItem invokes delete_audio_isolation_history_item operation.
+//
+// Deletes a specific audio isolation history item and the associated media files.
+//
+// DELETE /v1/audio-isolation/history/{history_item_id}
+func (c *Client) DeleteAudioIsolationHistoryItem(ctx context.Context, params DeleteAudioIsolationHistoryItemParams) (DeleteAudioIsolationHistoryItemRes, error) {
+	res, err := c.sendDeleteAudioIsolationHistoryItem(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAudioIsolationHistoryItem(ctx context.Context, params DeleteAudioIsolationHistoryItemParams) (res DeleteAudioIsolationHistoryItemRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_audio_isolation_history_item"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/audio-isolation/history/{history_item_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteAudioIsolationHistoryItemOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/audio-isolation/history/"
+	{
+		// Encode "history_item_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "history_item_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.HistoryItemID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteAudioIsolationHistoryItemResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteAuthConnection invokes delete_auth_connection operation.
+//
+// Delete an auth connection.
+//
+// DELETE /v1/workspace/auth-connections/{auth_connection_id}
+func (c *Client) DeleteAuthConnection(ctx context.Context, params DeleteAuthConnectionParams) (DeleteAuthConnectionRes, error) {
+	res, err := c.sendDeleteAuthConnection(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteAuthConnection(ctx context.Context, params DeleteAuthConnectionParams) (res DeleteAuthConnectionRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_auth_connection"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/workspace/auth-connections/{auth_connection_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteAuthConnectionOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/workspace/auth-connections/"
+	{
+		// Encode "auth_connection_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "auth_connection_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AuthConnectionID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteAuthConnectionResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteBatchCall invokes delete_batch_call operation.
+//
+// Permanently delete a batch call and all recipient records. Conversations remain in history.
+//
+// DELETE /v1/convai/batch-calling/{batch_id}
+func (c *Client) DeleteBatchCall(ctx context.Context, params DeleteBatchCallParams) (DeleteBatchCallRes, error) {
+	res, err := c.sendDeleteBatchCall(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteBatchCall(ctx context.Context, params DeleteBatchCallParams) (res DeleteBatchCallRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_batch_call"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/convai/batch-calling/{batch_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteBatchCallOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/batch-calling/"
+	{
+		// Encode "batch_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "batch_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.BatchID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteBatchCallResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -4792,7 +6244,8 @@ func (c *Client) sendDeleteChapterEndpoint(ctx context.Context, params DeleteCha
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteChapterEndpointResponse(resp)
@@ -4900,7 +6353,8 @@ func (c *Client) sendDeleteChatResponseTestRoute(ctx context.Context, params Del
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteChatResponseTestRouteResponse(resp)
@@ -5008,10 +6462,120 @@ func (c *Client) sendDeleteConversationRoute(ctx context.Context, params DeleteC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteConversationRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteConversationTagRoute invokes delete_conversation_tag_route operation.
+//
+// Delete a conversation tag. Restricted to the tag owner or a workspace admin.
+//
+// DELETE /v1/convai/tags/{tag_id}
+func (c *Client) DeleteConversationTagRoute(ctx context.Context, params DeleteConversationTagRouteParams) (DeleteConversationTagRouteRes, error) {
+	res, err := c.sendDeleteConversationTagRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteConversationTagRoute(ctx context.Context, params DeleteConversationTagRouteParams) (res DeleteConversationTagRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_conversation_tag_route"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/convai/tags/{tag_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteConversationTagRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/tags/"
+	{
+		// Encode "tag_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tag_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.TagID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteConversationTagRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -5116,7 +6680,8 @@ func (c *Client) sendDeleteDubbing(ctx context.Context, params DeleteDubbingPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteDubbingResponse(resp)
@@ -5131,7 +6696,7 @@ func (c *Client) sendDeleteDubbing(ctx context.Context, params DeleteDubbingPara
 //
 // Invalidates an existing email invitation. The invitation will still show up in the inbox it has
 // been delivered to, but activating it to join the workspace won't work. This endpoint may only be
-// called by workspace administrators.
+// called by workspace members with the WORKSPACE_MEMBERS_INVITE permission.
 //
 // DELETE /v1/workspace/invites
 func (c *Client) DeleteInvite(ctx context.Context, request *BodyDeleteExistingInvitationV1WorkspaceInvitesDelete, params DeleteInviteParams) (DeleteInviteRes, error) {
@@ -5211,7 +6776,8 @@ func (c *Client) sendDeleteInvite(ctx context.Context, request *BodyDeleteExisti
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteInviteResponse(resp)
@@ -5224,7 +6790,7 @@ func (c *Client) sendDeleteInvite(ctx context.Context, request *BodyDeleteExisti
 
 // DeleteKnowledgeBaseDocument invokes delete_knowledge_base_document operation.
 //
-// Delete a document from the knowledge base.
+// Delete a document or folder from the knowledge base.
 //
 // DELETE /v1/convai/knowledge-base/{documentation_id}
 func (c *Client) DeleteKnowledgeBaseDocument(ctx context.Context, params DeleteKnowledgeBaseDocumentParams) (DeleteKnowledgeBaseDocumentRes, error) {
@@ -5340,7 +6906,8 @@ func (c *Client) sendDeleteKnowledgeBaseDocument(ctx context.Context, params Del
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteKnowledgeBaseDocumentResponse(resp)
@@ -5448,7 +7015,8 @@ func (c *Client) sendDeleteMcpServerRoute(ctx context.Context, params DeleteMcpS
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteMcpServerRouteResponse(resp)
@@ -5556,7 +7124,8 @@ func (c *Client) sendDeletePhoneNumberRoute(ctx context.Context, params DeletePh
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeletePhoneNumberRouteResponse(resp)
@@ -5664,7 +7233,8 @@ func (c *Client) sendDeleteProject(ctx context.Context, params DeleteProjectPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteProjectResponse(resp)
@@ -5791,7 +7361,8 @@ func (c *Client) sendDeletePvcVoiceSample(ctx context.Context, params DeletePvcV
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeletePvcVoiceSampleResponse(resp)
@@ -5918,7 +7489,8 @@ func (c *Client) sendDeleteRagIndex(ctx context.Context, params DeleteRagIndexPa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteRagIndexResponse(resp)
@@ -6045,7 +7617,8 @@ func (c *Client) sendDeleteSample(ctx context.Context, params DeleteSampleParams
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteSampleResponse(resp)
@@ -6153,7 +7726,8 @@ func (c *Client) sendDeleteSecretRoute(ctx context.Context, params DeleteSecretR
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteSecretRouteResponse(resp)
@@ -6167,6 +7741,8 @@ func (c *Client) sendDeleteSecretRoute(ctx context.Context, params DeleteSecretR
 // DeleteSegment invokes delete_segment operation.
 //
 // Deletes a single segment from the dubbing.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // DELETE /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}
 func (c *Client) DeleteSegment(ctx context.Context, params DeleteSegmentParams) (DeleteSegmentRes, error) {
@@ -6280,7 +7856,8 @@ func (c *Client) sendDeleteSegment(ctx context.Context, params DeleteSegmentPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteSegmentResponse(resp)
@@ -6407,10 +7984,120 @@ func (c *Client) sendDeleteServiceAccountAPIKey(ctx context.Context, params Dele
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteServiceAccountAPIKeyResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteSpeechEngine invokes delete_speech_engine operation.
+//
+// Delete a Speech Engine resource.
+//
+// DELETE /v1/speech-engine/{speech_engine_id}
+func (c *Client) DeleteSpeechEngine(ctx context.Context, params DeleteSpeechEngineParams) (DeleteSpeechEngineRes, error) {
+	res, err := c.sendDeleteSpeechEngine(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteSpeechEngine(ctx context.Context, params DeleteSpeechEngineParams) (res DeleteSpeechEngineRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("delete_speech_engine"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/speech-engine/{speech_engine_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DeleteSpeechEngineOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/speech-engine/"
+	{
+		// Encode "speech_engine_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "speech_engine_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SpeechEngineID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDeleteSpeechEngineResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -6515,7 +8202,8 @@ func (c *Client) sendDeleteSpeechHistoryItem(ctx context.Context, params DeleteS
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteSpeechHistoryItemResponse(resp)
@@ -6595,6 +8283,27 @@ func (c *Client) sendDeleteToolRoute(ctx context.Context, params DeleteToolRoute
 	}
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "force" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "force",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Force.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
@@ -6623,7 +8332,8 @@ func (c *Client) sendDeleteToolRoute(ctx context.Context, params DeleteToolRoute
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteToolRouteResponse(resp)
@@ -6731,7 +8441,8 @@ func (c *Client) sendDeleteTranscriptByID(ctx context.Context, params DeleteTran
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteTranscriptByIDResponse(resp)
@@ -6839,7 +8550,8 @@ func (c *Client) sendDeleteVoice(ctx context.Context, params DeleteVoiceParams) 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteVoiceResponse(resp)
@@ -6947,7 +8659,8 @@ func (c *Client) sendDeleteWhatsappAccount(ctx context.Context, params DeleteWha
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteWhatsappAccountResponse(resp)
@@ -7055,10 +8768,122 @@ func (c *Client) sendDeleteWorkspaceWebhookRoute(ctx context.Context, params Del
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDeleteWorkspaceWebhookRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// Disable invokes disable operation.
+//
+// Disable the API key used to authenticate this request. Requires the query parameter
+// `api_key_name=self` as an explicit confirmation. This endpoint requires additional permissions and
+// is not enabled by default. Reach out to your ElevenLabs contact to request access.
+//
+// POST /v1/workspaces/api-keys/disable
+func (c *Client) Disable(ctx context.Context, params DisableParams) (DisableRes, error) {
+	res, err := c.sendDisable(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDisable(ctx context.Context, params DisableParams) (res DisableRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("disable"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/workspaces/api-keys/disable"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DisableOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/workspaces/api-keys/disable"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "api_key_name" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "api_key_name",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.APIKeyName))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeDisableResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -7150,7 +8975,8 @@ func (c *Client) sendDownloadSpeechHistoryItems(ctx context.Context, request *Bo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDownloadSpeechHistoryItemsResponse(resp)
@@ -7165,6 +8991,8 @@ func (c *Client) sendDownloadSpeechHistoryItems(ctx context.Context, request *Bo
 //
 // Regenerate the dubs for either the entire resource or the specified segments/languages. Will
 // automatically transcribe and translate any missing transcriptions and translations.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/dub
 func (c *Client) Dub(ctx context.Context, request *BodyDubsAllOrSomeSegmentsAndLanguagesV1DubbingResourceDubbingIDDubPost, params DubParams) (DubRes, error) {
@@ -7263,7 +9091,8 @@ func (c *Client) sendDub(ctx context.Context, request *BodyDubsAllOrSomeSegments
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDubResponse(resp)
@@ -7375,7 +9204,8 @@ func (c *Client) sendDuplicateAgentRoute(ctx context.Context, request OptBodyDup
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeDuplicateAgentRouteResponse(resp)
@@ -7486,7 +9316,8 @@ func (c *Client) sendEditProject(ctx context.Context, request *BodyUpdateStudioP
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditProjectResponse(resp)
@@ -7598,7 +9429,8 @@ func (c *Client) sendEditProjectContent(ctx context.Context, request OptBodyUpda
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditProjectContentResponse(resp)
@@ -7709,7 +9541,8 @@ func (c *Client) sendEditPvcVoice(ctx context.Context, request OptBodyEditPVCVoi
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditPvcVoiceResponse(resp)
@@ -7839,7 +9672,8 @@ func (c *Client) sendEditPvcVoiceSample(ctx context.Context, request OptBodyUpda
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditPvcVoiceSampleResponse(resp)
@@ -7855,12 +9689,12 @@ func (c *Client) sendEditPvcVoiceSample(ctx context.Context, request OptBodyUpda
 // Update an existing API key for a service account.
 //
 // PATCH /v1/service-accounts/{service_account_user_id}/api-keys/{api_key_id}
-func (c *Client) EditServiceAccountAPIKey(ctx context.Context, request *BodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (EditServiceAccountAPIKeyRes, error) {
+func (c *Client) EditServiceAccountAPIKey(ctx context.Context, request OptBodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (EditServiceAccountAPIKeyRes, error) {
 	res, err := c.sendEditServiceAccountAPIKey(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendEditServiceAccountAPIKey(ctx context.Context, request *BodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (res EditServiceAccountAPIKeyRes, err error) {
+func (c *Client) sendEditServiceAccountAPIKey(ctx context.Context, request OptBodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (res EditServiceAccountAPIKeyRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("edit_service_account_api_key"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
@@ -7969,7 +9803,8 @@ func (c *Client) sendEditServiceAccountAPIKey(ctx context.Context, request *Body
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditServiceAccountAPIKeyResponse(resp)
@@ -8081,7 +9916,8 @@ func (c *Client) sendEditVoice(ctx context.Context, request *BodyEditVoiceV1Voic
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditVoiceResponse(resp)
@@ -8194,7 +10030,8 @@ func (c *Client) sendEditVoiceSettings(ctx context.Context, request *VoiceSettin
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditVoiceSettingsResponse(resp)
@@ -8305,7 +10142,8 @@ func (c *Client) sendEditWorkspaceWebhookRoute(ctx context.Context, request *Bod
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeEditWorkspaceWebhookRouteResponse(resp)
@@ -8399,219 +10237,11 @@ func (c *Client) sendForcedAlignment(ctx context.Context, request *BodyCreateFor
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeForcedAlignmentResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// Generate invokes generate operation.
-//
-// Compose a song from a prompt or a composition plan.
-//
-// POST /v1/music
-func (c *Client) Generate(ctx context.Context, request OptBodyComposeMusicV1MusicPost, params GenerateParams) (GenerateRes, error) {
-	res, err := c.sendGenerate(ctx, request, params)
-	return res, err
-}
-
-func (c *Client) sendGenerate(ctx context.Context, request OptBodyComposeMusicV1MusicPost, params GenerateParams) (res GenerateRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("generate"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/music"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, GenerateOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/music"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "output_format" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "output_format",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.OutputFormat.Get(); ok {
-				return e.EncodeValue(conv.StringToString(string(val)))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeGenerateRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeGenerateResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GenerateRandomVoice invokes generate_random_voice operation.
-//
-// Generate a random voice based on parameters. This method returns a generated_voice_id in the
-// response header, and a sample of the voice in the body. If you like the generated voice call
-// /v1/voice-generation/create-voice with the generated_voice_id to create the voice.
-//
-// POST /v1/voice-generation/generate-voice
-func (c *Client) GenerateRandomVoice(ctx context.Context, request *BodyGenerateARandomVoiceV1VoiceGenerationGenerateVoicePost, params GenerateRandomVoiceParams) (GenerateRandomVoiceRes, error) {
-	res, err := c.sendGenerateRandomVoice(ctx, request, params)
-	return res, err
-}
-
-func (c *Client) sendGenerateRandomVoice(ctx context.Context, request *BodyGenerateARandomVoiceV1VoiceGenerationGenerateVoicePost, params GenerateRandomVoiceParams) (res GenerateRandomVoiceRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("generate_random_voice"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/voice-generation/generate-voice"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, GenerateRandomVoiceOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/voice-generation/generate-voice"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeGenerateRandomVoiceRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeGenerateRandomVoiceResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -8717,7 +10347,8 @@ func (c *Client) sendGetAgentKnowledgeBaseSize(ctx context.Context, params GetAg
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentKnowledgeBaseSizeResponse(resp)
@@ -8834,7 +10465,8 @@ func (c *Client) sendGetAgentKnowledgeBaseSummariesRoute(ctx context.Context, pa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentKnowledgeBaseSummariesRouteResponse(resp)
@@ -8943,7 +10575,8 @@ func (c *Client) sendGetAgentLinkRoute(ctx context.Context, params GetAgentLinkR
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentLinkRouteResponse(resp)
@@ -9055,7 +10688,8 @@ func (c *Client) sendGetAgentLlmExpectedCostCalculation(ctx context.Context, req
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentLlmExpectedCostCalculationResponse(resp)
@@ -9163,7 +10797,8 @@ func (c *Client) sendGetAgentResponseTestRoute(ctx context.Context, params GetAg
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentResponseTestRouteResponse(resp)
@@ -9257,10 +10892,348 @@ func (c *Client) sendGetAgentResponseTestsSummariesRoute(ctx context.Context, re
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentResponseTestsSummariesRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAgentSummariesRoute invokes get_agent_summaries_route operation.
+//
+// Returns summaries for the specified agents.
+//
+// GET /v1/convai/agents/summaries
+func (c *Client) GetAgentSummariesRoute(ctx context.Context, params GetAgentSummariesRouteParams) (GetAgentSummariesRouteRes, error) {
+	res, err := c.sendGetAgentSummariesRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAgentSummariesRoute(ctx context.Context, params GetAgentSummariesRouteParams) (res GetAgentSummariesRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_agent_summaries_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/summaries"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetAgentSummariesRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/agents/summaries"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "agent_ids" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeArray(func(e uri.Encoder) error {
+				for i, item := range params.AgentIds {
+					if err := func() error {
+						return e.EncodeValue(conv.StringToString(item))
+					}(); err != nil {
+						return errors.Wrapf(err, "[%d]", i)
+					}
+				}
+				return nil
+			})
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetAgentSummariesRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAgentTestFolderRoute invokes get_agent_test_folder_route operation.
+//
+// Gets an agent test folder by ID, including its folder path.
+//
+// GET /v1/convai/agent-testing/folders/{folder_id}
+func (c *Client) GetAgentTestFolderRoute(ctx context.Context, params GetAgentTestFolderRouteParams) (GetAgentTestFolderRouteRes, error) {
+	res, err := c.sendGetAgentTestFolderRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAgentTestFolderRoute(ctx context.Context, params GetAgentTestFolderRouteParams) (res GetAgentTestFolderRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_agent_test_folder_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/agent-testing/folders/{folder_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetAgentTestFolderRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/agent-testing/folders/"
+	{
+		// Encode "folder_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "folder_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.FolderID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetAgentTestFolderRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAgentTopicsRoute invokes get_agent_topics_route operation.
+//
+// Returns the latest topic discovery run results for a given agent.
+//
+// GET /v1/convai/agents/{agent_id}/topics
+func (c *Client) GetAgentTopicsRoute(ctx context.Context, params GetAgentTopicsRouteParams) (GetAgentTopicsRouteRes, error) {
+	res, err := c.sendGetAgentTopicsRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAgentTopicsRoute(ctx context.Context, params GetAgentTopicsRouteParams) (res GetAgentTopicsRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_agent_topics_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/topics"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetAgentTopicsRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/topics"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetAgentTopicsRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -9390,6 +11363,23 @@ func (c *Client) sendGetAgentsRoute(ctx context.Context, params GetAgentsRoutePa
 		}
 	}
 	{
+		// Encode "created_by_user_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "created_by_user_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CreatedByUserID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
 		// Encode "sort_direction" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "sort_direction",
@@ -9470,7 +11460,8 @@ func (c *Client) sendGetAgentsRoute(ctx context.Context, params GetAgentsRoutePa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAgentsRouteResponse(resp)
@@ -9598,7 +11589,8 @@ func (c *Client) sendGetAudioFromSample(ctx context.Context, params GetAudioFrom
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAudioFromSampleResponse(resp)
@@ -9707,10 +11699,157 @@ func (c *Client) sendGetAudioFullFromSpeechHistoryItem(ctx context.Context, para
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAudioFullFromSpeechHistoryItemResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetAudioIsolationHistory invokes get_audio_isolation_history operation.
+//
+// Returns a list of all your audio isolation generations.
+//
+// GET /v1/audio-isolation/history
+func (c *Client) GetAudioIsolationHistory(ctx context.Context, params GetAudioIsolationHistoryParams) (GetAudioIsolationHistoryRes, error) {
+	res, err := c.sendGetAudioIsolationHistory(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetAudioIsolationHistory(ctx context.Context, params GetAudioIsolationHistoryParams) (res GetAudioIsolationHistoryRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_audio_isolation_history"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/audio-isolation/history"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetAudioIsolationHistoryOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/audio-isolation/history"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Page.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "search" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Search.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetAudioIsolationHistoryResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -9816,7 +11955,8 @@ func (c *Client) sendGetAudioNativeProjectSettingsEndpoint(ctx context.Context, 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetAudioNativeProjectSettingsEndpointResponse(resp)
@@ -9924,10 +12064,287 @@ func (c *Client) sendGetBatchCall(ctx context.Context, params GetBatchCallParams
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetBatchCallResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetBranchRoute invokes get_branch_route operation.
+//
+// Get information about a single agent branch.
+//
+// GET /v1/convai/agents/{agent_id}/branches/{branch_id}
+func (c *Client) GetBranchRoute(ctx context.Context, params GetBranchRouteParams) (GetBranchRouteRes, error) {
+	res, err := c.sendGetBranchRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetBranchRoute(ctx context.Context, params GetBranchRouteParams) (res GetBranchRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_branch_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/branches/{branch_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetBranchRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/branches/"
+	{
+		// Encode "branch_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "branch_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.BranchID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetBranchRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetBranchesRoute invokes get_branches_route operation.
+//
+// Returns a list of branches an agent has.
+//
+// GET /v1/convai/agents/{agent_id}/branches
+func (c *Client) GetBranchesRoute(ctx context.Context, params GetBranchesRouteParams) (GetBranchesRouteRes, error) {
+	res, err := c.sendGetBranchesRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetBranchesRoute(ctx context.Context, params GetBranchesRouteParams) (res GetBranchesRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_branches_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/branches"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetBranchesRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/branches"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "include_archived" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "include_archived",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.IncludeArchived.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Limit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetBranchesRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -10070,7 +12487,8 @@ func (c *Client) sendGetChapterSnapshotEndpoint(ctx context.Context, params GetC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetChapterSnapshotEndpointResponse(resp)
@@ -10199,7 +12617,8 @@ func (c *Client) sendGetChapterSnapshots(ctx context.Context, params GetChapterS
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetChapterSnapshotsResponse(resp)
@@ -10308,7 +12727,8 @@ func (c *Client) sendGetChapters(ctx context.Context, params GetChaptersParams) 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetChaptersResponse(resp)
@@ -10417,7 +12837,8 @@ func (c *Client) sendGetConversationAudioRoute(ctx context.Context, params GetCo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetConversationAudioRouteResponse(resp)
@@ -10747,6 +13168,58 @@ func (c *Client) sendGetConversationHistoriesRoute(ctx context.Context, params G
 		}
 	}
 	{
+		// Encode "tool_names_successful" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tool_names_successful",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ToolNamesSuccessful.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tool_names_errored" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tool_names_errored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ToolNamesErrored.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
 		// Encode "main_languages" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "main_languages",
@@ -10823,6 +13296,152 @@ func (c *Client) sendGetConversationHistoriesRoute(ctx context.Context, params G
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "conversation_initiation_source" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "conversation_initiation_source",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ConversationInitiationSource.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "text_only" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "text_only",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.TextOnly.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "topic_ids" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "topic_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.TopicIds.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "exclude_statuses" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "exclude_statuses",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ExcludeStatuses.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(string(item)))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tag_ids" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tag_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.TagIds.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "workflow_node_entered_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "workflow_node_entered_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.WorkflowNodeEnteredID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -10853,7 +13472,8 @@ func (c *Client) sendGetConversationHistoriesRoute(ctx context.Context, params G
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetConversationHistoriesRouteResponse(resp)
@@ -10933,6 +13553,27 @@ func (c *Client) sendGetConversationHistoryRoute(ctx context.Context, params Get
 	}
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "format" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "format",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Format.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
@@ -10961,7 +13602,8 @@ func (c *Client) sendGetConversationHistoryRoute(ctx context.Context, params Get
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetConversationHistoryRouteResponse(resp)
@@ -11056,6 +13698,40 @@ func (c *Client) sendGetConversationSignedLink(ctx context.Context, params GetCo
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "environment" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "environment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Environment.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -11086,10 +13762,499 @@ func (c *Client) sendGetConversationSignedLink(ctx context.Context, params GetCo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetConversationSignedLinkResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetConversationSipMessages invokes get_conversation_sip_messages operation.
+//
+// Get SIP messages associated with a conversation's phone call.
+//
+// GET /v1/convai/conversations/{conversation_id}/sip-messages
+func (c *Client) GetConversationSipMessages(ctx context.Context, params GetConversationSipMessagesParams) (GetConversationSipMessagesRes, error) {
+	res, err := c.sendGetConversationSipMessages(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetConversationSipMessages(ctx context.Context, params GetConversationSipMessagesParams) (res GetConversationSipMessagesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_conversation_sip_messages"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/sip-messages"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetConversationSipMessagesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/sip-messages"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetConversationSipMessagesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetConversationTagRoute invokes get_conversation_tag_route operation.
+//
+// Get a conversation tag by ID.
+//
+// GET /v1/convai/tags/{tag_id}
+func (c *Client) GetConversationTagRoute(ctx context.Context, params GetConversationTagRouteParams) (GetConversationTagRouteRes, error) {
+	res, err := c.sendGetConversationTagRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetConversationTagRoute(ctx context.Context, params GetConversationTagRouteParams) (res GetConversationTagRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_conversation_tag_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/tags/{tag_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetConversationTagRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/tags/"
+	{
+		// Encode "tag_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tag_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.TagID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetConversationTagRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetConversationUsersRoute invokes get_conversation_users_route operation.
+//
+// Get distinct users from conversations with pagination.
+//
+// GET /v1/convai/users
+func (c *Client) GetConversationUsersRoute(ctx context.Context, params GetConversationUsersRouteParams) (GetConversationUsersRouteRes, error) {
+	res, err := c.sendGetConversationUsersRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetConversationUsersRoute(ctx context.Context, params GetConversationUsersRouteParams) (res GetConversationUsersRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_conversation_users_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/users"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetConversationUsersRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/users"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_start_before_unix" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_start_before_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallStartBeforeUnix.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_start_after_unix" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_start_after_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallStartAfterUnix.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "search" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Search.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort_by" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SortBy.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetConversationUsersRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -11176,7 +14341,8 @@ func (c *Client) sendGetDashboardSettingsRoute(ctx context.Context, params GetDa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDashboardSettingsRouteResponse(resp)
@@ -11275,6 +14441,27 @@ func (c *Client) sendGetDocumentationChunkFromKnowledgeBase(ctx context.Context,
 	}
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "embedding_model" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "embedding_model",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EmbeddingModel.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
@@ -11303,10 +14490,173 @@ func (c *Client) sendGetDocumentationChunkFromKnowledgeBase(ctx context.Context,
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDocumentationChunkFromKnowledgeBaseResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetDocumentationChunksFromKnowledgeBase invokes get_documentation_chunks_from_knowledge_base operation.
+//
+// Get all RAG chunks for a specific knowledge base document.
+//
+// GET /v1/convai/knowledge-base/{documentation_id}/chunks
+func (c *Client) GetDocumentationChunksFromKnowledgeBase(ctx context.Context, params GetDocumentationChunksFromKnowledgeBaseParams) (GetDocumentationChunksFromKnowledgeBaseRes, error) {
+	res, err := c.sendGetDocumentationChunksFromKnowledgeBase(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetDocumentationChunksFromKnowledgeBase(ctx context.Context, params GetDocumentationChunksFromKnowledgeBaseParams) (res GetDocumentationChunksFromKnowledgeBaseRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_documentation_chunks_from_knowledge_base"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/{documentation_id}/chunks"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetDocumentationChunksFromKnowledgeBaseOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/knowledge-base/"
+	{
+		// Encode "documentation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "documentation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DocumentationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/chunks"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "embedding_model" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "embedding_model",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(string(params.EmbeddingModel)))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetDocumentationChunksFromKnowledgeBaseResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -11432,7 +14782,8 @@ func (c *Client) sendGetDocumentationFromKnowledgeBase(ctx context.Context, para
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDocumentationFromKnowledgeBaseResponse(resp)
@@ -11561,7 +14912,8 @@ func (c *Client) sendGetDubbedFile(ctx context.Context, params GetDubbedFilePara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDubbedFileResponse(resp)
@@ -11669,7 +15021,8 @@ func (c *Client) sendGetDubbedMetadata(ctx context.Context, params GetDubbedMeta
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDubbedMetadataResponse(resp)
@@ -11683,6 +15036,8 @@ func (c *Client) sendGetDubbedMetadata(ctx context.Context, params GetDubbedMeta
 // GetDubbedTranscriptFile invokes get_dubbed_transcript_file operation.
 //
 // Returns transcript for the dub as an SRT or WEBVTT file.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // GET /v1/dubbing/{dubbing_id}/transcript/{language_code}
 func (c *Client) GetDubbedTranscriptFile(ctx context.Context, params GetDubbedTranscriptFileParams) (GetDubbedTranscriptFileRes, error) {
@@ -11817,7 +15172,8 @@ func (c *Client) sendGetDubbedTranscriptFile(ctx context.Context, params GetDubb
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDubbedTranscriptFileResponse(resp)
@@ -11832,6 +15188,8 @@ func (c *Client) sendGetDubbedTranscriptFile(ctx context.Context, params GetDubb
 //
 // Given a dubbing ID generated from the '/v1/dubbing' endpoint with studio enabled, returns the
 // dubbing resource.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // GET /v1/dubbing/resource/{dubbing_id}
 func (c *Client) GetDubbingResource(ctx context.Context, params GetDubbingResourceParams) (GetDubbingResourceRes, error) {
@@ -11926,7 +15284,8 @@ func (c *Client) sendGetDubbingResource(ctx context.Context, params GetDubbingRe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetDubbingResourceResponse(resp)
@@ -11937,21 +15296,21 @@ func (c *Client) sendGetDubbingResource(ctx context.Context, params GetDubbingRe
 	return result, nil
 }
 
-// GetGenerateVoiceParameters invokes get_generate_voice_parameters operation.
+// GetDubbingTranscripts invokes get_dubbing_transcripts operation.
 //
-// Get possible parameters for the /v1/voice-generation/generate-voice endpoint.
+// Fetch the transcript for one of the languages in a dub.
 //
-// GET /v1/voice-generation/generate-voice/parameters
-func (c *Client) GetGenerateVoiceParameters(ctx context.Context) (*VoiceGenerationParameterResponseModel, error) {
-	res, err := c.sendGetGenerateVoiceParameters(ctx)
+// GET /v1/dubbing/{dubbing_id}/transcripts/{language_code}/format/{format_type}
+func (c *Client) GetDubbingTranscripts(ctx context.Context, params GetDubbingTranscriptsParams) (GetDubbingTranscriptsRes, error) {
+	res, err := c.sendGetDubbingTranscripts(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetGenerateVoiceParameters(ctx context.Context) (res *VoiceGenerationParameterResponseModel, err error) {
+func (c *Client) sendGetDubbingTranscripts(ctx context.Context, params GetDubbingTranscriptsParams) (res GetDubbingTranscriptsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("get_generate_voice_parameters"),
+		otelogen.OperationID("get_dubbing_transcripts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/v1/voice-generation/generate-voice/parameters"),
+		semconv.URLTemplateKey.String("/v1/dubbing/{dubbing_id}/transcripts/{language_code}/format/{format_type}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11967,7 +15326,154 @@ func (c *Client) sendGetGenerateVoiceParameters(ctx context.Context) (res *Voice
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, GetGenerateVoiceParametersOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, GetDubbingTranscriptsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [6]string
+	pathParts[0] = "/v1/dubbing/"
+	{
+		// Encode "dubbing_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "dubbing_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DubbingID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/transcripts/"
+	{
+		// Encode "language_code" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "language_code",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.LanguageCode))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	pathParts[4] = "/format/"
+	{
+		// Encode "format_type" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "format_type",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.FormatType)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[5] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetDubbingTranscriptsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetGroupsEndpoint invokes get_groups_endpoint operation.
+//
+// Get all groups in the workspace.
+//
+// GET /v1/workspace/groups
+func (c *Client) GetGroupsEndpoint(ctx context.Context, params GetGroupsEndpointParams) (GetGroupsEndpointRes, error) {
+	res, err := c.sendGetGroupsEndpoint(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetGroupsEndpoint(ctx context.Context, params GetGroupsEndpointParams) (res GetGroupsEndpointRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_groups_endpoint"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/workspace/groups"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetGroupsEndpointOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -11985,7 +15491,7 @@ func (c *Client) sendGetGenerateVoiceParameters(ctx context.Context) (res *Voice
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/v1/voice-generation/generate-voice/parameters"
+	pathParts[0] = "/v1/workspace/groups"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -11994,15 +15500,33 @@ func (c *Client) sendGetGenerateVoiceParameters(ctx context.Context) (res *Voice
 		return res, errors.Wrap(err, "create request")
 	}
 
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeGetGenerateVoiceParametersResponse(resp)
+	result, err := decodeGetGroupsEndpointResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -12108,7 +15632,8 @@ func (c *Client) sendGetKnowledgeBaseContent(ctx context.Context, params GetKnow
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetKnowledgeBaseContentResponse(resp)
@@ -12272,7 +15797,8 @@ func (c *Client) sendGetKnowledgeBaseDependentAgents(ctx context.Context, params
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetKnowledgeBaseDependentAgentsResponse(resp)
@@ -12381,6 +15907,23 @@ func (c *Client) sendGetKnowledgeBaseListRoute(ctx context.Context, params GetKn
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.ShowOnlyOwnedDocuments.Get(); ok {
 				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "created_by_user_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "created_by_user_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CreatedByUserID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -12499,23 +16042,6 @@ func (c *Client) sendGetKnowledgeBaseListRoute(ctx context.Context, params GetKn
 		}
 	}
 	{
-		// Encode "use_typesense" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "use_typesense",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.UseTypesense.Get(); ok {
-				return e.EncodeValue(conv.BoolToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
 		// Encode "cursor" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "cursor",
@@ -12562,10 +16088,122 @@ func (c *Client) sendGetKnowledgeBaseListRoute(ctx context.Context, params GetKn
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetKnowledgeBaseListRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetKnowledgeBaseSourceFileURL invokes get_knowledge_base_source_file_url operation.
+//
+// Get a signed URL to download the original source file of a file-type document from the knowledge
+// base.
+//
+// GET /v1/convai/knowledge-base/{documentation_id}/source-file-url
+func (c *Client) GetKnowledgeBaseSourceFileURL(ctx context.Context, params GetKnowledgeBaseSourceFileURLParams) (GetKnowledgeBaseSourceFileURLRes, error) {
+	res, err := c.sendGetKnowledgeBaseSourceFileURL(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetKnowledgeBaseSourceFileURL(ctx context.Context, params GetKnowledgeBaseSourceFileURLParams) (res GetKnowledgeBaseSourceFileURLRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_knowledge_base_source_file_url"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/{documentation_id}/source-file-url"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetKnowledgeBaseSourceFileURLOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/knowledge-base/"
+	{
+		// Encode "documentation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "documentation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DocumentationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/source-file-url"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetKnowledgeBaseSourceFileURLResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -12926,7 +16564,7 @@ func (c *Client) sendGetLibraryVoices(ctx context.Context, params GetLibraryVoic
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := params.Sort.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
+				return e.EncodeValue(conv.StringToString(string(val)))
 			}
 			return nil
 		}); err != nil {
@@ -12980,7 +16618,8 @@ func (c *Client) sendGetLibraryVoices(ctx context.Context, params GetLibraryVoic
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetLibraryVoicesResponse(resp)
@@ -13091,7 +16730,8 @@ func (c *Client) sendGetLiveCount(ctx context.Context, params GetLiveCountParams
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetLiveCountResponse(resp)
@@ -13186,6 +16826,40 @@ func (c *Client) sendGetLivekitToken(ctx context.Context, params GetLivekitToken
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "environment" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "environment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Environment.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -13216,7 +16890,8 @@ func (c *Client) sendGetLivekitToken(ctx context.Context, params GetLivekitToken
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetLivekitTokenResponse(resp)
@@ -13343,7 +17018,8 @@ func (c *Client) sendGetMcpToolConfigOverrideRoute(ctx context.Context, params G
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetMcpToolConfigOverrideRouteResponse(resp)
@@ -13433,7 +17109,8 @@ func (c *Client) sendGetModels(ctx context.Context, params GetModelsParams) (res
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetModelsResponse(resp)
@@ -13447,6 +17124,7 @@ func (c *Client) sendGetModels(ctx context.Context, params GetModelsParams) (res
 // GetOrCreateRagIndexes invokes get_or_create_rag_indexes operation.
 //
 // Retrieves and/or creates RAG indexes for multiple knowledge base documents in a single request.
+// Maximum 100 items per request.
 //
 // POST /v1/convai/knowledge-base/rag-index
 func (c *Client) GetOrCreateRagIndexes(ctx context.Context, request *BodyComputeRAGIndexesInBatchV1ConvaiKnowledgeBaseRagIndexPost, params GetOrCreateRagIndexesParams) (GetOrCreateRagIndexesRes, error) {
@@ -13526,7 +17204,8 @@ func (c *Client) sendGetOrCreateRagIndexes(ctx context.Context, request *BodyCom
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetOrCreateRagIndexesResponse(resp)
@@ -13634,10 +17313,121 @@ func (c *Client) sendGetPhoneNumberRoute(ctx context.Context, params GetPhoneNum
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPhoneNumberRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetProjectMutedTracksEndpoint invokes get_project_muted_tracks_endpoint operation.
+//
+// Returns a list of chapter IDs that have muted tracks in a project.
+//
+// GET /v1/studio/projects/{project_id}/muted-tracks
+func (c *Client) GetProjectMutedTracksEndpoint(ctx context.Context, params GetProjectMutedTracksEndpointParams) (GetProjectMutedTracksEndpointRes, error) {
+	res, err := c.sendGetProjectMutedTracksEndpoint(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetProjectMutedTracksEndpoint(ctx context.Context, params GetProjectMutedTracksEndpointParams) (res GetProjectMutedTracksEndpointRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_project_muted_tracks_endpoint"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/studio/projects/{project_id}/muted-tracks"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetProjectMutedTracksEndpointOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/studio/projects/"
+	{
+		// Encode "project_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "project_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ProjectID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/muted-tracks"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetProjectMutedTracksEndpointResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -13761,7 +17551,8 @@ func (c *Client) sendGetProjectSnapshotEndpoint(ctx context.Context, params GetP
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetProjectSnapshotEndpointResponse(resp)
@@ -13870,7 +17661,8 @@ func (c *Client) sendGetProjectSnapshots(ctx context.Context, params GetProjectS
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetProjectSnapshotsResponse(resp)
@@ -13960,7 +17752,8 @@ func (c *Client) sendGetProjects(ctx context.Context, params GetProjectsParams) 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetProjectsResponse(resp)
@@ -14122,118 +17915,11 @@ func (c *Client) sendGetPronunciationDictionariesMetadata(ctx context.Context, p
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPronunciationDictionariesMetadataResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetPronunciationDictionaryMetadata invokes get_pronunciation_dictionary_metadata operation.
-//
-// Get metadata for a pronunciation dictionary.
-//
-// GET /v1/pronunciation-dictionaries/{pronunciation_dictionary_id}
-func (c *Client) GetPronunciationDictionaryMetadata(ctx context.Context, params GetPronunciationDictionaryMetadataParams) (GetPronunciationDictionaryMetadataRes, error) {
-	res, err := c.sendGetPronunciationDictionaryMetadata(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendGetPronunciationDictionaryMetadata(ctx context.Context, params GetPronunciationDictionaryMetadataParams) (res GetPronunciationDictionaryMetadataRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("get_pronunciation_dictionary_metadata"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/v1/pronunciation-dictionaries/{pronunciation_dictionary_id}"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, GetPronunciationDictionaryMetadataOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/v1/pronunciation-dictionaries/"
-	{
-		// Encode "pronunciation_dictionary_id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "pronunciation_dictionary_id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.PronunciationDictionaryID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeGetPronunciationDictionaryMetadataResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -14358,7 +18044,8 @@ func (c *Client) sendGetPronunciationDictionaryVersionPls(ctx context.Context, p
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPronunciationDictionaryVersionPlsResponse(resp)
@@ -14434,7 +18121,8 @@ func (c *Client) sendGetPublicLlmExpectedCostCalculation(ctx context.Context, re
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPublicLlmExpectedCostCalculationResponse(resp)
@@ -14583,7 +18271,8 @@ func (c *Client) sendGetPvcSampleAudio(ctx context.Context, params GetPvcSampleA
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPvcSampleAudioResponse(resp)
@@ -14712,7 +18401,8 @@ func (c *Client) sendGetPvcSampleSpeakers(ctx context.Context, params GetPvcSamp
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPvcSampleSpeakersResponse(resp)
@@ -14840,7 +18530,8 @@ func (c *Client) sendGetPvcSampleVisualWaveform(ctx context.Context, params GetP
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPvcSampleVisualWaveformResponse(resp)
@@ -14949,7 +18640,8 @@ func (c *Client) sendGetPvcVoiceCaptcha(ctx context.Context, params GetPvcVoiceC
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetPvcVoiceCaptchaResponse(resp)
@@ -15039,7 +18731,8 @@ func (c *Client) sendGetRagIndexOverview(ctx context.Context, params GetRagIndex
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetRagIndexOverviewResponse(resp)
@@ -15148,7 +18841,8 @@ func (c *Client) sendGetRagIndexes(ctx context.Context, params GetRagIndexesPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetRagIndexesResponse(resp)
@@ -15274,10 +18968,120 @@ func (c *Client) sendGetResourceMetadata(ctx context.Context, params GetResource
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetResourceMetadataResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetSecretRoute invokes get_secret_route operation.
+//
+// Get a workspace secret by ID.
+//
+// GET /v1/convai/secrets/{secret_id}
+func (c *Client) GetSecretRoute(ctx context.Context, params GetSecretRouteParams) (GetSecretRouteRes, error) {
+	res, err := c.sendGetSecretRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetSecretRoute(ctx context.Context, params GetSecretRouteParams) (res GetSecretRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_secret_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/secrets/{secret_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetSecretRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/secrets/"
+	{
+		// Encode "secret_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "secret_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SecretID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetSecretRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -15336,6 +19140,78 @@ func (c *Client) sendGetSecretsRoute(ctx context.Context, params GetSecretsRoute
 	pathParts[0] = "/v1/convai/secrets"
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "dependency_limit" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "dependency_limit",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.DependencyLimit.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "search" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Search.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
@@ -15364,7 +19240,8 @@ func (c *Client) sendGetSecretsRoute(ctx context.Context, params GetSecretsRoute
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSecretsRouteResponse(resp)
@@ -15473,7 +19350,8 @@ func (c *Client) sendGetServiceAccountAPIKeysRoute(ctx context.Context, params G
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetServiceAccountAPIKeysRouteResponse(resp)
@@ -15563,7 +19441,8 @@ func (c *Client) sendGetSettingsRoute(ctx context.Context, params GetSettingsRou
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSettingsRouteResponse(resp)
@@ -15660,6 +19539,40 @@ func (c *Client) sendGetSignedURLDeprecated(ctx context.Context, params GetSigne
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "environment" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "environment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Environment.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -15690,7 +19603,8 @@ func (c *Client) sendGetSignedURLDeprecated(ctx context.Context, params GetSigne
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSignedURLDeprecatedResponse(resp)
@@ -15784,7 +19698,8 @@ func (c *Client) sendGetSimilarLibraryVoices(ctx context.Context, request OptBod
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSimilarLibraryVoicesResponse(resp)
@@ -15799,6 +19714,8 @@ func (c *Client) sendGetSimilarLibraryVoices(ctx context.Context, request OptBod
 //
 // Fetch the top 10 similar voices to a speaker, including the voice IDs, names, descriptions, and,
 // where possible, a sample audio recording.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // GET /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/similar-voices
 func (c *Client) GetSimilarVoicesForSpeaker(ctx context.Context, params GetSimilarVoicesForSpeakerParams) (GetSimilarVoicesForSpeakerRes, error) {
@@ -15913,7 +19830,8 @@ func (c *Client) sendGetSimilarVoicesForSpeaker(ctx context.Context, params GetS
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSimilarVoicesForSpeakerResponse(resp)
@@ -16021,7 +19939,8 @@ func (c *Client) sendGetSingleUseToken(ctx context.Context, params GetSingleUseT
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSingleUseTokenResponse(resp)
@@ -16168,7 +20087,8 @@ func (c *Client) sendGetSpeakerAudio(ctx context.Context, params GetSpeakerAudio
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSpeakerAudioResponse(resp)
@@ -16415,7 +20335,8 @@ func (c *Client) sendGetSpeechHistory(ctx context.Context, params GetSpeechHisto
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSpeechHistoryResponse(resp)
@@ -16523,7 +20444,8 @@ func (c *Client) sendGetSpeechHistoryItemByID(ctx context.Context, params GetSpe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSpeechHistoryItemByIDResponse(resp)
@@ -16631,7 +20553,8 @@ func (c *Client) sendGetTestInvocationRoute(ctx context.Context, params GetTestI
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTestInvocationRouteResponse(resp)
@@ -16778,10 +20701,244 @@ func (c *Client) sendGetToolDependentAgentsRoute(ctx context.Context, params Get
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetToolDependentAgentsRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetToolExecutionsRoute invokes get_tool_executions_route operation.
+//
+// Get paginated list of tool executions for a specific tool.
+//
+// GET /v1/convai/tools/{tool_id}/executions
+func (c *Client) GetToolExecutionsRoute(ctx context.Context, params GetToolExecutionsRouteParams) (GetToolExecutionsRouteRes, error) {
+	res, err := c.sendGetToolExecutionsRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetToolExecutionsRoute(ctx context.Context, params GetToolExecutionsRouteParams) (res GetToolExecutionsRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_tool_executions_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/tools/{tool_id}/executions"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetToolExecutionsRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/tools/"
+	{
+		// Encode "tool_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tool_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ToolID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/executions"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "is_error" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "is_error",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.IsError.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "start_time" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "start_time",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.StartTime.Get(); ok {
+				return e.EncodeValue(conv.Float64ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "end_time" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "end_time",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EndTime.Get(); ok {
+				return e.EncodeValue(conv.Float64ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetToolExecutionsRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -16886,7 +21043,8 @@ func (c *Client) sendGetTranscriptByID(ctx context.Context, params GetTranscript
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetTranscriptByIDResponse(resp)
@@ -16976,7 +21134,8 @@ func (c *Client) sendGetUserInfo(ctx context.Context, params GetUserInfoParams) 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetUserInfoResponse(resp)
@@ -17266,10 +21425,139 @@ func (c *Client) sendGetUserVoicesV2(ctx context.Context, params GetUserVoicesV2
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetUserVoicesV2Response(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetVersionMetadataRoute invokes get_version_metadata_route operation.
+//
+// Get metadata for a specific agent version.
+//
+// GET /v1/convai/agents/{agent_id}/versions/{version_id}
+func (c *Client) GetVersionMetadataRoute(ctx context.Context, params GetVersionMetadataRouteParams) (GetVersionMetadataRouteRes, error) {
+	res, err := c.sendGetVersionMetadataRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetVersionMetadataRoute(ctx context.Context, params GetVersionMetadataRouteParams) (res GetVersionMetadataRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("get_version_metadata_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/versions/{version_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetVersionMetadataRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/versions/"
+	{
+		// Encode "version_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "version_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.VersionID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetVersionMetadataRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -17395,7 +21683,8 @@ func (c *Client) sendGetVoiceByID(ctx context.Context, params GetVoiceByIDParams
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetVoiceByIDResponse(resp)
@@ -17505,7 +21794,8 @@ func (c *Client) sendGetVoiceSettings(ctx context.Context, params GetVoiceSettin
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetVoiceSettingsResponse(resp)
@@ -17579,7 +21869,8 @@ func (c *Client) sendGetVoiceSettingsDefault(ctx context.Context) (res *VoiceSet
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetVoiceSettingsDefaultResponse(resp)
@@ -17592,7 +21883,8 @@ func (c *Client) sendGetVoiceSettingsDefault(ctx context.Context) (res *VoiceSet
 
 // GetVoices invokes get_voices operation.
 //
-// Returns a list of all available voices for a user.
+// Returns a list of all available voices for a user. Stops working once the user's workspace exceeds
+// 500 voices.
 //
 // GET /v1/voices
 func (c *Client) GetVoices(ctx context.Context, params GetVoicesParams) (GetVoicesRes, error) {
@@ -17690,7 +21982,8 @@ func (c *Client) sendGetVoices(ctx context.Context, params GetVoicesParams) (res
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetVoicesResponse(resp)
@@ -17798,7 +22091,8 @@ func (c *Client) sendGetWhatsappAccount(ctx context.Context, params GetWhatsappA
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetWhatsappAccountResponse(resp)
@@ -17896,6 +22190,23 @@ func (c *Client) sendGetWorkspaceBatchCalls(ctx context.Context, params GetWorks
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -17926,7 +22237,8 @@ func (c *Client) sendGetWorkspaceBatchCalls(ctx context.Context, params GetWorks
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetWorkspaceBatchCallsResponse(resp)
@@ -18016,7 +22328,8 @@ func (c *Client) sendGetWorkspaceServiceAccounts(ctx context.Context, params Get
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetWorkspaceServiceAccountsResponse(resp)
@@ -18127,10 +22440,105 @@ func (c *Client) sendGetWorkspaceWebhooksRoute(ctx context.Context, params GetWo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeGetWorkspaceWebhooksRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// HandleExotelOutboundCall invokes handle_exotel_outbound_call operation.
+//
+// Handle an outbound call via Exotel Connect API.
+//
+// POST /v1/convai/exotel/outbound-call
+func (c *Client) HandleExotelOutboundCall(ctx context.Context, request *BodyHandleAnOutboundCallViaExotelV1ConvaiExotelOutboundCallPost, params HandleExotelOutboundCallParams) (HandleExotelOutboundCallRes, error) {
+	res, err := c.sendHandleExotelOutboundCall(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendHandleExotelOutboundCall(ctx context.Context, request *BodyHandleAnOutboundCallViaExotelV1ConvaiExotelOutboundCallPost, params HandleExotelOutboundCallParams) (res HandleExotelOutboundCallRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("handle_exotel_outbound_call"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/exotel/outbound-call"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, HandleExotelOutboundCallOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/exotel/outbound-call"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeHandleExotelOutboundCallRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeHandleExotelOutboundCallResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -18220,7 +22628,8 @@ func (c *Client) sendHandleSipTrunkOutboundCall(ctx context.Context, request *Bo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeHandleSipTrunkOutboundCallResponse(resp)
@@ -18313,103 +22722,11 @@ func (c *Client) sendHandleTwilioOutboundCall(ctx context.Context, request *Body
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeHandleTwilioOutboundCallResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// ImportWhatsappAccount invokes import_whatsapp_account operation.
-//
-// Import a WhatsApp account.
-//
-// POST /v1/convai/whatsapp-accounts
-func (c *Client) ImportWhatsappAccount(ctx context.Context, request *ImportWhatsAppAccountRequest, params ImportWhatsappAccountParams) (ImportWhatsappAccountRes, error) {
-	res, err := c.sendImportWhatsappAccount(ctx, request, params)
-	return res, err
-}
-
-func (c *Client) sendImportWhatsappAccount(ctx context.Context, request *ImportWhatsAppAccountRequest, params ImportWhatsappAccountParams) (res ImportWhatsappAccountRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("import_whatsapp_account"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/convai/whatsapp-accounts"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, ImportWhatsappAccountOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/convai/whatsapp-accounts"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeImportWhatsappAccountRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeImportWhatsappAccountResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -18422,8 +22739,8 @@ func (c *Client) sendImportWhatsappAccount(ctx context.Context, request *ImportW
 // Sends an email invitation to join your workspace to the provided email. If the user doesn't have
 // an account they will be prompted to create one. If the user accepts this invite they will be added
 // as a user to your workspace and your subscription using one of your seats. This endpoint may only
-// be called by workspace administrators. If the user is already in the workspace a 400 error will be
-// returned.
+// be called by workspace members with the WORKSPACE_MEMBERS_INVITE permission. If the user is
+// already in the workspace a 400 error will be returned.
 //
 // POST /v1/workspace/invites/add
 func (c *Client) InviteUser(ctx context.Context, request *BodyInviteUserV1WorkspaceInvitesAddPost, params InviteUserParams) (InviteUserRes, error) {
@@ -18503,7 +22820,8 @@ func (c *Client) sendInviteUser(ctx context.Context, request *BodyInviteUserV1Wo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeInviteUserResponse(resp)
@@ -18520,7 +22838,7 @@ func (c *Client) sendInviteUser(ctx context.Context, request *BodyInviteUserV1Wo
 // addresses to be part of a verified domain. If the users don't have an account they will be
 // prompted to create one. If the users accept these invites they will be added as users to your
 // workspace and your subscription using one of your seats. This endpoint may only be called by
-// workspace administrators.
+// workspace members with the WORKSPACE_MEMBERS_INVITE permission.
 //
 // POST /v1/workspace/invites/add-bulk
 func (c *Client) InviteUsersBulk(ctx context.Context, request *BodyInviteMultipleUsersV1WorkspaceInvitesAddBulkPost, params InviteUsersBulkParams) (InviteUsersBulkRes, error) {
@@ -18600,10 +22918,195 @@ func (c *Client) sendInviteUsersBulk(ctx context.Context, request *BodyInviteMul
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeInviteUsersBulkResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListAuthConnections invokes list_auth_connections operation.
+//
+// Get all auth connections for the workspace.
+//
+// GET /v1/workspace/auth-connections
+func (c *Client) ListAuthConnections(ctx context.Context, params ListAuthConnectionsParams) (ListAuthConnectionsRes, error) {
+	res, err := c.sendListAuthConnections(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListAuthConnections(ctx context.Context, params ListAuthConnectionsParams) (res ListAuthConnectionsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("list_auth_connections"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/workspace/auth-connections"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListAuthConnectionsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/workspace/auth-connections"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListAuthConnectionsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListAvailableLlms invokes list_available_llms operation.
+//
+// Returns a list of available LLM models that can be used with agents, including their capabilities
+// and any deprecation status. The response is filtered based on the data residency of the deployment
+// and any compliance requirements (e.g. HIPAA) of the workspace subscription.
+//
+// GET /v1/convai/llm/list
+func (c *Client) ListAvailableLlms(ctx context.Context, params ListAvailableLlmsParams) (ListAvailableLlmsRes, error) {
+	res, err := c.sendListAvailableLlms(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListAvailableLlms(ctx context.Context, params ListAvailableLlmsParams) (res ListAvailableLlmsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("list_available_llms"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/llm/list"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListAvailableLlmsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/llm/list"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListAvailableLlmsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -18715,6 +23218,100 @@ func (c *Client) sendListChatResponseTestsRoute(ctx context.Context, params List
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "parent_folder_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "parent_folder_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ParentFolderID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "types" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "types",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Types.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(string(item)))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "include_folders" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "include_folders",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.IncludeFolders.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort_mode" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SortMode.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sharing_mode" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sharing_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SharingMode.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -18745,10 +23342,140 @@ func (c *Client) sendListChatResponseTestsRoute(ctx context.Context, params List
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeListChatResponseTestsRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListConversationTagsRoute invokes list_conversation_tags_route operation.
+//
+// List conversation tags for the workspace, ordered by most recently created first.
+//
+// GET /v1/convai/tags
+func (c *Client) ListConversationTagsRoute(ctx context.Context, params ListConversationTagsRouteParams) (ListConversationTagsRouteRes, error) {
+	res, err := c.sendListConversationTagsRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListConversationTagsRoute(ctx context.Context, params ListConversationTagsRouteParams) (res ListConversationTagsRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("list_conversation_tags_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/tags"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListConversationTagsRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/tags"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListConversationTagsRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -18941,7 +23668,8 @@ func (c *Client) sendListDubs(ctx context.Context, params ListDubsParams) (res L
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeListDubsResponse(resp)
@@ -19050,7 +23778,8 @@ func (c *Client) sendListMcpServerToolsRoute(ctx context.Context, params ListMcp
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeListMcpServerToolsRouteResponse(resp)
@@ -19112,6 +23841,61 @@ func (c *Client) sendListPhoneNumbersRoute(ctx context.Context, params ListPhone
 	pathParts[0] = "/v1/convai/phone-numbers"
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "provider" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "provider",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Provider.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
@@ -19140,10 +23924,339 @@ func (c *Client) sendListPhoneNumbersRoute(ctx context.Context, params ListPhone
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeListPhoneNumbersRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListSipMessages invokes list_sip_messages operation.
+//
+// Get SIP messages for a phone number.
+//
+// GET /v1/convai/phone-numbers/{phone_number_id}/sip-messages
+func (c *Client) ListSipMessages(ctx context.Context, params ListSipMessagesParams) (ListSipMessagesRes, error) {
+	res, err := c.sendListSipMessages(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListSipMessages(ctx context.Context, params ListSipMessagesParams) (res ListSipMessagesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("list_sip_messages"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/phone-numbers/{phone_number_id}/sip-messages"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListSipMessagesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/phone-numbers/"
+	{
+		// Encode "phone_number_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "phone_number_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.PhoneNumberID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/sip-messages"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListSipMessagesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ListSpeechEngines invokes list_speech_engines operation.
+//
+// Returns a paginated list of Speech Engine resources.
+//
+// GET /v1/speech-engine
+func (c *Client) ListSpeechEngines(ctx context.Context, params ListSpeechEnginesParams) (ListSpeechEnginesRes, error) {
+	res, err := c.sendListSpeechEngines(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendListSpeechEngines(ctx context.Context, params ListSpeechEnginesParams) (res ListSpeechEnginesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("list_speech_engines"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/speech-engine"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ListSpeechEnginesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/speech-engine"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "search" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "search",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Search.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort_direction" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort_direction",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SortDirection.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort_by" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SortBy.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeListSpeechEnginesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -19213,7 +24326,10 @@ func (c *Client) sendListTestInvocationsRoute(ctx context.Context, params ListTe
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return e.EncodeValue(conv.StringToString(params.AgentID))
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -19282,7 +24398,8 @@ func (c *Client) sendListTestInvocationsRoute(ctx context.Context, params ListTe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeListTestInvocationsRouteResponse(resp)
@@ -19344,6 +24461,27 @@ func (c *Client) sendListWhatsappAccounts(ctx context.Context, params ListWhatsa
 	pathParts[0] = "/v1/convai/whatsapp-accounts"
 	uri.AddPathParts(u, pathParts[:]...)
 
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
@@ -19372,7 +24510,8 @@ func (c *Client) sendListWhatsappAccounts(ctx context.Context, params ListWhatsa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeListWhatsappAccountsResponse(resp)
@@ -19383,9 +24522,161 @@ func (c *Client) sendListWhatsappAccounts(ctx context.Context, params ListWhatsa
 	return result, nil
 }
 
+// MergeBranchIntoTarget invokes merge_branch_into_target operation.
+//
+// Merge a branch into a target branch.
+//
+// POST /v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge
+func (c *Client) MergeBranchIntoTarget(ctx context.Context, request OptBodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIDBranchesSourceBranchIDMergePost, params MergeBranchIntoTargetParams) (MergeBranchIntoTargetRes, error) {
+	res, err := c.sendMergeBranchIntoTarget(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendMergeBranchIntoTarget(ctx context.Context, request OptBodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIDBranchesSourceBranchIDMergePost, params MergeBranchIntoTargetParams) (res MergeBranchIntoTargetRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("merge_branch_into_target"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, MergeBranchIntoTargetOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [5]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/branches/"
+	{
+		// Encode "source_branch_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "source_branch_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SourceBranchID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	pathParts[4] = "/merge"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "target_branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "target_branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.TargetBranchID))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeMergeBranchIntoTargetRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeMergeBranchIntoTargetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // MigrateSegments invokes migrate_segments operation.
 //
 // Change the attribution of one or more segments to a different speaker.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/migrate-segments
 func (c *Client) MigrateSegments(ctx context.Context, request *BodyMoveSegmentsBetweenSpeakersV1DubbingResourceDubbingIDMigrateSegmentsPost, params MigrateSegmentsParams) (MigrateSegmentsRes, error) {
@@ -19484,7 +24775,8 @@ func (c *Client) sendMigrateSegments(ctx context.Context, request *BodyMoveSegme
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeMigrateSegmentsResponse(resp)
@@ -19595,7 +24887,8 @@ func (c *Client) sendPatchPronunciationDictionary(ctx context.Context, request O
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodePatchPronunciationDictionaryResponse(resp)
@@ -19707,7 +25000,8 @@ func (c *Client) sendPostAgentAvatarRoute(ctx context.Context, request *BodyPost
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodePostAgentAvatarRouteResponse(resp)
@@ -19802,10 +25096,1575 @@ func (c *Client) sendPostConversationFeedbackRoute(ctx context.Context, request 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodePostConversationFeedbackRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PostKnowledgeBaseBulkMoveRoute invokes post_knowledge_base_bulk_move_route operation.
+//
+// Moves multiple entities from one folder to another.
+//
+// POST /v1/convai/knowledge-base/bulk-move
+func (c *Client) PostKnowledgeBaseBulkMoveRoute(ctx context.Context, request *BodyBulkMoveEntitiesToFolderV1ConvaiKnowledgeBaseBulkMovePost, params PostKnowledgeBaseBulkMoveRouteParams) (PostKnowledgeBaseBulkMoveRouteRes, error) {
+	res, err := c.sendPostKnowledgeBaseBulkMoveRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendPostKnowledgeBaseBulkMoveRoute(ctx context.Context, request *BodyBulkMoveEntitiesToFolderV1ConvaiKnowledgeBaseBulkMovePost, params PostKnowledgeBaseBulkMoveRouteParams) (res PostKnowledgeBaseBulkMoveRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("post_knowledge_base_bulk_move_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/bulk-move"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PostKnowledgeBaseBulkMoveRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/knowledge-base/bulk-move"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodePostKnowledgeBaseBulkMoveRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePostKnowledgeBaseBulkMoveRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PostKnowledgeBaseMoveRoute invokes post_knowledge_base_move_route operation.
+//
+// Moves the entity from one folder to another.
+//
+// POST /v1/convai/knowledge-base/{document_id}/move
+func (c *Client) PostKnowledgeBaseMoveRoute(ctx context.Context, request OptBodyMoveEntityToFolderV1ConvaiKnowledgeBaseDocumentIDMovePost, params PostKnowledgeBaseMoveRouteParams) (PostKnowledgeBaseMoveRouteRes, error) {
+	res, err := c.sendPostKnowledgeBaseMoveRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendPostKnowledgeBaseMoveRoute(ctx context.Context, request OptBodyMoveEntityToFolderV1ConvaiKnowledgeBaseDocumentIDMovePost, params PostKnowledgeBaseMoveRouteParams) (res PostKnowledgeBaseMoveRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("post_knowledge_base_move_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/{document_id}/move"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PostKnowledgeBaseMoveRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/knowledge-base/"
+	{
+		// Encode "document_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "document_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DocumentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/move"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodePostKnowledgeBaseMoveRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePostKnowledgeBaseMoveRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicCreateOrder invokes public_create_order operation.
+//
+// Creates a new Productions order in the workspace. The order starts in the open state and can be
+// configured with items before submission.
+//
+// POST /v1/productions/orders
+func (c *Client) PublicCreateOrder(ctx context.Context, request OptCreateOrderRequest, params PublicCreateOrderParams) (PublicCreateOrderRes, error) {
+	res, err := c.sendPublicCreateOrder(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendPublicCreateOrder(ctx context.Context, request OptCreateOrderRequest, params PublicCreateOrderParams) (res PublicCreateOrderRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_create_order"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/productions/orders"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicCreateOrderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/productions/orders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodePublicCreateOrderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicCreateOrderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicGetAvailableLanguages invokes public_get_available_languages operation.
+//
+// Returns the available languages for a given order item kind.
+//
+// GET /v1/productions/orders/languages/{order_item_kind}
+func (c *Client) PublicGetAvailableLanguages(ctx context.Context, params PublicGetAvailableLanguagesParams) (PublicGetAvailableLanguagesRes, error) {
+	res, err := c.sendPublicGetAvailableLanguages(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicGetAvailableLanguages(ctx context.Context, params PublicGetAvailableLanguagesParams) (res PublicGetAvailableLanguagesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_get_available_languages"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/languages/{order_item_kind}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicGetAvailableLanguagesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/productions/orders/languages/"
+	{
+		// Encode "order_item_kind" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_item_kind",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(string(params.OrderItemKind)))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicGetAvailableLanguagesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicGetMediaInfo invokes public_get_media_info operation.
+//
+// Retrieves metadata and a time-limited download URL for a previously uploaded media file.
+//
+// GET /v1/productions/orders/{order_id}/media/{media_id}
+func (c *Client) PublicGetMediaInfo(ctx context.Context, params PublicGetMediaInfoParams) (PublicGetMediaInfoRes, error) {
+	res, err := c.sendPublicGetMediaInfo(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicGetMediaInfo(ctx context.Context, params PublicGetMediaInfoParams) (res PublicGetMediaInfoRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_get_media_info"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}/media/{media_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicGetMediaInfoOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/media/"
+	{
+		// Encode "media_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "media_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.MediaID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicGetMediaInfoResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicGetOrder invokes public_get_order operation.
+//
+// Retrieves full details for a Productions order.
+// Quote and pricing information may not be available immediately; if you wish to see the quote
+// before submission, you may need to poll the order details until it is ready.
+//
+// GET /v1/productions/orders/{order_id}
+func (c *Client) PublicGetOrder(ctx context.Context, params PublicGetOrderParams) (PublicGetOrderRes, error) {
+	res, err := c.sendPublicGetOrder(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicGetOrder(ctx context.Context, params PublicGetOrderParams) (res PublicGetOrderRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_get_order"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicGetOrderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicGetOrderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicGetOrderDeliverables invokes public_get_order_deliverables operation.
+//
+// Retrieves the delivered files for a completed order. Returns an empty list if the order is not yet
+// completed.
+//
+// GET /v1/productions/orders/{order_id}/deliverables
+func (c *Client) PublicGetOrderDeliverables(ctx context.Context, params PublicGetOrderDeliverablesParams) (PublicGetOrderDeliverablesRes, error) {
+	res, err := c.sendPublicGetOrderDeliverables(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicGetOrderDeliverables(ctx context.Context, params PublicGetOrderDeliverablesParams) (res PublicGetOrderDeliverablesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_get_order_deliverables"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}/deliverables"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicGetOrderDeliverablesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/deliverables"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicGetOrderDeliverablesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicListOrders invokes public_list_orders operation.
+//
+// Lists Productions orders in the workspace. Supports filtering by status and date range, with
+// pagination.
+//
+// GET /v1/productions/orders
+func (c *Client) PublicListOrders(ctx context.Context, params PublicListOrdersParams) (PublicListOrdersRes, error) {
+	res, err := c.sendPublicListOrders(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicListOrders(ctx context.Context, params PublicListOrdersParams) (res PublicListOrdersRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_list_orders"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/productions/orders"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicListOrdersOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/productions/orders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "offset" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "offset",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Offset.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "status" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "status",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Status.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(string(item)))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "start_date" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "start_date",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.StartDate.Get(); ok {
+				return e.EncodeValue(conv.DateTimeToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "end_date" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "end_date",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EndDate.Get(); ok {
+				return e.EncodeValue(conv.DateTimeToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicListOrdersResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicRegisterMedia invokes public_register_media operation.
+//
+// Registers a media file with an order, either by uploading it directly or by providing a URL to
+// fetch it from. Exactly one of `media` or `media_url` must be provided. The registered media can
+// then be referenced when adding order items.
+//
+// POST /v1/productions/orders/{order_id}/media
+func (c *Client) PublicRegisterMedia(ctx context.Context, request *BodyRegisterMediaV1ProductionsOrdersOrderIDMediaPostMultipart, params PublicRegisterMediaParams) (PublicRegisterMediaRes, error) {
+	res, err := c.sendPublicRegisterMedia(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendPublicRegisterMedia(ctx context.Context, request *BodyRegisterMediaV1ProductionsOrdersOrderIDMediaPostMultipart, params PublicRegisterMediaParams) (res PublicRegisterMediaRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_register_media"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}/media"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicRegisterMediaOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/media"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodePublicRegisterMediaRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicRegisterMediaResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicRemoveOrderItem invokes public_remove_order_item operation.
+//
+// Removes an order item from an open order.
+//
+// DELETE /v1/productions/orders/{order_id}/items/{item_id}
+func (c *Client) PublicRemoveOrderItem(ctx context.Context, params PublicRemoveOrderItemParams) (PublicRemoveOrderItemRes, error) {
+	res, err := c.sendPublicRemoveOrderItem(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicRemoveOrderItem(ctx context.Context, params PublicRemoveOrderItemParams) (res PublicRemoveOrderItemRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_remove_order_item"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}/items/{item_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicRemoveOrderItemOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/items/"
+	{
+		// Encode "item_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "item_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.ItemID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicRemoveOrderItemResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicSubmitOrder invokes public_submit_order operation.
+//
+// Submits an open order for processing. The order must have at least one item. Once submitted, items
+// can no longer be modified.
+// Upon submission, the workspace will be charged for the order. The quote is based on information
+// extracted from the uploaded media, such as its duration. The quote may not be available
+// immediately; if you wish to see the quote before submission, you may need to poll the order
+// details until the quote is ready.
+//
+// POST /v1/productions/orders/{order_id}/submit
+func (c *Client) PublicSubmitOrder(ctx context.Context, params PublicSubmitOrderParams) (PublicSubmitOrderRes, error) {
+	res, err := c.sendPublicSubmitOrder(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendPublicSubmitOrder(ctx context.Context, params PublicSubmitOrderParams) (res PublicSubmitOrderRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_submit_order"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}/submit"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicSubmitOrderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/submit"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicSubmitOrderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicUpdateOrder invokes public_update_order operation.
+//
+// Updates an open order.
+//
+// PATCH /v1/productions/orders/{order_id}
+func (c *Client) PublicUpdateOrder(ctx context.Context, request *BodyUpdateOrderV1ProductionsOrdersOrderIDPatch, params PublicUpdateOrderParams) (PublicUpdateOrderRes, error) {
+	res, err := c.sendPublicUpdateOrder(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendPublicUpdateOrder(ctx context.Context, request *BodyUpdateOrderV1ProductionsOrdersOrderIDPatch, params PublicUpdateOrderParams) (res PublicUpdateOrderRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_update_order"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicUpdateOrderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodePublicUpdateOrderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicUpdateOrderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// PublicUpsertOrderItem invokes public_upsert_order_item operation.
+//
+// Adds or updates an order item on an open order. Returns the item ID and the quoted price.
+//
+// POST /v1/productions/orders/{order_id}/items
+func (c *Client) PublicUpsertOrderItem(ctx context.Context, request *BodyUpsertOrderItemV1ProductionsOrdersOrderIDItemsPost, params PublicUpsertOrderItemParams) (PublicUpsertOrderItemRes, error) {
+	res, err := c.sendPublicUpsertOrderItem(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendPublicUpsertOrderItem(ctx context.Context, request *BodyUpsertOrderItemV1ProductionsOrdersOrderIDItemsPost, params PublicUpsertOrderItemParams) (res PublicUpsertOrderItemRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("public_upsert_order_item"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/productions/orders/{order_id}/items"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, PublicUpsertOrderItemOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/productions/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			if unwrapped := string(params.OrderID); true {
+				return e.EncodeValue(conv.StringToString(unwrapped))
+			}
+			return nil
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/items"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodePublicUpsertOrderItemRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodePublicUpsertOrderItemResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -19915,7 +26774,8 @@ func (c *Client) sendRagIndexStatus(ctx context.Context, request *RAGIndexReques
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRagIndexStatusResponse(resp)
@@ -19988,10 +26848,121 @@ func (c *Client) sendRedirectToMintlify(ctx context.Context) (res jx.Raw, err er
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRedirectToMintlifyResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RefreshURLDocumentRoute invokes refresh_url_document_route operation.
+//
+// Manually refresh a URL document by re-fetching its content from the source URL.
+//
+// POST /v1/convai/knowledge-base/{documentation_id}/refresh
+func (c *Client) RefreshURLDocumentRoute(ctx context.Context, params RefreshURLDocumentRouteParams) (RefreshURLDocumentRouteRes, error) {
+	res, err := c.sendRefreshURLDocumentRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendRefreshURLDocumentRoute(ctx context.Context, params RefreshURLDocumentRouteParams) (res RefreshURLDocumentRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("refresh_url_document_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/{documentation_id}/refresh"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RefreshURLDocumentRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/knowledge-base/"
+	{
+		// Encode "documentation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "documentation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DocumentationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/refresh"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRefreshURLDocumentRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -20081,7 +27052,8 @@ func (c *Client) sendRegisterTwilioCall(ctx context.Context, request *BodyRegist
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRegisterTwilioCallResponse(resp)
@@ -20094,8 +27066,7 @@ func (c *Client) sendRegisterTwilioCall(ctx context.Context, request *BodyRegist
 
 // RemoveMember invokes remove_member operation.
 //
-// Removes a member from the specified group. This endpoint may only be called by workspace
-// administrators.
+// Removes a member from the specified group. Requires `group_members_manage` permission.
 //
 // POST /v1/workspace/groups/{group_id}/members/remove
 func (c *Client) RemoveMember(ctx context.Context, request *BodyDeleteMemberFromUserGroupV1WorkspaceGroupsGroupIDMembersRemovePost, params RemoveMemberParams) (RemoveMemberRes, error) {
@@ -20194,7 +27165,8 @@ func (c *Client) sendRemoveMember(ctx context.Context, request *BodyDeleteMember
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRemoveMemberResponse(resp)
@@ -20306,10 +27278,147 @@ func (c *Client) sendRemoveRules(ctx context.Context, request *BodyRemoveRulesFr
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRemoveRulesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// Render invokes render operation.
+//
+// Regenerate the output media for a language using the latest Studio state. Please ensure all
+// segments have been dubbed before rendering, otherwise they will be omitted. Renders are generated
+// asynchronously, and to check the status of all renders please use the 'Get Dubbing Resource'
+// endpoint.
+//
+// Deprecated: schema marks this operation as deprecated.
+//
+// POST /v1/dubbing/resource/{dubbing_id}/render/{language}
+func (c *Client) Render(ctx context.Context, request *BodyRenderAudioOrVideoForTheGivenLanguageV1DubbingResourceDubbingIDRenderLanguagePost, params RenderParams) (RenderRes, error) {
+	res, err := c.sendRender(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendRender(ctx context.Context, request *BodyRenderAudioOrVideoForTheGivenLanguageV1DubbingResourceDubbingIDRenderLanguagePost, params RenderParams) (res RenderRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("render"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/dubbing/resource/{dubbing_id}/render/{language}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RenderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/dubbing/resource/"
+	{
+		// Encode "dubbing_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "dubbing_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DubbingID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/render/"
+	{
+		// Encode "language" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "language",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.Language))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRenderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRenderResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -20418,7 +27527,8 @@ func (c *Client) sendRequestPvcManualVerification(ctx context.Context, request *
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRequestPvcManualVerificationResponse(resp)
@@ -20527,10 +27637,235 @@ func (c *Client) sendRetryBatchCall(ctx context.Context, params RetryBatchCallPa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRetryBatchCallResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RunConversationAnalysis invokes run_conversation_analysis operation.
+//
+// Run the analysis for a conversation using the agent's current evaluation criteria and data
+// collection settings.
+//
+// POST /v1/convai/conversations/{conversation_id}/analysis/run
+func (c *Client) RunConversationAnalysis(ctx context.Context, params RunConversationAnalysisParams) (RunConversationAnalysisRes, error) {
+	res, err := c.sendRunConversationAnalysis(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendRunConversationAnalysis(ctx context.Context, params RunConversationAnalysisParams) (res RunConversationAnalysisRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("run_conversation_analysis"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/analysis/run"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RunConversationAnalysisOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/analysis/run"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRunConversationAnalysisResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RunConversationEvaluations invokes run_conversation_evaluations operation.
+//
+// Rerun a specific evaluation for a conversation.
+//
+// POST /v1/convai/conversations/{conversation_id}/analysis/evaluations/run
+func (c *Client) RunConversationEvaluations(ctx context.Context, request *RunConversationEvaluationsRequest, params RunConversationEvaluationsParams) (RunConversationEvaluationsRes, error) {
+	res, err := c.sendRunConversationEvaluations(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendRunConversationEvaluations(ctx context.Context, request *RunConversationEvaluationsRequest, params RunConversationEvaluationsParams) (res RunConversationEvaluationsRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("run_conversation_evaluations"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/analysis/evaluations/run"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RunConversationEvaluationsOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/analysis/evaluations/run"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRunConversationEvaluationsRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRunConversationEvaluationsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -20639,7 +27974,8 @@ func (c *Client) sendRunPvcVoiceTraining(ctx context.Context, request OptBodyRun
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeRunPvcVoiceTrainingResponse(resp)
@@ -20747,10 +28083,180 @@ func (c *Client) sendSearchGroups(ctx context.Context, params SearchGroupsParams
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeSearchGroupsResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SearchKnowledgeBaseContentRoute invokes search_knowledge_base_content_route operation.
+//
+// Fuzzy text search over knowledge base document content.
+//
+// GET /v1/convai/knowledge-base/search
+func (c *Client) SearchKnowledgeBaseContentRoute(ctx context.Context, params SearchKnowledgeBaseContentRouteParams) (SearchKnowledgeBaseContentRouteRes, error) {
+	res, err := c.sendSearchKnowledgeBaseContentRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendSearchKnowledgeBaseContentRoute(ctx context.Context, params SearchKnowledgeBaseContentRouteParams) (res SearchKnowledgeBaseContentRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("search_knowledge_base_content_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/search"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SearchKnowledgeBaseContentRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/knowledge-base/search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "query" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "query",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Query))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "types" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "types",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Types.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(string(item)))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeSearchKnowledgeBaseContentRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -20862,7 +28368,8 @@ func (c *Client) sendSeparateSongStems(ctx context.Context, request *BodyStemSep
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeSeparateSongStemsResponse(resp)
@@ -20875,12 +28382,12 @@ func (c *Client) sendSeparateSongStems(ctx context.Context, request *BodyStemSep
 
 // ShareResourceEndpoint invokes share_resource_endpoint operation.
 //
-// Grants a role on a workspace resource to a user or a group. It overrides any existing role this
-// user/service account/group/workspace api key has on the resource. To target a user or service
-// account, pass only the user email. The user must be in your workspace. To target a group, pass
-// only the group id. To target a workspace api key, pass the api key id. The resource will be shared
-// with the service account associated with the api key. You must have admin access to the resource
-// to share it.
+// Grants a role (one of 'admin', 'editor', 'commenter', or 'viewer') on a workspace resource to a
+// user, group, or workspace (service account) API key. This overrides any existing role the target
+// has on the resource. To target a user or service account, pass only the user email; the user must
+// be in your workspace. To target a group, pass only the group id. To target a workspace (service
+// account) API key, pass the api key id; the resource will be shared with the service account
+// associated with that key. You must have admin access to the resource to share it.
 //
 // POST /v1/workspace/resources/{resource_id}/share
 func (c *Client) ShareResourceEndpoint(ctx context.Context, request *BodyShareWorkspaceResourceV1WorkspaceResourcesResourceIDSharePost, params ShareResourceEndpointParams) (ShareResourceEndpointRes, error) {
@@ -20979,10 +28486,172 @@ func (c *Client) sendShareResourceEndpoint(ctx context.Context, request *BodySha
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeShareResourceEndpointResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SmartSearchConversationMessagesRoute invokes smart_search_conversation_messages_route operation.
+//
+// Search conversation transcripts by semantic similarity to surface relevant messages based on
+// meaning and intent, rather than exact keyword matches.
+//
+// GET /v1/convai/conversations/messages/smart-search
+func (c *Client) SmartSearchConversationMessagesRoute(ctx context.Context, params SmartSearchConversationMessagesRouteParams) (SmartSearchConversationMessagesRouteRes, error) {
+	res, err := c.sendSmartSearchConversationMessagesRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendSmartSearchConversationMessagesRoute(ctx context.Context, params SmartSearchConversationMessagesRouteParams) (res SmartSearchConversationMessagesRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("smart_search_conversation_messages_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/messages/smart-search"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SmartSearchConversationMessagesRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/conversations/messages/smart-search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "text_query" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "text_query",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.TextQuery))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeSmartSearchConversationMessagesRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -21094,7 +28763,8 @@ func (c *Client) sendSoundGeneration(ctx context.Context, request *BodySoundGene
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeSoundGenerationResponse(resp)
@@ -21260,7 +28930,8 @@ func (c *Client) sendSpeechToSpeechFull(ctx context.Context, request *BodySpeech
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeSpeechToSpeechFullResponse(resp)
@@ -21427,7 +29098,8 @@ func (c *Client) sendSpeechToSpeechStream(ctx context.Context, request *BodySpee
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeSpeechToSpeechStreamResponse(resp)
@@ -21546,7 +29218,8 @@ func (c *Client) sendSpeechToText(ctx context.Context, request *BodySpeechToText
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeSpeechToTextResponse(resp)
@@ -21674,7 +29347,8 @@ func (c *Client) sendStartSpeakerSeparation(ctx context.Context, params StartSpe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeStartSpeakerSeparationResponse(resp)
@@ -21826,124 +29500,11 @@ func (c *Client) sendStreamChapterSnapshotAudio(ctx context.Context, request Opt
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeStreamChapterSnapshotAudioResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// StreamCompose invokes stream_compose operation.
-//
-// Stream a composed song from a prompt or a composition plan.
-//
-// POST /v1/music/stream
-func (c *Client) StreamCompose(ctx context.Context, request OptBodyStreamComposedMusicV1MusicStreamPost, params StreamComposeParams) (StreamComposeRes, error) {
-	res, err := c.sendStreamCompose(ctx, request, params)
-	return res, err
-}
-
-func (c *Client) sendStreamCompose(ctx context.Context, request OptBodyStreamComposedMusicV1MusicStreamPost, params StreamComposeParams) (res StreamComposeRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("stream_compose"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/v1/music/stream"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, StreamComposeOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/v1/music/stream"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeQueryParams"
-	q := uri.NewQueryEncoder()
-	{
-		// Encode "output_format" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "output_format",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.OutputFormat.Get(); ok {
-				return e.EncodeValue(conv.StringToString(string(val)))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	u.RawQuery = q.Values().Encode()
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeStreamComposeRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "EncodeHeaderParams"
-	h := uri.NewHeaderEncoder(r.Header)
-	{
-		cfg := uri.HeaderParameterEncodingConfig{
-			Name:    "xi-api-key",
-			Explode: false,
-		}
-		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.XiAPIKey.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode header")
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeStreamComposeResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -22068,7 +29629,8 @@ func (c *Client) sendStreamProjectSnapshotArchiveEndpoint(ctx context.Context, p
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeStreamProjectSnapshotArchiveEndpointResponse(resp)
@@ -22199,10 +29761,591 @@ func (c *Client) sendStreamProjectSnapshotAudioEndpoint(ctx context.Context, req
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeStreamProjectSnapshotAudioEndpointResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// TextSearchConversationMessagesRoute invokes text_search_conversation_messages_route operation.
+//
+// Search through conversation transcript messages by full-text and fuzzy search.
+//
+// GET /v1/convai/conversations/messages/text-search
+func (c *Client) TextSearchConversationMessagesRoute(ctx context.Context, params TextSearchConversationMessagesRouteParams) (TextSearchConversationMessagesRouteRes, error) {
+	res, err := c.sendTextSearchConversationMessagesRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendTextSearchConversationMessagesRoute(ctx context.Context, params TextSearchConversationMessagesRouteParams) (res TextSearchConversationMessagesRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("text_search_conversation_messages_route"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/messages/text-search"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, TextSearchConversationMessagesRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/conversations/messages/text-search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "text_query" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "text_query",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.TextQuery))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "agent_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "agent_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.AgentID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_successful" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_successful",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallSuccessful.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_start_before_unix" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_start_before_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallStartBeforeUnix.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_start_after_unix" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_start_after_unix",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallStartAfterUnix.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_duration_min_secs" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_duration_min_secs",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallDurationMinSecs.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "call_duration_max_secs" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "call_duration_max_secs",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.CallDurationMaxSecs.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "rating_max" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "rating_max",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.RatingMax.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "rating_min" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "rating_min",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.RatingMin.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "has_feedback_comment" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "has_feedback_comment",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.HasFeedbackComment.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "user_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "user_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.UserID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "evaluation_params" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "evaluation_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EvaluationParams.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "data_collection_params" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "data_collection_params",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.DataCollectionParams.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tool_names" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tool_names",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ToolNames.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tool_names_successful" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tool_names_successful",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ToolNamesSuccessful.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tool_names_errored" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tool_names_errored",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ToolNamesErrored.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "main_languages" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "main_languages",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.MainLanguages.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page_size" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PageSize.Get(); ok {
+				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "summary_mode" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "summary_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SummaryMode.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "conversation_initiation_source" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "conversation_initiation_source",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.ConversationInitiationSource.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "text_only" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "text_only",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.TextOnly.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "branch_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "branch_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.BranchID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "topic_ids" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "topic_ids",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.TopicIds.Get(); ok {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range val {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort_by" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort_by",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.SortBy.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "cursor" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "cursor",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cursor.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeTextSearchConversationMessagesRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -22264,16 +30407,16 @@ func (c *Client) sendTextToDialogue(ctx context.Context, request *BodyTextToDial
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "output_format" parameter.
+		// Encode "enable_logging" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "output_format",
+			Name:    "enable_logging",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.OutputFormat.Get(); ok {
-				return e.EncodeValue(conv.StringToString(string(val)))
+			if val, ok := params.EnableLogging.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -22313,7 +30456,8 @@ func (c *Client) sendTextToDialogue(ctx context.Context, request *BodyTextToDial
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToDialogueResponse(resp)
@@ -22379,16 +30523,16 @@ func (c *Client) sendTextToDialogueFullWithTimestamps(ctx context.Context, reque
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "output_format" parameter.
+		// Encode "enable_logging" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "output_format",
+			Name:    "enable_logging",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.OutputFormat.Get(); ok {
-				return e.EncodeValue(conv.StringToString(string(val)))
+			if val, ok := params.EnableLogging.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -22428,7 +30572,8 @@ func (c *Client) sendTextToDialogueFullWithTimestamps(ctx context.Context, reque
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToDialogueFullWithTimestampsResponse(resp)
@@ -22509,6 +30654,23 @@ func (c *Client) sendTextToDialogueStream(ctx context.Context, request *BodyText
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "enable_logging" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "enable_logging",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EnableLogging.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -22542,7 +30704,8 @@ func (c *Client) sendTextToDialogueStream(ctx context.Context, request *BodyText
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToDialogueStreamResponse(resp)
@@ -22624,6 +30787,23 @@ func (c *Client) sendTextToDialogueStreamWithTimestamps(ctx context.Context, req
 			return res, errors.Wrap(err, "encode query")
 		}
 	}
+	{
+		// Encode "enable_logging" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "enable_logging",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.EnableLogging.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
@@ -22657,7 +30837,8 @@ func (c *Client) sendTextToDialogueStreamWithTimestamps(ctx context.Context, req
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToDialogueStreamWithTimestampsResponse(resp)
@@ -22823,7 +31004,8 @@ func (c *Client) sendTextToSpeechFull(ctx context.Context, request *BodyTextToSp
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToSpeechFullResponse(resp)
@@ -22991,7 +31173,8 @@ func (c *Client) sendTextToSpeechFullWithTimestamps(ctx context.Context, request
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToSpeechFullWithTimestampsResponse(resp)
@@ -23158,7 +31341,8 @@ func (c *Client) sendTextToSpeechStream(ctx context.Context, request *BodyTextTo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToSpeechStreamResponse(resp)
@@ -23326,7 +31510,8 @@ func (c *Client) sendTextToSpeechStreamWithTimestamps(ctx context.Context, reque
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToSpeechStreamWithTimestampsResponse(resp)
@@ -23339,10 +31524,12 @@ func (c *Client) sendTextToSpeechStreamWithTimestamps(ctx context.Context, reque
 
 // TextToVoice invokes text_to_voice operation.
 //
-// Generate a custom voice based on voice description. This method returns a list of voice previews.
-// Each preview has a generated_voice_id and a sample of the voice as base64 encoded mp3 audio. If
-// you like the a voice previewand want to create the voice call
-// /v1/text-to-voice/create-voice-from-preview with the generated_voice_id to create the voice.
+// **Deprecated.** Use `POST /v1/text-to-voice/design` instead. Generate a custom voice based on
+// voice description. This method returns a list of voice previews. Each preview has a
+// generated_voice_id and a sample of the voice as base64 encoded mp3 audio. To create the voice use
+// `POST /v1/text-to-voice` with the chosen `generated_voice_id`.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/text-to-voice/create-previews
 func (c *Client) TextToVoice(ctx context.Context, request *VoicePreviewsRequestModel, params TextToVoiceParams) (TextToVoiceRes, error) {
@@ -23443,7 +31630,8 @@ func (c *Client) sendTextToVoice(ctx context.Context, request *VoicePreviewsRequ
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToVoiceResponse(resp)
@@ -23559,7 +31747,8 @@ func (c *Client) sendTextToVoiceDesign(ctx context.Context, request *VoiceDesign
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToVoiceDesignResponse(resp)
@@ -23668,7 +31857,8 @@ func (c *Client) sendTextToVoicePreviewStream(ctx context.Context, params TextTo
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToVoicePreviewStreamResponse(resp)
@@ -23803,7 +31993,8 @@ func (c *Client) sendTextToVoiceRemix(ctx context.Context, request *VoiceRemixRe
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTextToVoiceRemixResponse(resp)
@@ -23818,6 +32009,8 @@ func (c *Client) sendTextToVoiceRemix(ctx context.Context, request *VoiceRemixRe
 //
 // Regenerate the transcriptions for the specified segments. Does not automatically regenerate
 // translations or dubs.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/transcribe
 func (c *Client) Transcribe(ctx context.Context, request *BodyTranscribesSegmentsV1DubbingResourceDubbingIDTranscribePost, params TranscribeParams) (TranscribeRes, error) {
@@ -23916,7 +32109,8 @@ func (c *Client) sendTranscribe(ctx context.Context, request *BodyTranscribesSeg
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTranscribeResponse(resp)
@@ -23931,6 +32125,8 @@ func (c *Client) sendTranscribe(ctx context.Context, request *BodyTranscribesSeg
 //
 // Regenerate the translations for either the entire resource or the specified segments/languages.
 // Will automatically transcribe missing transcriptions. Will not automatically regenerate the dubs.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // POST /v1/dubbing/resource/{dubbing_id}/translate
 func (c *Client) Translate(ctx context.Context, request *BodyTranslatesAllOrSomeSegmentsAndLanguagesV1DubbingResourceDubbingIDTranslatePost, params TranslateParams) (TranslateRes, error) {
@@ -24029,7 +32225,8 @@ func (c *Client) sendTranslate(ctx context.Context, request *BodyTranslatesAllOr
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeTranslateResponse(resp)
@@ -24040,14 +32237,142 @@ func (c *Client) sendTranslate(ctx context.Context, request *BodyTranslatesAllOr
 	return result, nil
 }
 
+// UnassignConversationTagRoute invokes unassign_conversation_tag_route operation.
+//
+// Remove a single conversation tag from a conversation.
+//
+// DELETE /v1/convai/conversations/{conversation_id}/tags/{tag_id}
+func (c *Client) UnassignConversationTagRoute(ctx context.Context, params UnassignConversationTagRouteParams) (UnassignConversationTagRouteRes, error) {
+	res, err := c.sendUnassignConversationTagRoute(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendUnassignConversationTagRoute(ctx context.Context, params UnassignConversationTagRouteParams) (res UnassignConversationTagRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("unassign_conversation_tag_route"),
+		semconv.HTTPRequestMethodKey.String("DELETE"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/tags/{tag_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UnassignConversationTagRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/tags/"
+	{
+		// Encode "tag_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tag_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.TagID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUnassignConversationTagRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UnshareResourceEndpoint invokes unshare_resource_endpoint operation.
 //
-// Removes any existing role on a workspace resource from a user, service account, group or workspace
-// api key. To target a user or service account, pass only the user email. The user must be in your
-// workspace. To target a group, pass only the group id. To target a workspace api key, pass the api
-// key id. The resource will be unshared from the service account associated with the api key. You
-// must have admin access to the resource to unshare it. You cannot remove permissions from the user
-// who created the resource.
+// Removes any existing role on a workspace resource from a user, group, or workspace (service
+// account) API key. To target a user or service account, pass only the user email; the user must be
+// in your workspace. To target a group, pass only the group id. To target a workspace (service
+// account) API key, pass the api key id; the resource will be unshared from the service account
+// associated with that key. You must have admin access to the resource to unshare it. You cannot
+// remove permissions from the user who created the resource.
 //
 // POST /v1/workspace/resources/{resource_id}/unshare
 func (c *Client) UnshareResourceEndpoint(ctx context.Context, request *BodyUnshareWorkspaceResourceV1WorkspaceResourcesResourceIDUnsharePost, params UnshareResourceEndpointParams) (UnshareResourceEndpointRes, error) {
@@ -24146,7 +32471,8 @@ func (c *Client) sendUnshareResourceEndpoint(ctx context.Context, request *BodyU
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUnshareResourceEndpointResponse(resp)
@@ -24157,21 +32483,21 @@ func (c *Client) sendUnshareResourceEndpoint(ctx context.Context, request *BodyU
 	return result, nil
 }
 
-// UpdateAgentResponseTestRoute invokes update_agent_response_test_route operation.
+// UpdateAgentTestFolderRoute invokes update_agent_test_folder_route operation.
 //
-// Updates an agent response test by ID.
+// Updates an agent test folder. Currently only supports updating the folder name.
 //
-// PUT /v1/convai/agent-testing/{test_id}
-func (c *Client) UpdateAgentResponseTestRoute(ctx context.Context, request *UpdateUnitTestRequest, params UpdateAgentResponseTestRouteParams) (UpdateAgentResponseTestRouteRes, error) {
-	res, err := c.sendUpdateAgentResponseTestRoute(ctx, request, params)
+// PATCH /v1/convai/agent-testing/folders/{folder_id}
+func (c *Client) UpdateAgentTestFolderRoute(ctx context.Context, request *BodyUpdateAgentTestFolderV1ConvaiAgentTestingFoldersFolderIDPatch, params UpdateAgentTestFolderRouteParams) (UpdateAgentTestFolderRouteRes, error) {
+	res, err := c.sendUpdateAgentTestFolderRoute(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendUpdateAgentResponseTestRoute(ctx context.Context, request *UpdateUnitTestRequest, params UpdateAgentResponseTestRouteParams) (res UpdateAgentResponseTestRouteRes, err error) {
+func (c *Client) sendUpdateAgentTestFolderRoute(ctx context.Context, request *BodyUpdateAgentTestFolderV1ConvaiAgentTestingFoldersFolderIDPatch, params UpdateAgentTestFolderRouteParams) (res UpdateAgentTestFolderRouteRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("update_agent_response_test_route"),
-		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/v1/convai/agent-testing/{test_id}"),
+		otelogen.OperationID("update_agent_test_folder_route"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/v1/convai/agent-testing/folders/{folder_id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -24187,7 +32513,7 @@ func (c *Client) sendUpdateAgentResponseTestRoute(ctx context.Context, request *
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UpdateAgentResponseTestRouteOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateAgentTestFolderRouteOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -24205,16 +32531,16 @@ func (c *Client) sendUpdateAgentResponseTestRoute(ctx context.Context, request *
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/v1/convai/agent-testing/"
+	pathParts[0] = "/v1/convai/agent-testing/folders/"
 	{
-		// Encode "test_id" parameter.
+		// Encode "folder_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "test_id",
+			Param:   "folder_id",
 			Style:   uri.PathStyleSimple,
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.TestID))
+			return e.EncodeValue(conv.StringToString(params.FolderID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -24227,11 +32553,11 @@ func (c *Client) sendUpdateAgentResponseTestRoute(ctx context.Context, request *
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "PUT", u)
+	r, err := ht.NewRequest(ctx, "PATCH", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeUpdateAgentResponseTestRouteRequest(request, r); err != nil {
+	if err := encodeUpdateAgentTestFolderRouteRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -24257,10 +32583,255 @@ func (c *Client) sendUpdateAgentResponseTestRoute(ctx context.Context, request *
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUpdateAgentResponseTestRouteResponse(resp)
+	result, err := decodeUpdateAgentTestFolderRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateBranchRoute invokes update_branch_route operation.
+//
+// Update agent branch properties such as archiving status and protection level.
+//
+// PATCH /v1/convai/agents/{agent_id}/branches/{branch_id}
+func (c *Client) UpdateBranchRoute(ctx context.Context, request OptBodyUpdateAgentBranchV1ConvaiAgentsAgentIDBranchesBranchIDPatch, params UpdateBranchRouteParams) (UpdateBranchRouteRes, error) {
+	res, err := c.sendUpdateBranchRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateBranchRoute(ctx context.Context, request OptBodyUpdateAgentBranchV1ConvaiAgentsAgentIDBranchesBranchIDPatch, params UpdateBranchRouteParams) (res UpdateBranchRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("update_branch_route"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/v1/convai/agents/{agent_id}/branches/{branch_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateBranchRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/v1/convai/agents/"
+	{
+		// Encode "agent_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "agent_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.AgentID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/branches/"
+	{
+		// Encode "branch_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "branch_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.BranchID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateBranchRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateBranchRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateConversationTagRoute invokes update_conversation_tag_route operation.
+//
+// Update a conversation tag's title and/or description. Restricted to the tag owner or a workspace
+// admin.
+//
+// PATCH /v1/convai/tags/{tag_id}
+func (c *Client) UpdateConversationTagRoute(ctx context.Context, request *PatchConversationTagRequestModel, params UpdateConversationTagRouteParams) (UpdateConversationTagRouteRes, error) {
+	res, err := c.sendUpdateConversationTagRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateConversationTagRoute(ctx context.Context, request *PatchConversationTagRequestModel, params UpdateConversationTagRouteParams) (res UpdateConversationTagRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("update_conversation_tag_route"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/v1/convai/tags/{tag_id}"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateConversationTagRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/v1/convai/tags/"
+	{
+		// Encode "tag_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "tag_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.TagID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateConversationTagRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateConversationTagRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -24350,7 +32921,8 @@ func (c *Client) sendUpdateDashboardSettingsRoute(ctx context.Context, request *
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateDashboardSettingsRouteResponse(resp)
@@ -24363,15 +32935,15 @@ func (c *Client) sendUpdateDashboardSettingsRoute(ctx context.Context, request *
 
 // UpdateDocumentRoute invokes update_document_route operation.
 //
-// Update the name of a document.
+// Update the name and/or content of a document.
 //
 // PATCH /v1/convai/knowledge-base/{documentation_id}
-func (c *Client) UpdateDocumentRoute(ctx context.Context, request *BodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (UpdateDocumentRouteRes, error) {
+func (c *Client) UpdateDocumentRoute(ctx context.Context, request OptBodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (UpdateDocumentRouteRes, error) {
 	res, err := c.sendUpdateDocumentRoute(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendUpdateDocumentRoute(ctx context.Context, request *BodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (res UpdateDocumentRouteRes, err error) {
+func (c *Client) sendUpdateDocumentRoute(ctx context.Context, request OptBodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (res UpdateDocumentRouteRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("update_document_route"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
@@ -24461,10 +33033,125 @@ func (c *Client) sendUpdateDocumentRoute(ctx context.Context, request *BodyUpdat
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateDocumentRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateFileDocumentRoute invokes update_file_document_route operation.
+//
+// Update the source file of a file document. The document name, content, and metadata are updated to
+// reflect the new file. Any manual content edits will be overwritten.
+//
+// PATCH /v1/convai/knowledge-base/{documentation_id}/update-file
+func (c *Client) UpdateFileDocumentRoute(ctx context.Context, request *BodyUpdateFileDocumentV1ConvaiKnowledgeBaseDocumentationIDUpdateFilePatchMultipart, params UpdateFileDocumentRouteParams) (UpdateFileDocumentRouteRes, error) {
+	res, err := c.sendUpdateFileDocumentRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateFileDocumentRoute(ctx context.Context, request *BodyUpdateFileDocumentV1ConvaiKnowledgeBaseDocumentationIDUpdateFilePatchMultipart, params UpdateFileDocumentRouteParams) (res UpdateFileDocumentRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("update_file_document_route"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.URLTemplateKey.String("/v1/convai/knowledge-base/{documentation_id}/update-file"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UpdateFileDocumentRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/knowledge-base/"
+	{
+		// Encode "documentation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "documentation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DocumentationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/update-file"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateFileDocumentRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUpdateFileDocumentRouteResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -24572,7 +33259,8 @@ func (c *Client) sendUpdatePhoneNumberRoute(ctx context.Context, request *Update
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdatePhoneNumberRouteResponse(resp)
@@ -24686,7 +33374,8 @@ func (c *Client) sendUpdatePronunciationDictionaries(ctx context.Context, reques
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdatePronunciationDictionariesResponse(resp)
@@ -24797,7 +33486,8 @@ func (c *Client) sendUpdateSecretRoute(ctx context.Context, request *PatchWorksp
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateSecretRouteResponse(resp)
@@ -24812,6 +33502,8 @@ func (c *Client) sendUpdateSecretRoute(ctx context.Context, request *PatchWorksp
 //
 // Modifies a single segment with new text and/or start/end times. Will update the values for only a
 // specific language of a segment. Does not automatically regenerate the dub.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // PATCH /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}/{language}
 func (c *Client) UpdateSegmentLanguage(ctx context.Context, request *SegmentUpdatePayload, params UpdateSegmentLanguageParams) (UpdateSegmentLanguageRes, error) {
@@ -24947,7 +33639,8 @@ func (c *Client) sendUpdateSegmentLanguage(ctx context.Context, request *Segment
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateSegmentLanguageResponse(resp)
@@ -25040,7 +33733,8 @@ func (c *Client) sendUpdateSettingsRoute(ctx context.Context, request *PatchConv
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateSettingsRouteResponse(resp)
@@ -25055,6 +33749,8 @@ func (c *Client) sendUpdateSettingsRoute(ctx context.Context, request *PatchConv
 //
 // Amend the metadata associated with a speaker, such as their voice. Both voice cloning and using
 // voices from the ElevenLabs library are supported.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // PATCH /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}
 func (c *Client) UpdateSpeaker(ctx context.Context, request OptBodyUpdateMetadataForASpeakerV1DubbingResourceDubbingIDSpeakerSpeakerIDPatch, params UpdateSpeakerParams) (UpdateSpeakerRes, error) {
@@ -25171,7 +33867,8 @@ func (c *Client) sendUpdateSpeaker(ctx context.Context, request OptBodyUpdateMet
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateSpeakerResponse(resp)
@@ -25282,7 +33979,8 @@ func (c *Client) sendUpdateWhatsappAccount(ctx context.Context, request *UpdateW
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateWhatsappAccountResponse(resp)
@@ -25376,7 +34074,8 @@ func (c *Client) sendUpdateWorkspaceMember(ctx context.Context, request *BodyUpd
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUpdateWorkspaceMemberResponse(resp)
@@ -25387,13 +34086,131 @@ func (c *Client) sendUpdateWorkspaceMember(ctx context.Context, request *BodyUpd
 	return result, nil
 }
 
+// UploadFileRoute invokes upload_file_route operation.
+//
+// Upload an image or PDF file for a conversation. Returns a unique file ID that can be used to
+// reference the file in the conversation.
+//
+// POST /v1/convai/conversations/{conversation_id}/files
+func (c *Client) UploadFileRoute(ctx context.Context, request *BodyUploadFileV1ConvaiConversationsConversationIDFilesPostMultipart, params UploadFileRouteParams) (UploadFileRouteRes, error) {
+	res, err := c.sendUploadFileRoute(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUploadFileRoute(ctx context.Context, request *BodyUploadFileV1ConvaiConversationsConversationIDFilesPostMultipart, params UploadFileRouteParams) (res UploadFileRouteRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("upload_file_route"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/conversations/{conversation_id}/files"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UploadFileRouteOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/v1/convai/conversations/"
+	{
+		// Encode "conversation_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "conversation_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ConversationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/files"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUploadFileRouteRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUploadFileRouteResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UsageCharacters invokes usage_characters operation.
 //
-// Returns the usage metrics for the current user or the entire workspace they are part of. The
-// response provides a time axis based on the specified aggregation interval (default: day), with
-// usage values for each interval along that axis. Usage is broken down by the selected breakdown
-// type. For example, breakdown type "voice" will return the usage of each voice for each interval
-// along the time axis.
+// (Deprecated) This endpoint is deprecated. Use
+// /v1/workspace/analytics/query/usage-by-product-over-time instead, which exposes the bucket size as
+// `interval_seconds` (an integer in seconds) rather than `aggregation_interval`. Returns the usage
+// metrics for the current user or the entire workspace they are part of. The response provides a
+// time axis based on the specified aggregation interval (default: day), with usage values for each
+// interval along that axis. Usage is broken down by the selected breakdown type. For example,
+// breakdown type "voice" will return the usage of each voice for each interval along the time axis.
+//
+// Deprecated: schema marks this operation as deprecated.
 //
 // GET /v1/usage/character-stats
 func (c *Client) UsageCharacters(ctx context.Context, params UsageCharactersParams) (UsageCharactersRes, error) {
@@ -25587,7 +34404,8 @@ func (c *Client) sendUsageCharacters(ctx context.Context, params UsageCharacters
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeUsageCharactersResponse(resp)
@@ -25699,10 +34517,127 @@ func (c *Client) sendVerifyPvcVoiceCaptcha(ctx context.Context, request *BodyVer
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeVerifyPvcVoiceCaptchaResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// VideoToMusic invokes video_to_music operation.
+//
+// Generate background music from one or more video files. Videos are combined in order. Optional
+// description and style tags influence the generated music.
+//
+// POST /v1/music/video-to-music
+func (c *Client) VideoToMusic(ctx context.Context, request *BodyVideoToMusicV1MusicVideoToMusicPostMultipart, params VideoToMusicParams) (VideoToMusicRes, error) {
+	res, err := c.sendVideoToMusic(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendVideoToMusic(ctx context.Context, request *BodyVideoToMusicV1MusicVideoToMusicPostMultipart, params VideoToMusicParams) (res VideoToMusicRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("video_to_music"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/music/video-to-music"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, VideoToMusicOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/music/video-to-music"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "output_format" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "output_format",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.OutputFormat.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeVideoToMusicRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeVideoToMusicResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -25792,10 +34727,105 @@ func (c *Client) sendWhatsappOutboundCall(ctx context.Context, request *BodyMake
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	stage = "DecodeResponse"
 	result, err := decodeWhatsappOutboundCallResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// WhatsappOutboundMessage invokes whatsapp_outbound_message operation.
+//
+// Send an outbound message via WhatsApp.
+//
+// POST /v1/convai/whatsapp/outbound-message
+func (c *Client) WhatsappOutboundMessage(ctx context.Context, request *BodySendAnOutboundMessageViaWhatsAppV1ConvaiWhatsappOutboundMessagePost, params WhatsappOutboundMessageParams) (WhatsappOutboundMessageRes, error) {
+	res, err := c.sendWhatsappOutboundMessage(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendWhatsappOutboundMessage(ctx context.Context, request *BodySendAnOutboundMessageViaWhatsAppV1ConvaiWhatsappOutboundMessagePost, params WhatsappOutboundMessageParams) (res WhatsappOutboundMessageRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("whatsapp_outbound_message"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/v1/convai/whatsapp/outbound-message"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, WhatsappOutboundMessageOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/v1/convai/whatsapp/outbound-message"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeWhatsappOutboundMessageRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "xi-api-key",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.XiAPIKey.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeWhatsappOutboundMessageResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

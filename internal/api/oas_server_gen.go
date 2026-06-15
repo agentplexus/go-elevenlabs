@@ -29,12 +29,13 @@ type Handler interface {
 	// Adds the given ElevenLab Turbo V2/V2.5 language code to the resource. Does not automatically
 	// generate transcripts/translations/audio.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/language
 	AddLanguage(ctx context.Context, req *BodyAddALanguageToTheResourceV1DubbingResourceDubbingIDLanguagePost, params AddLanguageParams) (AddLanguageRes, error)
 	// AddMember implements add_member operation.
 	//
-	// Adds a member of your workspace to the specified group. This endpoint may only be called by
-	// workspace administrators.
+	// Adds a member of your workspace to the specified group. Requires `group_members_manage` permission.
 	//
 	// POST /v1/workspace/groups/{group_id}/members
 	AddMember(ctx context.Context, req *BodyAddMemberToUserGroupV1WorkspaceGroupsGroupIDMembersPost, params AddMemberParams) (AddMemberRes, error)
@@ -62,6 +63,19 @@ type Handler interface {
 	//
 	// POST /v1/voices/add
 	AddVoice(ctx context.Context, req *BodyAddVoiceV1VoicesAddPostMultipart, params AddVoiceParams) (AddVoiceRes, error)
+	// AgentTestingBulkMoveRoute implements agent_testing_bulk_move_route operation.
+	//
+	// Moves multiple tests or folders from one folder to another.
+	//
+	// POST /v1/convai/agent-testing/bulk-move
+	AgentTestingBulkMoveRoute(ctx context.Context, req *BodyBulkMoveTestsToFolderV1ConvaiAgentTestingBulkMovePost, params AgentTestingBulkMoveRouteParams) (AgentTestingBulkMoveRouteRes, error)
+	// AssignConversationTagsRoute implements assign_conversation_tags_route operation.
+	//
+	// Assign one or more conversation tags to a conversation. Tags that are already assigned are ignored.
+	//  Tags must belong to the same workspace.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/tags
+	AssignConversationTagsRoute(ctx context.Context, req *AssignConversationTagsRequestModel, params AssignConversationTagsRouteParams) (AssignConversationTagsRouteRes, error)
 	// AudioIsolation implements audio_isolation operation.
 	//
 	// Removes background noise from audio.
@@ -80,24 +94,26 @@ type Handler interface {
 	//
 	// POST /v1/audio-native/{project_id}/content
 	AudioNativeProjectUpdateContentEndpoint(ctx context.Context, req OptBodyUpdateAudioNativeProjectContentV1AudioNativeProjectIDContentPostMultipart, params AudioNativeProjectUpdateContentEndpointParams) (AudioNativeProjectUpdateContentEndpointRes, error)
+	// AudioNativeUpdateContentFromURL implements audio_native_update_content_from_url operation.
+	//
+	// Finds an AudioNative project matching the provided URL, extracts content from the URL, updates the
+	// project content, and queues it for conversion and auto-publishing.
+	//
+	// POST /v1/audio-native/content
+	AudioNativeUpdateContentFromURL(ctx context.Context, req *BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPost, params AudioNativeUpdateContentFromURLParams) (AudioNativeUpdateContentFromURLRes, error)
 	// CancelBatchCall implements cancel_batch_call operation.
 	//
 	// Cancel a running batch call and set all recipients to cancelled status.
 	//
 	// POST /v1/convai/batch-calling/{batch_id}/cancel
 	CancelBatchCall(ctx context.Context, params CancelBatchCallParams) (CancelBatchCallRes, error)
-	// ComposeDetailed implements compose_detailed operation.
+	// CancelFileUploadRoute implements cancel_file_upload_route operation.
 	//
-	// Compose a song from a prompt or a composition plan.
+	// Remove a file upload from a conversation. Only possible if the file hasn't already been used in
+	// the conversation.
 	//
-	// POST /v1/music/detailed
-	ComposeDetailed(ctx context.Context, req OptBodyComposeMusicWithADetailedResponseV1MusicDetailedPost, params ComposeDetailedParams) (ComposeDetailedRes, error)
-	// ComposePlan implements compose_plan operation.
-	//
-	// Generate a composition plan from a prompt.
-	//
-	// POST /v1/music/plan
-	ComposePlan(ctx context.Context, req *BodyGenerateCompositionPlanV1MusicPlanPost, params ComposePlanParams) (ComposePlanRes, error)
+	// DELETE /v1/convai/conversations/{conversation_id}/files/{file_id}
+	CancelFileUploadRoute(ctx context.Context, params CancelFileUploadRouteParams) (CancelFileUploadRouteRes, error)
 	// ConvertChapterEndpoint implements convert_chapter_endpoint operation.
 	//
 	// Starts conversion of a specific chapter.
@@ -110,12 +126,18 @@ type Handler interface {
 	//
 	// POST /v1/studio/projects/{project_id}/convert
 	ConvertProjectEndpoint(ctx context.Context, params ConvertProjectEndpointParams) (ConvertProjectEndpointRes, error)
-	// CreateAgentResponseTestRoute implements create_agent_response_test_route operation.
+	// CreateAgentDeploymentRoute implements create_agent_deployment_route operation.
 	//
-	// Creates a new agent response test.
+	// Create a new deployment for an agent.
 	//
-	// POST /v1/convai/agent-testing/create
-	CreateAgentResponseTestRoute(ctx context.Context, req *CreateUnitTestRequest, params CreateAgentResponseTestRouteParams) (CreateAgentResponseTestRouteRes, error)
+	// POST /v1/convai/agents/{agent_id}/deployments
+	CreateAgentDeploymentRoute(ctx context.Context, req *BodyCreateOrUpdateDeploymentsV1ConvaiAgentsAgentIDDeploymentsPost, params CreateAgentDeploymentRouteParams) (CreateAgentDeploymentRouteRes, error)
+	// CreateAgentTestFolderRoute implements create_agent_test_folder_route operation.
+	//
+	// Creates a folder for organizing agent tests.
+	//
+	// POST /v1/convai/agent-testing/folders
+	CreateAgentTestFolderRoute(ctx context.Context, req *BodyCreateAgentTestFolderV1ConvaiAgentTestingFoldersPost, params CreateAgentTestFolderRouteParams) (CreateAgentTestFolderRouteRes, error)
 	// CreateAudioNativeProject implements create_audio_native_project operation.
 	//
 	// Creates Audio Native enabled project, optionally starts conversion and returns project ID and
@@ -134,8 +156,16 @@ type Handler interface {
 	// Creates a new segment in dubbing resource with a start and end time for the speaker in every
 	// available language. Does not automatically generate transcripts/translations/audio.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/segment
 	CreateClip(ctx context.Context, req *SegmentCreatePayload, params CreateClipParams) (CreateClipRes, error)
+	// CreateConversationTagRoute implements create_conversation_tag_route operation.
+	//
+	// Create a new conversation tag for the workspace.
+	//
+	// POST /v1/convai/tags
+	CreateConversationTagRoute(ctx context.Context, req *CreateConversationTagRequestModel, params CreateConversationTagRouteParams) (CreateConversationTagRouteRes, error)
 	// CreateDubbing implements create_dubbing operation.
 	//
 	// Dubs a provided audio or video file into given language.
@@ -148,6 +178,12 @@ type Handler interface {
 	//
 	// POST /v1/convai/knowledge-base/file
 	CreateFileDocumentRoute(ctx context.Context, req *BodyCreateFileDocumentV1ConvaiKnowledgeBaseFilePostMultipart, params CreateFileDocumentRouteParams) (CreateFileDocumentRouteRes, error)
+	// CreateFolderRoute implements create_folder_route operation.
+	//
+	// Create a folder used for grouping documents together.
+	//
+	// POST /v1/convai/knowledge-base/folder
+	CreateFolderRoute(ctx context.Context, req *BodyCreateFolderV1ConvaiKnowledgeBaseFolderPost, params CreateFolderRouteParams) (CreateFolderRouteRes, error)
 	// CreatePvcVoice implements create_pvc_voice operation.
 	//
 	// Creates a new PVC voice with metadata but no samples.
@@ -169,6 +205,8 @@ type Handler interface {
 	// CreateSpeaker implements create_speaker operation.
 	//
 	// Create A New Speaker.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/dubbing/resource/{dubbing_id}/speaker
 	CreateSpeaker(ctx context.Context, req OptBodyCreateANewSpeakerV1DubbingResourceDubbingIDSpeakerPost, params CreateSpeakerParams) (CreateSpeakerRes, error)
@@ -192,25 +230,49 @@ type Handler interface {
 	//
 	// POST /v1/text-to-voice
 	CreateVoice(ctx context.Context, req *BodyCreateANewVoiceFromVoicePreviewV1TextToVoicePost, params CreateVoiceParams) (CreateVoiceRes, error)
-	// CreateVoiceOld implements create_voice_old operation.
-	//
-	// Create a previously generated voice. This endpoint should be called after you fetched a
-	// generated_voice_id using /v1/voice-generation/generate-voice.
-	//
-	// POST /v1/voice-generation/create-voice
-	CreateVoiceOld(ctx context.Context, req *BodyCreateAPreviouslyGeneratedVoiceV1VoiceGenerationCreateVoicePost, params CreateVoiceOldParams) (CreateVoiceOldRes, error)
 	// CreateWorkspaceWebhookRoute implements create_workspace_webhook_route operation.
 	//
 	// Create a new webhook for the workspace with the specified authentication type.
 	//
 	// POST /v1/workspace/webhooks
 	CreateWorkspaceWebhookRoute(ctx context.Context, req *BodyCreateWorkspaceWebhookV1WorkspaceWebhooksPost, params CreateWorkspaceWebhookRouteParams) (CreateWorkspaceWebhookRouteRes, error)
+	// DeleteAgentDraftRoute implements delete_agent_draft_route operation.
+	//
+	// Delete a draft for an agent.
+	//
+	// DELETE /v1/convai/agents/{agent_id}/drafts
+	DeleteAgentDraftRoute(ctx context.Context, params DeleteAgentDraftRouteParams) (DeleteAgentDraftRouteRes, error)
 	// DeleteAgentRoute implements delete_agent_route operation.
 	//
 	// Delete an agent.
 	//
 	// DELETE /v1/convai/agents/{agent_id}
 	DeleteAgentRoute(ctx context.Context, params DeleteAgentRouteParams) (DeleteAgentRouteRes, error)
+	// DeleteAgentTestFolderRoute implements delete_agent_test_folder_route operation.
+	//
+	// Deletes an agent test folder by ID. Use force=true to delete a non-empty folder and all its
+	// contents.
+	//
+	// DELETE /v1/convai/agent-testing/folders/{folder_id}
+	DeleteAgentTestFolderRoute(ctx context.Context, params DeleteAgentTestFolderRouteParams) (DeleteAgentTestFolderRouteRes, error)
+	// DeleteAudioIsolationHistoryItem implements delete_audio_isolation_history_item operation.
+	//
+	// Deletes a specific audio isolation history item and the associated media files.
+	//
+	// DELETE /v1/audio-isolation/history/{history_item_id}
+	DeleteAudioIsolationHistoryItem(ctx context.Context, params DeleteAudioIsolationHistoryItemParams) (DeleteAudioIsolationHistoryItemRes, error)
+	// DeleteAuthConnection implements delete_auth_connection operation.
+	//
+	// Delete an auth connection.
+	//
+	// DELETE /v1/workspace/auth-connections/{auth_connection_id}
+	DeleteAuthConnection(ctx context.Context, params DeleteAuthConnectionParams) (DeleteAuthConnectionRes, error)
+	// DeleteBatchCall implements delete_batch_call operation.
+	//
+	// Permanently delete a batch call and all recipient records. Conversations remain in history.
+	//
+	// DELETE /v1/convai/batch-calling/{batch_id}
+	DeleteBatchCall(ctx context.Context, params DeleteBatchCallParams) (DeleteBatchCallRes, error)
 	// DeleteChapterEndpoint implements delete_chapter_endpoint operation.
 	//
 	// Deletes a chapter.
@@ -229,6 +291,12 @@ type Handler interface {
 	//
 	// DELETE /v1/convai/conversations/{conversation_id}
 	DeleteConversationRoute(ctx context.Context, params DeleteConversationRouteParams) (DeleteConversationRouteRes, error)
+	// DeleteConversationTagRoute implements delete_conversation_tag_route operation.
+	//
+	// Delete a conversation tag. Restricted to the tag owner or a workspace admin.
+	//
+	// DELETE /v1/convai/tags/{tag_id}
+	DeleteConversationTagRoute(ctx context.Context, params DeleteConversationTagRouteParams) (DeleteConversationTagRouteRes, error)
 	// DeleteDubbing implements delete_dubbing operation.
 	//
 	// Deletes a dubbing project.
@@ -239,13 +307,13 @@ type Handler interface {
 	//
 	// Invalidates an existing email invitation. The invitation will still show up in the inbox it has
 	// been delivered to, but activating it to join the workspace won't work. This endpoint may only be
-	// called by workspace administrators.
+	// called by workspace members with the WORKSPACE_MEMBERS_INVITE permission.
 	//
 	// DELETE /v1/workspace/invites
 	DeleteInvite(ctx context.Context, req *BodyDeleteExistingInvitationV1WorkspaceInvitesDelete, params DeleteInviteParams) (DeleteInviteRes, error)
 	// DeleteKnowledgeBaseDocument implements delete_knowledge_base_document operation.
 	//
-	// Delete a document from the knowledge base.
+	// Delete a document or folder from the knowledge base.
 	//
 	// DELETE /v1/convai/knowledge-base/{documentation_id}
 	DeleteKnowledgeBaseDocument(ctx context.Context, params DeleteKnowledgeBaseDocumentParams) (DeleteKnowledgeBaseDocumentRes, error)
@@ -295,6 +363,8 @@ type Handler interface {
 	//
 	// Deletes a single segment from the dubbing.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// DELETE /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}
 	DeleteSegment(ctx context.Context, params DeleteSegmentParams) (DeleteSegmentRes, error)
 	// DeleteServiceAccountAPIKey implements delete_service_account_api_key operation.
@@ -303,6 +373,12 @@ type Handler interface {
 	//
 	// DELETE /v1/service-accounts/{service_account_user_id}/api-keys/{api_key_id}
 	DeleteServiceAccountAPIKey(ctx context.Context, params DeleteServiceAccountAPIKeyParams) (DeleteServiceAccountAPIKeyRes, error)
+	// DeleteSpeechEngine implements delete_speech_engine operation.
+	//
+	// Delete a Speech Engine resource.
+	//
+	// DELETE /v1/speech-engine/{speech_engine_id}
+	DeleteSpeechEngine(ctx context.Context, params DeleteSpeechEngineParams) (DeleteSpeechEngineRes, error)
 	// DeleteSpeechHistoryItem implements delete_speech_history_item operation.
 	//
 	// Delete a history item by its ID.
@@ -339,6 +415,14 @@ type Handler interface {
 	//
 	// DELETE /v1/workspace/webhooks/{webhook_id}
 	DeleteWorkspaceWebhookRoute(ctx context.Context, params DeleteWorkspaceWebhookRouteParams) (DeleteWorkspaceWebhookRouteRes, error)
+	// Disable implements disable operation.
+	//
+	// Disable the API key used to authenticate this request. Requires the query parameter
+	// `api_key_name=self` as an explicit confirmation. This endpoint requires additional permissions and
+	// is not enabled by default. Reach out to your ElevenLabs contact to request access.
+	//
+	// POST /v1/workspaces/api-keys/disable
+	Disable(ctx context.Context, params DisableParams) (DisableRes, error)
 	// DownloadSpeechHistoryItems implements download_speech_history_items operation.
 	//
 	// Download one or more history items. If one history item ID is provided, we will return a single
@@ -351,6 +435,8 @@ type Handler interface {
 	//
 	// Regenerate the dubs for either the entire resource or the specified segments/languages. Will
 	// automatically transcribe and translate any missing transcriptions and translations.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/dubbing/resource/{dubbing_id}/dub
 	Dub(ctx context.Context, req *BodyDubsAllOrSomeSegmentsAndLanguagesV1DubbingResourceDubbingIDDubPost, params DubParams) (DubRes, error)
@@ -389,7 +475,7 @@ type Handler interface {
 	// Update an existing API key for a service account.
 	//
 	// PATCH /v1/service-accounts/{service_account_user_id}/api-keys/{api_key_id}
-	EditServiceAccountAPIKey(ctx context.Context, req *BodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (EditServiceAccountAPIKeyRes, error)
+	EditServiceAccountAPIKey(ctx context.Context, req OptBodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch, params EditServiceAccountAPIKeyParams) (EditServiceAccountAPIKeyRes, error)
 	// EditVoice implements edit_voice operation.
 	//
 	// Edit a voice created by you.
@@ -416,20 +502,6 @@ type Handler interface {
 	//
 	// POST /v1/forced-alignment
 	ForcedAlignment(ctx context.Context, req *BodyCreateForcedAlignmentV1ForcedAlignmentPostMultipart, params ForcedAlignmentParams) (ForcedAlignmentRes, error)
-	// Generate implements generate operation.
-	//
-	// Compose a song from a prompt or a composition plan.
-	//
-	// POST /v1/music
-	Generate(ctx context.Context, req OptBodyComposeMusicV1MusicPost, params GenerateParams) (GenerateRes, error)
-	// GenerateRandomVoice implements generate_random_voice operation.
-	//
-	// Generate a random voice based on parameters. This method returns a generated_voice_id in the
-	// response header, and a sample of the voice in the body. If you like the generated voice call
-	// /v1/voice-generation/create-voice with the generated_voice_id to create the voice.
-	//
-	// POST /v1/voice-generation/generate-voice
-	GenerateRandomVoice(ctx context.Context, req *BodyGenerateARandomVoiceV1VoiceGenerationGenerateVoicePost, params GenerateRandomVoiceParams) (GenerateRandomVoiceRes, error)
 	// GetAgentKnowledgeBaseSize implements get_agent_knowledge_base_size operation.
 	//
 	// Returns the number of pages in the agent's knowledge base.
@@ -467,6 +539,24 @@ type Handler interface {
 	//
 	// POST /v1/convai/agent-testing/summaries
 	GetAgentResponseTestsSummariesRoute(ctx context.Context, req *ListTestsByIdsRequestModel, params GetAgentResponseTestsSummariesRouteParams) (GetAgentResponseTestsSummariesRouteRes, error)
+	// GetAgentSummariesRoute implements get_agent_summaries_route operation.
+	//
+	// Returns summaries for the specified agents.
+	//
+	// GET /v1/convai/agents/summaries
+	GetAgentSummariesRoute(ctx context.Context, params GetAgentSummariesRouteParams) (GetAgentSummariesRouteRes, error)
+	// GetAgentTestFolderRoute implements get_agent_test_folder_route operation.
+	//
+	// Gets an agent test folder by ID, including its folder path.
+	//
+	// GET /v1/convai/agent-testing/folders/{folder_id}
+	GetAgentTestFolderRoute(ctx context.Context, params GetAgentTestFolderRouteParams) (GetAgentTestFolderRouteRes, error)
+	// GetAgentTopicsRoute implements get_agent_topics_route operation.
+	//
+	// Returns the latest topic discovery run results for a given agent.
+	//
+	// GET /v1/convai/agents/{agent_id}/topics
+	GetAgentTopicsRoute(ctx context.Context, params GetAgentTopicsRouteParams) (GetAgentTopicsRouteRes, error)
 	// GetAgentsRoute implements get_agents_route operation.
 	//
 	// Returns a list of your agents and their metadata.
@@ -485,6 +575,12 @@ type Handler interface {
 	//
 	// GET /v1/history/{history_item_id}/audio
 	GetAudioFullFromSpeechHistoryItem(ctx context.Context, params GetAudioFullFromSpeechHistoryItemParams) (GetAudioFullFromSpeechHistoryItemRes, error)
+	// GetAudioIsolationHistory implements get_audio_isolation_history operation.
+	//
+	// Returns a list of all your audio isolation generations.
+	//
+	// GET /v1/audio-isolation/history
+	GetAudioIsolationHistory(ctx context.Context, params GetAudioIsolationHistoryParams) (GetAudioIsolationHistoryRes, error)
 	// GetAudioNativeProjectSettingsEndpoint implements get_audio_native_project_settings_endpoint operation.
 	//
 	// Get player settings for the specific project.
@@ -497,6 +593,18 @@ type Handler interface {
 	//
 	// GET /v1/convai/batch-calling/{batch_id}
 	GetBatchCall(ctx context.Context, params GetBatchCallParams) (GetBatchCallRes, error)
+	// GetBranchRoute implements get_branch_route operation.
+	//
+	// Get information about a single agent branch.
+	//
+	// GET /v1/convai/agents/{agent_id}/branches/{branch_id}
+	GetBranchRoute(ctx context.Context, params GetBranchRouteParams) (GetBranchRouteRes, error)
+	// GetBranchesRoute implements get_branches_route operation.
+	//
+	// Returns a list of branches an agent has.
+	//
+	// GET /v1/convai/agents/{agent_id}/branches
+	GetBranchesRoute(ctx context.Context, params GetBranchesRouteParams) (GetBranchesRouteRes, error)
 	// GetChapterSnapshotEndpoint implements get_chapter_snapshot_endpoint operation.
 	//
 	// Returns the chapter snapshot.
@@ -540,6 +648,24 @@ type Handler interface {
 	//
 	// GET /v1/convai/conversation/get-signed-url
 	GetConversationSignedLink(ctx context.Context, params GetConversationSignedLinkParams) (GetConversationSignedLinkRes, error)
+	// GetConversationSipMessages implements get_conversation_sip_messages operation.
+	//
+	// Get SIP messages associated with a conversation's phone call.
+	//
+	// GET /v1/convai/conversations/{conversation_id}/sip-messages
+	GetConversationSipMessages(ctx context.Context, params GetConversationSipMessagesParams) (GetConversationSipMessagesRes, error)
+	// GetConversationTagRoute implements get_conversation_tag_route operation.
+	//
+	// Get a conversation tag by ID.
+	//
+	// GET /v1/convai/tags/{tag_id}
+	GetConversationTagRoute(ctx context.Context, params GetConversationTagRouteParams) (GetConversationTagRouteRes, error)
+	// GetConversationUsersRoute implements get_conversation_users_route operation.
+	//
+	// Get distinct users from conversations with pagination.
+	//
+	// GET /v1/convai/users
+	GetConversationUsersRoute(ctx context.Context, params GetConversationUsersRouteParams) (GetConversationUsersRouteRes, error)
 	// GetDashboardSettingsRoute implements get_dashboard_settings_route operation.
 	//
 	// Retrieve Convai dashboard settings for the workspace.
@@ -552,6 +678,12 @@ type Handler interface {
 	//
 	// GET /v1/convai/knowledge-base/{documentation_id}/chunk/{chunk_id}
 	GetDocumentationChunkFromKnowledgeBase(ctx context.Context, params GetDocumentationChunkFromKnowledgeBaseParams) (GetDocumentationChunkFromKnowledgeBaseRes, error)
+	// GetDocumentationChunksFromKnowledgeBase implements get_documentation_chunks_from_knowledge_base operation.
+	//
+	// Get all RAG chunks for a specific knowledge base document.
+	//
+	// GET /v1/convai/knowledge-base/{documentation_id}/chunks
+	GetDocumentationChunksFromKnowledgeBase(ctx context.Context, params GetDocumentationChunksFromKnowledgeBaseParams) (GetDocumentationChunksFromKnowledgeBaseRes, error)
 	// GetDocumentationFromKnowledgeBase implements get_documentation_from_knowledge_base operation.
 	//
 	// Get details about a specific documentation making up the agent's knowledge base.
@@ -576,6 +708,8 @@ type Handler interface {
 	//
 	// Returns transcript for the dub as an SRT or WEBVTT file.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// GET /v1/dubbing/{dubbing_id}/transcript/{language_code}
 	GetDubbedTranscriptFile(ctx context.Context, params GetDubbedTranscriptFileParams) (GetDubbedTranscriptFileRes, error)
 	// GetDubbingResource implements get_dubbing_resource operation.
@@ -583,14 +717,22 @@ type Handler interface {
 	// Given a dubbing ID generated from the '/v1/dubbing' endpoint with studio enabled, returns the
 	// dubbing resource.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// GET /v1/dubbing/resource/{dubbing_id}
 	GetDubbingResource(ctx context.Context, params GetDubbingResourceParams) (GetDubbingResourceRes, error)
-	// GetGenerateVoiceParameters implements get_generate_voice_parameters operation.
+	// GetDubbingTranscripts implements get_dubbing_transcripts operation.
 	//
-	// Get possible parameters for the /v1/voice-generation/generate-voice endpoint.
+	// Fetch the transcript for one of the languages in a dub.
 	//
-	// GET /v1/voice-generation/generate-voice/parameters
-	GetGenerateVoiceParameters(ctx context.Context) (*VoiceGenerationParameterResponseModel, error)
+	// GET /v1/dubbing/{dubbing_id}/transcripts/{language_code}/format/{format_type}
+	GetDubbingTranscripts(ctx context.Context, params GetDubbingTranscriptsParams) (GetDubbingTranscriptsRes, error)
+	// GetGroupsEndpoint implements get_groups_endpoint operation.
+	//
+	// Get all groups in the workspace.
+	//
+	// GET /v1/workspace/groups
+	GetGroupsEndpoint(ctx context.Context, params GetGroupsEndpointParams) (GetGroupsEndpointRes, error)
 	// GetKnowledgeBaseContent implements get_knowledge_base_content operation.
 	//
 	// Get the entire content of a document from the knowledge base.
@@ -609,6 +751,13 @@ type Handler interface {
 	//
 	// GET /v1/convai/knowledge-base
 	GetKnowledgeBaseListRoute(ctx context.Context, params GetKnowledgeBaseListRouteParams) (GetKnowledgeBaseListRouteRes, error)
+	// GetKnowledgeBaseSourceFileURL implements get_knowledge_base_source_file_url operation.
+	//
+	// Get a signed URL to download the original source file of a file-type document from the knowledge
+	// base.
+	//
+	// GET /v1/convai/knowledge-base/{documentation_id}/source-file-url
+	GetKnowledgeBaseSourceFileURL(ctx context.Context, params GetKnowledgeBaseSourceFileURLParams) (GetKnowledgeBaseSourceFileURLRes, error)
 	// GetLibraryVoices implements get_library_voices operation.
 	//
 	// Retrieves a list of shared voices.
@@ -642,6 +791,7 @@ type Handler interface {
 	// GetOrCreateRagIndexes implements get_or_create_rag_indexes operation.
 	//
 	// Retrieves and/or creates RAG indexes for multiple knowledge base documents in a single request.
+	// Maximum 100 items per request.
 	//
 	// POST /v1/convai/knowledge-base/rag-index
 	GetOrCreateRagIndexes(ctx context.Context, req *BodyComputeRAGIndexesInBatchV1ConvaiKnowledgeBaseRagIndexPost, params GetOrCreateRagIndexesParams) (GetOrCreateRagIndexesRes, error)
@@ -651,6 +801,12 @@ type Handler interface {
 	//
 	// GET /v1/convai/phone-numbers/{phone_number_id}
 	GetPhoneNumberRoute(ctx context.Context, params GetPhoneNumberRouteParams) (GetPhoneNumberRouteRes, error)
+	// GetProjectMutedTracksEndpoint implements get_project_muted_tracks_endpoint operation.
+	//
+	// Returns a list of chapter IDs that have muted tracks in a project.
+	//
+	// GET /v1/studio/projects/{project_id}/muted-tracks
+	GetProjectMutedTracksEndpoint(ctx context.Context, params GetProjectMutedTracksEndpointParams) (GetProjectMutedTracksEndpointRes, error)
 	// GetProjectSnapshotEndpoint implements get_project_snapshot_endpoint operation.
 	//
 	// Returns the project snapshot.
@@ -675,12 +831,6 @@ type Handler interface {
 	//
 	// GET /v1/pronunciation-dictionaries
 	GetPronunciationDictionariesMetadata(ctx context.Context, params GetPronunciationDictionariesMetadataParams) (GetPronunciationDictionariesMetadataRes, error)
-	// GetPronunciationDictionaryMetadata implements get_pronunciation_dictionary_metadata operation.
-	//
-	// Get metadata for a pronunciation dictionary.
-	//
-	// GET /v1/pronunciation-dictionaries/{pronunciation_dictionary_id}
-	GetPronunciationDictionaryMetadata(ctx context.Context, params GetPronunciationDictionaryMetadataParams) (GetPronunciationDictionaryMetadataRes, error)
 	// GetPronunciationDictionaryVersionPls implements get_pronunciation_dictionary_version_pls operation.
 	//
 	// Get a PLS file with a pronunciation dictionary version rules.
@@ -736,6 +886,12 @@ type Handler interface {
 	//
 	// GET /v1/workspace/resources/{resource_id}
 	GetResourceMetadata(ctx context.Context, params GetResourceMetadataParams) (GetResourceMetadataRes, error)
+	// GetSecretRoute implements get_secret_route operation.
+	//
+	// Get a workspace secret by ID.
+	//
+	// GET /v1/convai/secrets/{secret_id}
+	GetSecretRoute(ctx context.Context, params GetSecretRouteParams) (GetSecretRouteRes, error)
 	// GetSecretsRoute implements get_secrets_route operation.
 	//
 	// Get all workspace secrets for the user.
@@ -773,6 +929,8 @@ type Handler interface {
 	//
 	// Fetch the top 10 similar voices to a speaker, including the voice IDs, names, descriptions, and,
 	// where possible, a sample audio recording.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// GET /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/similar-voices
 	GetSimilarVoicesForSpeaker(ctx context.Context, params GetSimilarVoicesForSpeakerParams) (GetSimilarVoicesForSpeakerRes, error)
@@ -812,6 +970,12 @@ type Handler interface {
 	//
 	// GET /v1/convai/tools/{tool_id}/dependent-agents
 	GetToolDependentAgentsRoute(ctx context.Context, params GetToolDependentAgentsRouteParams) (GetToolDependentAgentsRouteRes, error)
+	// GetToolExecutionsRoute implements get_tool_executions_route operation.
+	//
+	// Get paginated list of tool executions for a specific tool.
+	//
+	// GET /v1/convai/tools/{tool_id}/executions
+	GetToolExecutionsRoute(ctx context.Context, params GetToolExecutionsRouteParams) (GetToolExecutionsRouteRes, error)
 	// GetTranscriptByID implements get_transcript_by_id operation.
 	//
 	// Retrieve a previously generated transcript by its ID.
@@ -830,6 +994,12 @@ type Handler interface {
 	//
 	// GET /v2/voices
 	GetUserVoicesV2(ctx context.Context, params GetUserVoicesV2Params) (GetUserVoicesV2Res, error)
+	// GetVersionMetadataRoute implements get_version_metadata_route operation.
+	//
+	// Get metadata for a specific agent version.
+	//
+	// GET /v1/convai/agents/{agent_id}/versions/{version_id}
+	GetVersionMetadataRoute(ctx context.Context, params GetVersionMetadataRouteParams) (GetVersionMetadataRouteRes, error)
 	// GetVoiceByID implements get_voice_by_id operation.
 	//
 	// Returns metadata about a specific voice.
@@ -852,7 +1022,8 @@ type Handler interface {
 	GetVoiceSettingsDefault(ctx context.Context) (*VoiceSettingsResponseModel, error)
 	// GetVoices implements get_voices operation.
 	//
-	// Returns a list of all available voices for a user.
+	// Returns a list of all available voices for a user. Stops working once the user's workspace exceeds
+	// 500 voices.
 	//
 	// GET /v1/voices
 	GetVoices(ctx context.Context, params GetVoicesParams) (GetVoicesRes, error)
@@ -880,6 +1051,12 @@ type Handler interface {
 	//
 	// GET /v1/workspace/webhooks
 	GetWorkspaceWebhooksRoute(ctx context.Context, params GetWorkspaceWebhooksRouteParams) (GetWorkspaceWebhooksRouteRes, error)
+	// HandleExotelOutboundCall implements handle_exotel_outbound_call operation.
+	//
+	// Handle an outbound call via Exotel Connect API.
+	//
+	// POST /v1/convai/exotel/outbound-call
+	HandleExotelOutboundCall(ctx context.Context, req *BodyHandleAnOutboundCallViaExotelV1ConvaiExotelOutboundCallPost, params HandleExotelOutboundCallParams) (HandleExotelOutboundCallRes, error)
 	// HandleSipTrunkOutboundCall implements handle_sip_trunk_outbound_call operation.
 	//
 	// Handle an outbound call via SIP trunk.
@@ -892,19 +1069,13 @@ type Handler interface {
 	//
 	// POST /v1/convai/twilio/outbound-call
 	HandleTwilioOutboundCall(ctx context.Context, req *BodyHandleAnOutboundCallViaTwilioV1ConvaiTwilioOutboundCallPost, params HandleTwilioOutboundCallParams) (HandleTwilioOutboundCallRes, error)
-	// ImportWhatsappAccount implements import_whatsapp_account operation.
-	//
-	// Import a WhatsApp account.
-	//
-	// POST /v1/convai/whatsapp-accounts
-	ImportWhatsappAccount(ctx context.Context, req *ImportWhatsAppAccountRequest, params ImportWhatsappAccountParams) (ImportWhatsappAccountRes, error)
 	// InviteUser implements invite_user operation.
 	//
 	// Sends an email invitation to join your workspace to the provided email. If the user doesn't have
 	// an account they will be prompted to create one. If the user accepts this invite they will be added
 	// as a user to your workspace and your subscription using one of your seats. This endpoint may only
-	// be called by workspace administrators. If the user is already in the workspace a 400 error will be
-	// returned.
+	// be called by workspace members with the WORKSPACE_MEMBERS_INVITE permission. If the user is
+	// already in the workspace a 400 error will be returned.
 	//
 	// POST /v1/workspace/invites/add
 	InviteUser(ctx context.Context, req *BodyInviteUserV1WorkspaceInvitesAddPost, params InviteUserParams) (InviteUserRes, error)
@@ -914,16 +1085,36 @@ type Handler interface {
 	// addresses to be part of a verified domain. If the users don't have an account they will be
 	// prompted to create one. If the users accept these invites they will be added as users to your
 	// workspace and your subscription using one of your seats. This endpoint may only be called by
-	// workspace administrators.
+	// workspace members with the WORKSPACE_MEMBERS_INVITE permission.
 	//
 	// POST /v1/workspace/invites/add-bulk
 	InviteUsersBulk(ctx context.Context, req *BodyInviteMultipleUsersV1WorkspaceInvitesAddBulkPost, params InviteUsersBulkParams) (InviteUsersBulkRes, error)
+	// ListAuthConnections implements list_auth_connections operation.
+	//
+	// Get all auth connections for the workspace.
+	//
+	// GET /v1/workspace/auth-connections
+	ListAuthConnections(ctx context.Context, params ListAuthConnectionsParams) (ListAuthConnectionsRes, error)
+	// ListAvailableLlms implements list_available_llms operation.
+	//
+	// Returns a list of available LLM models that can be used with agents, including their capabilities
+	// and any deprecation status. The response is filtered based on the data residency of the deployment
+	// and any compliance requirements (e.g. HIPAA) of the workspace subscription.
+	//
+	// GET /v1/convai/llm/list
+	ListAvailableLlms(ctx context.Context, params ListAvailableLlmsParams) (ListAvailableLlmsRes, error)
 	// ListChatResponseTestsRoute implements list_chat_response_tests_route operation.
 	//
 	// Lists all agent response tests with pagination support and optional search filtering.
 	//
 	// GET /v1/convai/agent-testing
 	ListChatResponseTestsRoute(ctx context.Context, params ListChatResponseTestsRouteParams) (ListChatResponseTestsRouteRes, error)
+	// ListConversationTagsRoute implements list_conversation_tags_route operation.
+	//
+	// List conversation tags for the workspace, ordered by most recently created first.
+	//
+	// GET /v1/convai/tags
+	ListConversationTagsRoute(ctx context.Context, params ListConversationTagsRouteParams) (ListConversationTagsRouteRes, error)
 	// ListDubs implements list_dubs operation.
 	//
 	// List the dubs you have access to.
@@ -942,6 +1133,18 @@ type Handler interface {
 	//
 	// GET /v1/convai/phone-numbers
 	ListPhoneNumbersRoute(ctx context.Context, params ListPhoneNumbersRouteParams) (ListPhoneNumbersRouteRes, error)
+	// ListSipMessages implements list_sip_messages operation.
+	//
+	// Get SIP messages for a phone number.
+	//
+	// GET /v1/convai/phone-numbers/{phone_number_id}/sip-messages
+	ListSipMessages(ctx context.Context, params ListSipMessagesParams) (ListSipMessagesRes, error)
+	// ListSpeechEngines implements list_speech_engines operation.
+	//
+	// Returns a paginated list of Speech Engine resources.
+	//
+	// GET /v1/speech-engine
+	ListSpeechEngines(ctx context.Context, params ListSpeechEnginesParams) (ListSpeechEnginesRes, error)
 	// ListTestInvocationsRoute implements list_test_invocations_route operation.
 	//
 	// Lists all test invocations with pagination support and optional search filtering.
@@ -954,9 +1157,17 @@ type Handler interface {
 	//
 	// GET /v1/convai/whatsapp-accounts
 	ListWhatsappAccounts(ctx context.Context, params ListWhatsappAccountsParams) (ListWhatsappAccountsRes, error)
+	// MergeBranchIntoTarget implements merge_branch_into_target operation.
+	//
+	// Merge a branch into a target branch.
+	//
+	// POST /v1/convai/agents/{agent_id}/branches/{source_branch_id}/merge
+	MergeBranchIntoTarget(ctx context.Context, req OptBodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIDBranchesSourceBranchIDMergePost, params MergeBranchIntoTargetParams) (MergeBranchIntoTargetRes, error)
 	// MigrateSegments implements migrate_segments operation.
 	//
 	// Change the attribution of one or more segments to a different speaker.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/dubbing/resource/{dubbing_id}/migrate-segments
 	MigrateSegments(ctx context.Context, req *BodyMoveSegmentsBetweenSpeakersV1DubbingResourceDubbingIDMigrateSegmentsPost, params MigrateSegmentsParams) (MigrateSegmentsRes, error)
@@ -978,6 +1189,96 @@ type Handler interface {
 	//
 	// POST /v1/convai/conversations/{conversation_id}/feedback
 	PostConversationFeedbackRoute(ctx context.Context, req *ConversationFeedbackRequestModel, params PostConversationFeedbackRouteParams) (PostConversationFeedbackRouteRes, error)
+	// PostKnowledgeBaseBulkMoveRoute implements post_knowledge_base_bulk_move_route operation.
+	//
+	// Moves multiple entities from one folder to another.
+	//
+	// POST /v1/convai/knowledge-base/bulk-move
+	PostKnowledgeBaseBulkMoveRoute(ctx context.Context, req *BodyBulkMoveEntitiesToFolderV1ConvaiKnowledgeBaseBulkMovePost, params PostKnowledgeBaseBulkMoveRouteParams) (PostKnowledgeBaseBulkMoveRouteRes, error)
+	// PostKnowledgeBaseMoveRoute implements post_knowledge_base_move_route operation.
+	//
+	// Moves the entity from one folder to another.
+	//
+	// POST /v1/convai/knowledge-base/{document_id}/move
+	PostKnowledgeBaseMoveRoute(ctx context.Context, req OptBodyMoveEntityToFolderV1ConvaiKnowledgeBaseDocumentIDMovePost, params PostKnowledgeBaseMoveRouteParams) (PostKnowledgeBaseMoveRouteRes, error)
+	// PublicCreateOrder implements public_create_order operation.
+	//
+	// Creates a new Productions order in the workspace. The order starts in the open state and can be
+	// configured with items before submission.
+	//
+	// POST /v1/productions/orders
+	PublicCreateOrder(ctx context.Context, req OptCreateOrderRequest, params PublicCreateOrderParams) (PublicCreateOrderRes, error)
+	// PublicGetAvailableLanguages implements public_get_available_languages operation.
+	//
+	// Returns the available languages for a given order item kind.
+	//
+	// GET /v1/productions/orders/languages/{order_item_kind}
+	PublicGetAvailableLanguages(ctx context.Context, params PublicGetAvailableLanguagesParams) (PublicGetAvailableLanguagesRes, error)
+	// PublicGetMediaInfo implements public_get_media_info operation.
+	//
+	// Retrieves metadata and a time-limited download URL for a previously uploaded media file.
+	//
+	// GET /v1/productions/orders/{order_id}/media/{media_id}
+	PublicGetMediaInfo(ctx context.Context, params PublicGetMediaInfoParams) (PublicGetMediaInfoRes, error)
+	// PublicGetOrder implements public_get_order operation.
+	//
+	// Retrieves full details for a Productions order.
+	// Quote and pricing information may not be available immediately; if you wish to see the quote
+	// before submission, you may need to poll the order details until it is ready.
+	//
+	// GET /v1/productions/orders/{order_id}
+	PublicGetOrder(ctx context.Context, params PublicGetOrderParams) (PublicGetOrderRes, error)
+	// PublicGetOrderDeliverables implements public_get_order_deliverables operation.
+	//
+	// Retrieves the delivered files for a completed order. Returns an empty list if the order is not yet
+	// completed.
+	//
+	// GET /v1/productions/orders/{order_id}/deliverables
+	PublicGetOrderDeliverables(ctx context.Context, params PublicGetOrderDeliverablesParams) (PublicGetOrderDeliverablesRes, error)
+	// PublicListOrders implements public_list_orders operation.
+	//
+	// Lists Productions orders in the workspace. Supports filtering by status and date range, with
+	// pagination.
+	//
+	// GET /v1/productions/orders
+	PublicListOrders(ctx context.Context, params PublicListOrdersParams) (PublicListOrdersRes, error)
+	// PublicRegisterMedia implements public_register_media operation.
+	//
+	// Registers a media file with an order, either by uploading it directly or by providing a URL to
+	// fetch it from. Exactly one of `media` or `media_url` must be provided. The registered media can
+	// then be referenced when adding order items.
+	//
+	// POST /v1/productions/orders/{order_id}/media
+	PublicRegisterMedia(ctx context.Context, req *BodyRegisterMediaV1ProductionsOrdersOrderIDMediaPostMultipart, params PublicRegisterMediaParams) (PublicRegisterMediaRes, error)
+	// PublicRemoveOrderItem implements public_remove_order_item operation.
+	//
+	// Removes an order item from an open order.
+	//
+	// DELETE /v1/productions/orders/{order_id}/items/{item_id}
+	PublicRemoveOrderItem(ctx context.Context, params PublicRemoveOrderItemParams) (PublicRemoveOrderItemRes, error)
+	// PublicSubmitOrder implements public_submit_order operation.
+	//
+	// Submits an open order for processing. The order must have at least one item. Once submitted, items
+	// can no longer be modified.
+	// Upon submission, the workspace will be charged for the order. The quote is based on information
+	// extracted from the uploaded media, such as its duration. The quote may not be available
+	// immediately; if you wish to see the quote before submission, you may need to poll the order
+	// details until the quote is ready.
+	//
+	// POST /v1/productions/orders/{order_id}/submit
+	PublicSubmitOrder(ctx context.Context, params PublicSubmitOrderParams) (PublicSubmitOrderRes, error)
+	// PublicUpdateOrder implements public_update_order operation.
+	//
+	// Updates an open order.
+	//
+	// PATCH /v1/productions/orders/{order_id}
+	PublicUpdateOrder(ctx context.Context, req *BodyUpdateOrderV1ProductionsOrdersOrderIDPatch, params PublicUpdateOrderParams) (PublicUpdateOrderRes, error)
+	// PublicUpsertOrderItem implements public_upsert_order_item operation.
+	//
+	// Adds or updates an order item on an open order. Returns the item ID and the quoted price.
+	//
+	// POST /v1/productions/orders/{order_id}/items
+	PublicUpsertOrderItem(ctx context.Context, req *BodyUpsertOrderItemV1ProductionsOrdersOrderIDItemsPost, params PublicUpsertOrderItemParams) (PublicUpsertOrderItemRes, error)
 	// RagIndexStatus implements rag_index_status operation.
 	//
 	// In case the document is not RAG indexed, it triggers rag indexing task, otherwise it just returns
@@ -991,6 +1292,12 @@ type Handler interface {
 	//
 	// GET /docs
 	RedirectToMintlify(ctx context.Context) (jx.Raw, error)
+	// RefreshURLDocumentRoute implements refresh_url_document_route operation.
+	//
+	// Manually refresh a URL document by re-fetching its content from the source URL.
+	//
+	// POST /v1/convai/knowledge-base/{documentation_id}/refresh
+	RefreshURLDocumentRoute(ctx context.Context, params RefreshURLDocumentRouteParams) (RefreshURLDocumentRouteRes, error)
 	// RegisterTwilioCall implements register_twilio_call operation.
 	//
 	// Register a Twilio call and return TwiML to connect the call.
@@ -999,8 +1306,7 @@ type Handler interface {
 	RegisterTwilioCall(ctx context.Context, req *BodyRegisterATwilioCallAndReturnTwiMLV1ConvaiTwilioRegisterCallPost, params RegisterTwilioCallParams) (RegisterTwilioCallRes, error)
 	// RemoveMember implements remove_member operation.
 	//
-	// Removes a member from the specified group. This endpoint may only be called by workspace
-	// administrators.
+	// Removes a member from the specified group. Requires `group_members_manage` permission.
 	//
 	// POST /v1/workspace/groups/{group_id}/members/remove
 	RemoveMember(ctx context.Context, req *BodyDeleteMemberFromUserGroupV1WorkspaceGroupsGroupIDMembersRemovePost, params RemoveMemberParams) (RemoveMemberRes, error)
@@ -1010,6 +1316,17 @@ type Handler interface {
 	//
 	// POST /v1/pronunciation-dictionaries/{pronunciation_dictionary_id}/remove-rules
 	RemoveRules(ctx context.Context, req *BodyRemoveRulesFromThePronunciationDictionaryV1PronunciationDictionariesPronunciationDictionaryIDRemoveRulesPost, params RemoveRulesParams) (RemoveRulesRes, error)
+	// Render implements render operation.
+	//
+	// Regenerate the output media for a language using the latest Studio state. Please ensure all
+	// segments have been dubbed before rendering, otherwise they will be omitted. Renders are generated
+	// asynchronously, and to check the status of all renders please use the 'Get Dubbing Resource'
+	// endpoint.
+	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
+	// POST /v1/dubbing/resource/{dubbing_id}/render/{language}
+	Render(ctx context.Context, req *BodyRenderAudioOrVideoForTheGivenLanguageV1DubbingResourceDubbingIDRenderLanguagePost, params RenderParams) (RenderRes, error)
 	// RequestPvcManualVerification implements request_pvc_manual_verification operation.
 	//
 	// Request manual verification for a PVC voice.
@@ -1022,6 +1339,19 @@ type Handler interface {
 	//
 	// POST /v1/convai/batch-calling/{batch_id}/retry
 	RetryBatchCall(ctx context.Context, params RetryBatchCallParams) (RetryBatchCallRes, error)
+	// RunConversationAnalysis implements run_conversation_analysis operation.
+	//
+	// Run the analysis for a conversation using the agent's current evaluation criteria and data
+	// collection settings.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/analysis/run
+	RunConversationAnalysis(ctx context.Context, params RunConversationAnalysisParams) (RunConversationAnalysisRes, error)
+	// RunConversationEvaluations implements run_conversation_evaluations operation.
+	//
+	// Rerun a specific evaluation for a conversation.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/analysis/evaluations/run
+	RunConversationEvaluations(ctx context.Context, req *RunConversationEvaluationsRequest, params RunConversationEvaluationsParams) (RunConversationEvaluationsRes, error)
 	// RunPvcVoiceTraining implements run_pvc_voice_training operation.
 	//
 	// Start PVC training process for a voice.
@@ -1034,6 +1364,12 @@ type Handler interface {
 	//
 	// GET /v1/workspace/groups/search
 	SearchGroups(ctx context.Context, params SearchGroupsParams) (SearchGroupsRes, error)
+	// SearchKnowledgeBaseContentRoute implements search_knowledge_base_content_route operation.
+	//
+	// Fuzzy text search over knowledge base document content.
+	//
+	// GET /v1/convai/knowledge-base/search
+	SearchKnowledgeBaseContentRoute(ctx context.Context, params SearchKnowledgeBaseContentRouteParams) (SearchKnowledgeBaseContentRouteRes, error)
 	// SeparateSongStems implements separate_song_stems operation.
 	//
 	// Separate an audio file into individual stems. This endpoint might have high latency, depending on
@@ -1043,15 +1379,22 @@ type Handler interface {
 	SeparateSongStems(ctx context.Context, req *BodyStemSeparationV1MusicStemSeparationPostMultipart, params SeparateSongStemsParams) (SeparateSongStemsRes, error)
 	// ShareResourceEndpoint implements share_resource_endpoint operation.
 	//
-	// Grants a role on a workspace resource to a user or a group. It overrides any existing role this
-	// user/service account/group/workspace api key has on the resource. To target a user or service
-	// account, pass only the user email. The user must be in your workspace. To target a group, pass
-	// only the group id. To target a workspace api key, pass the api key id. The resource will be shared
-	// with the service account associated with the api key. You must have admin access to the resource
-	// to share it.
+	// Grants a role (one of 'admin', 'editor', 'commenter', or 'viewer') on a workspace resource to a
+	// user, group, or workspace (service account) API key. This overrides any existing role the target
+	// has on the resource. To target a user or service account, pass only the user email; the user must
+	// be in your workspace. To target a group, pass only the group id. To target a workspace (service
+	// account) API key, pass the api key id; the resource will be shared with the service account
+	// associated with that key. You must have admin access to the resource to share it.
 	//
 	// POST /v1/workspace/resources/{resource_id}/share
 	ShareResourceEndpoint(ctx context.Context, req *BodyShareWorkspaceResourceV1WorkspaceResourcesResourceIDSharePost, params ShareResourceEndpointParams) (ShareResourceEndpointRes, error)
+	// SmartSearchConversationMessagesRoute implements smart_search_conversation_messages_route operation.
+	//
+	// Search conversation transcripts by semantic similarity to surface relevant messages based on
+	// meaning and intent, rather than exact keyword matches.
+	//
+	// GET /v1/convai/conversations/messages/smart-search
+	SmartSearchConversationMessagesRoute(ctx context.Context, params SmartSearchConversationMessagesRouteParams) (SmartSearchConversationMessagesRouteRes, error)
 	// SoundGeneration implements sound_generation operation.
 	//
 	// Turn text into sound effects for your videos, voice-overs or video games using the most advanced
@@ -1096,12 +1439,6 @@ type Handler interface {
 	//
 	// POST /v1/studio/projects/{project_id}/chapters/{chapter_id}/snapshots/{chapter_snapshot_id}/stream
 	StreamChapterSnapshotAudio(ctx context.Context, req OptBodyStreamChapterAudioV1StudioProjectsProjectIDChaptersChapterIDSnapshotsChapterSnapshotIDStreamPost, params StreamChapterSnapshotAudioParams) (StreamChapterSnapshotAudioRes, error)
-	// StreamCompose implements stream_compose operation.
-	//
-	// Stream a composed song from a prompt or a composition plan.
-	//
-	// POST /v1/music/stream
-	StreamCompose(ctx context.Context, req OptBodyStreamComposedMusicV1MusicStreamPost, params StreamComposeParams) (StreamComposeRes, error)
 	// StreamProjectSnapshotArchiveEndpoint implements stream_project_snapshot_archive_endpoint operation.
 	//
 	// Returns a compressed archive of the Studio project's audio.
@@ -1114,6 +1451,12 @@ type Handler interface {
 	//
 	// POST /v1/studio/projects/{project_id}/snapshots/{project_snapshot_id}/stream
 	StreamProjectSnapshotAudioEndpoint(ctx context.Context, req OptBodyStreamStudioProjectAudioV1StudioProjectsProjectIDSnapshotsProjectSnapshotIDStreamPost, params StreamProjectSnapshotAudioEndpointParams) (StreamProjectSnapshotAudioEndpointRes, error)
+	// TextSearchConversationMessagesRoute implements text_search_conversation_messages_route operation.
+	//
+	// Search through conversation transcript messages by full-text and fuzzy search.
+	//
+	// GET /v1/convai/conversations/messages/text-search
+	TextSearchConversationMessagesRoute(ctx context.Context, params TextSearchConversationMessagesRouteParams) (TextSearchConversationMessagesRouteRes, error)
 	// TextToDialogue implements text_to_dialogue operation.
 	//
 	// Converts a list of text and voice ID pairs into speech (dialogue) and returns audio.
@@ -1168,10 +1511,12 @@ type Handler interface {
 	TextToSpeechStreamWithTimestamps(ctx context.Context, req *BodyTextToSpeechStreamWithTimestamps, params TextToSpeechStreamWithTimestampsParams) (TextToSpeechStreamWithTimestampsRes, error)
 	// TextToVoice implements text_to_voice operation.
 	//
-	// Generate a custom voice based on voice description. This method returns a list of voice previews.
-	// Each preview has a generated_voice_id and a sample of the voice as base64 encoded mp3 audio. If
-	// you like the a voice previewand want to create the voice call
-	// /v1/text-to-voice/create-voice-from-preview with the generated_voice_id to create the voice.
+	// **Deprecated.** Use `POST /v1/text-to-voice/design` instead. Generate a custom voice based on
+	// voice description. This method returns a list of voice previews. Each preview has a
+	// generated_voice_id and a sample of the voice as base64 encoded mp3 audio. To create the voice use
+	// `POST /v1/text-to-voice` with the chosen `generated_voice_id`.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// POST /v1/text-to-voice/create-previews
 	TextToVoice(ctx context.Context, req *VoicePreviewsRequestModel, params TextToVoiceParams) (TextToVoiceRes, error)
@@ -1202,6 +1547,8 @@ type Handler interface {
 	// Regenerate the transcriptions for the specified segments. Does not automatically regenerate
 	// translations or dubs.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/transcribe
 	Transcribe(ctx context.Context, req *BodyTranscribesSegmentsV1DubbingResourceDubbingIDTranscribePost, params TranscribeParams) (TranscribeRes, error)
 	// Translate implements translate operation.
@@ -1209,25 +1556,46 @@ type Handler interface {
 	// Regenerate the translations for either the entire resource or the specified segments/languages.
 	// Will automatically transcribe missing transcriptions. Will not automatically regenerate the dubs.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// POST /v1/dubbing/resource/{dubbing_id}/translate
 	Translate(ctx context.Context, req *BodyTranslatesAllOrSomeSegmentsAndLanguagesV1DubbingResourceDubbingIDTranslatePost, params TranslateParams) (TranslateRes, error)
+	// UnassignConversationTagRoute implements unassign_conversation_tag_route operation.
+	//
+	// Remove a single conversation tag from a conversation.
+	//
+	// DELETE /v1/convai/conversations/{conversation_id}/tags/{tag_id}
+	UnassignConversationTagRoute(ctx context.Context, params UnassignConversationTagRouteParams) (UnassignConversationTagRouteRes, error)
 	// UnshareResourceEndpoint implements unshare_resource_endpoint operation.
 	//
-	// Removes any existing role on a workspace resource from a user, service account, group or workspace
-	// api key. To target a user or service account, pass only the user email. The user must be in your
-	// workspace. To target a group, pass only the group id. To target a workspace api key, pass the api
-	// key id. The resource will be unshared from the service account associated with the api key. You
-	// must have admin access to the resource to unshare it. You cannot remove permissions from the user
-	// who created the resource.
+	// Removes any existing role on a workspace resource from a user, group, or workspace (service
+	// account) API key. To target a user or service account, pass only the user email; the user must be
+	// in your workspace. To target a group, pass only the group id. To target a workspace (service
+	// account) API key, pass the api key id; the resource will be unshared from the service account
+	// associated with that key. You must have admin access to the resource to unshare it. You cannot
+	// remove permissions from the user who created the resource.
 	//
 	// POST /v1/workspace/resources/{resource_id}/unshare
 	UnshareResourceEndpoint(ctx context.Context, req *BodyUnshareWorkspaceResourceV1WorkspaceResourcesResourceIDUnsharePost, params UnshareResourceEndpointParams) (UnshareResourceEndpointRes, error)
-	// UpdateAgentResponseTestRoute implements update_agent_response_test_route operation.
+	// UpdateAgentTestFolderRoute implements update_agent_test_folder_route operation.
 	//
-	// Updates an agent response test by ID.
+	// Updates an agent test folder. Currently only supports updating the folder name.
 	//
-	// PUT /v1/convai/agent-testing/{test_id}
-	UpdateAgentResponseTestRoute(ctx context.Context, req *UpdateUnitTestRequest, params UpdateAgentResponseTestRouteParams) (UpdateAgentResponseTestRouteRes, error)
+	// PATCH /v1/convai/agent-testing/folders/{folder_id}
+	UpdateAgentTestFolderRoute(ctx context.Context, req *BodyUpdateAgentTestFolderV1ConvaiAgentTestingFoldersFolderIDPatch, params UpdateAgentTestFolderRouteParams) (UpdateAgentTestFolderRouteRes, error)
+	// UpdateBranchRoute implements update_branch_route operation.
+	//
+	// Update agent branch properties such as archiving status and protection level.
+	//
+	// PATCH /v1/convai/agents/{agent_id}/branches/{branch_id}
+	UpdateBranchRoute(ctx context.Context, req OptBodyUpdateAgentBranchV1ConvaiAgentsAgentIDBranchesBranchIDPatch, params UpdateBranchRouteParams) (UpdateBranchRouteRes, error)
+	// UpdateConversationTagRoute implements update_conversation_tag_route operation.
+	//
+	// Update a conversation tag's title and/or description. Restricted to the tag owner or a workspace
+	// admin.
+	//
+	// PATCH /v1/convai/tags/{tag_id}
+	UpdateConversationTagRoute(ctx context.Context, req *PatchConversationTagRequestModel, params UpdateConversationTagRouteParams) (UpdateConversationTagRouteRes, error)
 	// UpdateDashboardSettingsRoute implements update_dashboard_settings_route operation.
 	//
 	// Update Convai dashboard settings for the workspace.
@@ -1236,10 +1604,17 @@ type Handler interface {
 	UpdateDashboardSettingsRoute(ctx context.Context, req *PatchConvAIDashboardSettingsRequest, params UpdateDashboardSettingsRouteParams) (UpdateDashboardSettingsRouteRes, error)
 	// UpdateDocumentRoute implements update_document_route operation.
 	//
-	// Update the name of a document.
+	// Update the name and/or content of a document.
 	//
 	// PATCH /v1/convai/knowledge-base/{documentation_id}
-	UpdateDocumentRoute(ctx context.Context, req *BodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (UpdateDocumentRouteRes, error)
+	UpdateDocumentRoute(ctx context.Context, req OptBodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch, params UpdateDocumentRouteParams) (UpdateDocumentRouteRes, error)
+	// UpdateFileDocumentRoute implements update_file_document_route operation.
+	//
+	// Update the source file of a file document. The document name, content, and metadata are updated to
+	// reflect the new file. Any manual content edits will be overwritten.
+	//
+	// PATCH /v1/convai/knowledge-base/{documentation_id}/update-file
+	UpdateFileDocumentRoute(ctx context.Context, req *BodyUpdateFileDocumentV1ConvaiKnowledgeBaseDocumentationIDUpdateFilePatchMultipart, params UpdateFileDocumentRouteParams) (UpdateFileDocumentRouteRes, error)
 	// UpdatePhoneNumberRoute implements update_phone_number_route operation.
 	//
 	// Update assigned agent of a phone number.
@@ -1265,6 +1640,8 @@ type Handler interface {
 	// Modifies a single segment with new text and/or start/end times. Will update the values for only a
 	// specific language of a segment. Does not automatically regenerate the dub.
 	//
+	// Deprecated: schema marks this operation as deprecated.
+	//
 	// PATCH /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}/{language}
 	UpdateSegmentLanguage(ctx context.Context, req *SegmentUpdatePayload, params UpdateSegmentLanguageParams) (UpdateSegmentLanguageRes, error)
 	// UpdateSettingsRoute implements update_settings_route operation.
@@ -1277,6 +1654,8 @@ type Handler interface {
 	//
 	// Amend the metadata associated with a speaker, such as their voice. Both voice cloning and using
 	// voices from the ElevenLabs library are supported.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// PATCH /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}
 	UpdateSpeaker(ctx context.Context, req OptBodyUpdateMetadataForASpeakerV1DubbingResourceDubbingIDSpeakerSpeakerIDPatch, params UpdateSpeakerParams) (UpdateSpeakerRes, error)
@@ -1293,13 +1672,24 @@ type Handler interface {
 	//
 	// POST /v1/workspace/members
 	UpdateWorkspaceMember(ctx context.Context, req *BodyUpdateMemberV1WorkspaceMembersPost, params UpdateWorkspaceMemberParams) (UpdateWorkspaceMemberRes, error)
+	// UploadFileRoute implements upload_file_route operation.
+	//
+	// Upload an image or PDF file for a conversation. Returns a unique file ID that can be used to
+	// reference the file in the conversation.
+	//
+	// POST /v1/convai/conversations/{conversation_id}/files
+	UploadFileRoute(ctx context.Context, req *BodyUploadFileV1ConvaiConversationsConversationIDFilesPostMultipart, params UploadFileRouteParams) (UploadFileRouteRes, error)
 	// UsageCharacters implements usage_characters operation.
 	//
-	// Returns the usage metrics for the current user or the entire workspace they are part of. The
-	// response provides a time axis based on the specified aggregation interval (default: day), with
-	// usage values for each interval along that axis. Usage is broken down by the selected breakdown
-	// type. For example, breakdown type "voice" will return the usage of each voice for each interval
-	// along the time axis.
+	// (Deprecated) This endpoint is deprecated. Use
+	// /v1/workspace/analytics/query/usage-by-product-over-time instead, which exposes the bucket size as
+	// `interval_seconds` (an integer in seconds) rather than `aggregation_interval`. Returns the usage
+	// metrics for the current user or the entire workspace they are part of. The response provides a
+	// time axis based on the specified aggregation interval (default: day), with usage values for each
+	// interval along that axis. Usage is broken down by the selected breakdown type. For example,
+	// breakdown type "voice" will return the usage of each voice for each interval along the time axis.
+	//
+	// Deprecated: schema marks this operation as deprecated.
 	//
 	// GET /v1/usage/character-stats
 	UsageCharacters(ctx context.Context, params UsageCharactersParams) (UsageCharactersRes, error)
@@ -1309,12 +1699,25 @@ type Handler interface {
 	//
 	// POST /v1/voices/pvc/{voice_id}/captcha
 	VerifyPvcVoiceCaptcha(ctx context.Context, req *BodyVerifyPVCVoiceCaptchaV1VoicesPvcVoiceIDCaptchaPostMultipart, params VerifyPvcVoiceCaptchaParams) (VerifyPvcVoiceCaptchaRes, error)
+	// VideoToMusic implements video_to_music operation.
+	//
+	// Generate background music from one or more video files. Videos are combined in order. Optional
+	// description and style tags influence the generated music.
+	//
+	// POST /v1/music/video-to-music
+	VideoToMusic(ctx context.Context, req *BodyVideoToMusicV1MusicVideoToMusicPostMultipart, params VideoToMusicParams) (VideoToMusicRes, error)
 	// WhatsappOutboundCall implements whatsapp_outbound_call operation.
 	//
 	// Make an outbound call via WhatsApp.
 	//
 	// POST /v1/convai/whatsapp/outbound-call
 	WhatsappOutboundCall(ctx context.Context, req *BodyMakeAnOutboundCallViaWhatsAppV1ConvaiWhatsappOutboundCallPost, params WhatsappOutboundCallParams) (WhatsappOutboundCallRes, error)
+	// WhatsappOutboundMessage implements whatsapp_outbound_message operation.
+	//
+	// Send an outbound message via WhatsApp.
+	//
+	// POST /v1/convai/whatsapp/outbound-message
+	WhatsappOutboundMessage(ctx context.Context, req *BodySendAnOutboundMessageViaWhatsAppV1ConvaiWhatsappOutboundMessagePost, params WhatsappOutboundMessageParams) (WhatsappOutboundMessageRes, error)
 }
 
 // Server implements http server based on OpenAPI v3 specification and

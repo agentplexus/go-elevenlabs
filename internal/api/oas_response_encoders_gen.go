@@ -278,6 +278,65 @@ func encodeAddVoiceResponse(response AddVoiceRes, w http.ResponseWriter, span tr
 	}
 }
 
+func encodeAgentTestingBulkMoveRouteResponse(response AgentTestingBulkMoveRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AgentTestingBulkMoveRouteOKApplicationJSON:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeAssignConversationTagsRouteResponse(response AssignConversationTagsRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AssignConversationTagsRouteNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeAudioIsolationResponse(response AudioIsolationRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *AudioIsolationOK:
@@ -381,6 +440,39 @@ func encodeAudioNativeProjectUpdateContentEndpointResponse(response AudioNativeP
 	}
 }
 
+func encodeAudioNativeUpdateContentFromURLResponse(response AudioNativeUpdateContentFromURLRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AudioNativeEditContentResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeCancelBatchCallResponse(response CancelBatchCallRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *BatchCallResponse:
@@ -414,63 +506,9 @@ func encodeCancelBatchCallResponse(response CancelBatchCallRes, w http.ResponseW
 	}
 }
 
-func encodeComposeDetailedResponse(response ComposeDetailedRes, w http.ResponseWriter, span trace.Span) error {
+func encodeCancelFileUploadRouteResponse(response CancelFileUploadRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *ComposeDetailedOKHeaders:
-		w.Header().Set("Content-Type", "multipart/mixed")
-		// Encoding response headers.
-		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "song-id" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "song-id",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if val, ok := response.SongID.Get(); ok {
-						return e.EncodeValue(conv.StringToString(val))
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode song-id header")
-				}
-			}
-		}
-		w.WriteHeader(200)
-		span.SetStatus(codes.Ok, http.StatusText(200))
-
-		writer := w
-		if closer, ok := response.Response.Data.(io.Closer); ok {
-			defer closer.Close()
-		}
-		if _, err := io.Copy(writer, response.Response); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *HTTPValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-		span.SetStatus(codes.Error, http.StatusText(422))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeComposePlanResponse(response ComposePlanRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *MusicPrompt:
+	case *ConvAIFileUploadResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -567,9 +605,42 @@ func encodeConvertProjectEndpointResponse(response ConvertProjectEndpointRes, w 
 	}
 }
 
-func encodeCreateAgentResponseTestRouteResponse(response CreateAgentResponseTestRouteRes, w http.ResponseWriter, span trace.Span) error {
+func encodeCreateAgentDeploymentRouteResponse(response CreateAgentDeploymentRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *CreateUnitTestResponseModel:
+	case *AgentDeploymentResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeCreateAgentTestFolderRouteResponse(response CreateAgentTestFolderRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *CreateAgentTestFolderResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -699,6 +770,39 @@ func encodeCreateClipResponse(response CreateClipRes, w http.ResponseWriter, spa
 	}
 }
 
+func encodeCreateConversationTagRouteResponse(response CreateConversationTagRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ConversationTagResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeCreateDubbingResponse(response CreateDubbingRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *DoDubbingResponseModel:
@@ -733,6 +837,39 @@ func encodeCreateDubbingResponse(response CreateDubbingRes, w http.ResponseWrite
 }
 
 func encodeCreateFileDocumentRouteResponse(response CreateFileDocumentRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AddKnowledgeBaseResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeCreateFolderRouteResponse(response CreateFolderRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *AddKnowledgeBaseResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -996,9 +1133,9 @@ func encodeCreateVoiceResponse(response CreateVoiceRes, w http.ResponseWriter, s
 	}
 }
 
-func encodeCreateVoiceOldResponse(response CreateVoiceOldRes, w http.ResponseWriter, span trace.Span) error {
+func encodeCreateWorkspaceWebhookRouteResponse(response CreateWorkspaceWebhookRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *VoiceResponseModel:
+	case *WorkspaceCreateWebhookResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -1029,9 +1166,9 @@ func encodeCreateVoiceOldResponse(response CreateVoiceOldRes, w http.ResponseWri
 	}
 }
 
-func encodeCreateWorkspaceWebhookRouteResponse(response CreateWorkspaceWebhookRouteRes, w http.ResponseWriter, span trace.Span) error {
+func encodeDeleteAgentDraftRouteResponse(response DeleteAgentDraftRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *WorkspaceCreateWebhookResponseModel:
+	case *DeleteAgentDraftRouteOKApplicationJSON:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -1071,6 +1208,117 @@ func encodeDeleteAgentRouteResponse(response DeleteAgentRouteRes, w http.Respons
 		return nil
 
 	case *DeleteAgentRouteNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeDeleteAgentTestFolderRouteResponse(response DeleteAgentTestFolderRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DeleteAgentTestFolderRouteNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeDeleteAudioIsolationHistoryItemResponse(response DeleteAudioIsolationHistoryItemRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DeleteAudioIsolationHistoryItemNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeDeleteAuthConnectionResponse(response DeleteAuthConnectionRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DeleteAuthConnectionOKApplicationJSON:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeDeleteBatchCallResponse(response DeleteBatchCallRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DeleteBatchCallNoContent:
 		w.WriteHeader(204)
 		span.SetStatus(codes.Ok, http.StatusText(204))
 
@@ -1172,6 +1420,32 @@ func encodeDeleteConversationRouteResponse(response DeleteConversationRouteRes, 
 		if _, err := e.WriteTo(w); err != nil {
 			return errors.Wrap(err, "write")
 		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeDeleteConversationTagRouteResponse(response DeleteConversationTagRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DeleteConversationTagRouteNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
 
 		return nil
 
@@ -1582,6 +1856,32 @@ func encodeDeleteServiceAccountAPIKeyResponse(response DeleteServiceAccountAPIKe
 	}
 }
 
+func encodeDeleteSpeechEngineResponse(response DeleteSpeechEngineRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DeleteSpeechEngineNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeDeleteSpeechHistoryItemResponse(response DeleteSpeechHistoryItemRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *DeleteHistoryItemResponse:
@@ -1763,6 +2063,39 @@ func encodeDeleteWhatsappAccountResponse(response DeleteWhatsappAccountRes, w ht
 func encodeDeleteWorkspaceWebhookRouteResponse(response DeleteWorkspaceWebhookRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *DeleteWorkspaceWebhookResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeDisableResponse(response DisableRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DisableOKApplicationJSON:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -2204,106 +2537,6 @@ func encodeForcedAlignmentResponse(response ForcedAlignmentRes, w http.ResponseW
 	}
 }
 
-func encodeGenerateResponse(response GenerateRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *GenerateOKHeaders:
-		// Encoding response headers.
-		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Content-Type" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Content-Type",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					return e.EncodeValue(conv.StringToString(response.ContentType))
-				}); err != nil {
-					return errors.Wrap(err, "encode Content-Type header")
-				}
-			}
-			// Encode "song-id" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "song-id",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if val, ok := response.SongID.Get(); ok {
-						return e.EncodeValue(conv.StringToString(val))
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode song-id header")
-				}
-			}
-		}
-		w.WriteHeader(200)
-		span.SetStatus(codes.Ok, http.StatusText(200))
-
-		writer := w
-		if closer, ok := response.Response.Data.(io.Closer); ok {
-			defer closer.Close()
-		}
-		if _, err := io.Copy(writer, response.Response); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *HTTPValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-		span.SetStatus(codes.Error, http.StatusText(422))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeGenerateRandomVoiceResponse(response GenerateRandomVoiceRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *GenerateRandomVoiceOK:
-		w.Header().Set("Content-Type", "audio/mpeg")
-		w.WriteHeader(200)
-		span.SetStatus(codes.Ok, http.StatusText(200))
-
-		writer := w
-		if closer, ok := response.Data.(io.Closer); ok {
-			defer closer.Close()
-		}
-		if _, err := io.Copy(writer, response); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *HTTPValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-		span.SetStatus(codes.Error, http.StatusText(422))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
 func encodeGetAgentKnowledgeBaseSizeResponse(response GetAgentKnowledgeBaseSizeRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetAgentKnowledgebaseSizeResponseModel:
@@ -2438,7 +2671,7 @@ func encodeGetAgentLlmExpectedCostCalculationResponse(response GetAgentLlmExpect
 
 func encodeGetAgentResponseTestRouteResponse(response GetAgentResponseTestRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetUnitTestResponseModel:
+	case *GetAgentResponseTestRouteOK:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -2472,6 +2705,105 @@ func encodeGetAgentResponseTestRouteResponse(response GetAgentResponseTestRouteR
 func encodeGetAgentResponseTestsSummariesRouteResponse(response GetAgentResponseTestsSummariesRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetTestsSummariesByIdsResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetAgentSummariesRouteResponse(response GetAgentSummariesRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetAgentSummariesRouteOK:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetAgentTestFolderRouteResponse(response GetAgentTestFolderRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetAgentTestFolderResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetAgentTopicsRouteResponse(response GetAgentTopicsRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetAgentTopicsResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -2620,6 +2952,39 @@ func encodeGetAudioFullFromSpeechHistoryItemResponse(response GetAudioFullFromSp
 	}
 }
 
+func encodeGetAudioIsolationHistoryResponse(response GetAudioIsolationHistoryRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetAudioIsolationHistoryResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetAudioNativeProjectSettingsEndpointResponse(response GetAudioNativeProjectSettingsEndpointRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetAudioNativeProjectSettingsResponseModel:
@@ -2656,6 +3021,72 @@ func encodeGetAudioNativeProjectSettingsEndpointResponse(response GetAudioNative
 func encodeGetBatchCallResponse(response GetBatchCallRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *BatchCallDetailedResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetBranchRouteResponse(response GetBranchRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AgentBranchResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetBranchesRouteResponse(response GetBranchesRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ListResponseAgentBranchSummary:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -2919,6 +3350,105 @@ func encodeGetConversationSignedLinkResponse(response GetConversationSignedLinkR
 	}
 }
 
+func encodeGetConversationSipMessagesResponse(response GetConversationSipMessagesRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetSIPLogMessagesResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetConversationTagRouteResponse(response GetConversationTagRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ConversationTagResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetConversationUsersRouteResponse(response GetConversationUsersRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetConversationUsersPageResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetDashboardSettingsRouteResponse(response GetDashboardSettingsRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetConvAIDashboardSettingsResponseModel:
@@ -2955,6 +3485,39 @@ func encodeGetDashboardSettingsRouteResponse(response GetDashboardSettingsRouteR
 func encodeGetDocumentationChunkFromKnowledgeBaseResponse(response GetDocumentationChunkFromKnowledgeBaseRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *KnowledgeBaseDocumentChunkResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetDocumentationChunksFromKnowledgeBaseResponse(response GetDocumentationChunksFromKnowledgeBaseRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *KnowledgeBaseDocumentChunksResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3260,18 +3823,70 @@ func encodeGetDubbingResourceResponse(response GetDubbingResourceRes, w http.Res
 	}
 }
 
-func encodeGetGenerateVoiceParametersResponse(response *VoiceGenerationParameterResponseModel, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
+func encodeGetDubbingTranscriptsResponse(response GetDubbingTranscriptsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DubbingTranscriptsResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
 
-	e := new(jx.Encoder)
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
 	}
+}
 
-	return nil
+func encodeGetGroupsEndpointResponse(response GetGroupsEndpointRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetGroupsEndpointOK:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
 }
 
 func encodeGetKnowledgeBaseContentResponse(response GetKnowledgeBaseContentRes, w http.ResponseWriter, span trace.Span) error {
@@ -3345,6 +3960,39 @@ func encodeGetKnowledgeBaseDependentAgentsResponse(response GetKnowledgeBaseDepe
 func encodeGetKnowledgeBaseListRouteResponse(response GetKnowledgeBaseListRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetKnowledgeBaseListResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetKnowledgeBaseSourceFileURLResponse(response GetKnowledgeBaseSourceFileURLRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *KnowledgeBaseSourceFileUrlResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3476,7 +4124,7 @@ func encodeGetLivekitTokenResponse(response GetLivekitTokenRes, w http.ResponseW
 
 func encodeGetMcpToolConfigOverrideRouteResponse(response GetMcpToolConfigOverrideRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *MCPToolConfigOverride:
+	case *MCPToolConfigOverrideOutput:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3582,6 +4230,39 @@ func encodeGetOrCreateRagIndexesResponse(response GetOrCreateRagIndexesRes, w ht
 func encodeGetPhoneNumberRouteResponse(response GetPhoneNumberRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetPhoneNumberRouteOK:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetProjectMutedTracksEndpointResponse(response GetProjectMutedTracksEndpointRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ProjectMutedTracksResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -3744,43 +4425,11 @@ func encodeGetPronunciationDictionariesMetadataResponse(response GetPronunciatio
 	}
 }
 
-func encodeGetPronunciationDictionaryMetadataResponse(response GetPronunciationDictionaryMetadataRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *GetPronunciationDictionaryMetadataResponseModel:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-		span.SetStatus(codes.Ok, http.StatusText(200))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *HTTPValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-		span.SetStatus(codes.Error, http.StatusText(422))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
 func encodeGetPronunciationDictionaryVersionPlsResponse(response GetPronunciationDictionaryVersionPlsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetPronunciationDictionaryVersionPlsOKHeaders:
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")
 		// Encoding response headers.
 		{
 			h := uri.NewHeaderEncoder(w.Header())
@@ -4058,6 +4707,39 @@ func encodeGetRagIndexesResponse(response GetRagIndexesRes, w http.ResponseWrite
 func encodeGetResourceMetadataResponse(response GetResourceMetadataRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *ResourceMetadataResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetSecretRouteResponse(response GetSecretRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ConvAIWorkspaceStoredSecretConfig:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4484,6 +5166,39 @@ func encodeGetToolDependentAgentsRouteResponse(response GetToolDependentAgentsRo
 	}
 }
 
+func encodeGetToolExecutionsRouteResponse(response GetToolExecutionsRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetToolExecutionsPageResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeGetTranscriptByIDResponse(response GetTranscriptByIDRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetTranscriptByIDOK:
@@ -4579,6 +5294,39 @@ func encodeGetUserInfoResponse(response GetUserInfoRes, w http.ResponseWriter, s
 func encodeGetUserVoicesV2Response(response GetUserVoicesV2Res, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetVoicesV2ResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeGetVersionMetadataRouteResponse(response GetVersionMetadataRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AgentVersionMetadata:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -4854,6 +5602,39 @@ func encodeGetWorkspaceWebhooksRouteResponse(response GetWorkspaceWebhooksRouteR
 	}
 }
 
+func encodeHandleExotelOutboundCallResponse(response HandleExotelOutboundCallRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ExotelOutboundCallResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeHandleSipTrunkOutboundCallResponse(response HandleSipTrunkOutboundCallRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *SIPTrunkOutboundCallResponse:
@@ -4890,39 +5671,6 @@ func encodeHandleSipTrunkOutboundCallResponse(response HandleSipTrunkOutboundCal
 func encodeHandleTwilioOutboundCallResponse(response HandleTwilioOutboundCallRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *TwilioOutboundCallResponse:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-		span.SetStatus(codes.Ok, http.StatusText(200))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *HTTPValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-		span.SetStatus(codes.Error, http.StatusText(422))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
-func encodeImportWhatsappAccountResponse(response ImportWhatsappAccountRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *ImportWhatsAppAccountResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -5019,9 +5767,108 @@ func encodeInviteUsersBulkResponse(response InviteUsersBulkRes, w http.ResponseW
 	}
 }
 
+func encodeListAuthConnectionsResponse(response ListAuthConnectionsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ListAuthConnectionsResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeListAvailableLlmsResponse(response ListAvailableLlmsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *LLMListResponseModelInput:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeListChatResponseTestsRouteResponse(response ListChatResponseTestsRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetTestsPageResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeListConversationTagsRouteResponse(response ListConversationTagsRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetConversationTagsPageResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -5151,6 +5998,72 @@ func encodeListPhoneNumbersRouteResponse(response ListPhoneNumbersRouteRes, w ht
 	}
 }
 
+func encodeListSipMessagesResponse(response ListSipMessagesRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetSIPLogMessagesResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeListSpeechEnginesResponse(response ListSpeechEnginesRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ListSpeechEnginesResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeListTestInvocationsRouteResponse(response ListTestInvocationsRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *GetTestInvocationsPageResponseModel:
@@ -5187,6 +6100,39 @@ func encodeListTestInvocationsRouteResponse(response ListTestInvocationsRouteRes
 func encodeListWhatsappAccountsResponse(response ListWhatsappAccountsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *ListWhatsAppAccountsResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeMergeBranchIntoTargetResponse(response MergeBranchIntoTargetRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *MergeBranchIntoTargetOKApplicationJSON:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -5349,6 +6295,421 @@ func encodePostConversationFeedbackRouteResponse(response PostConversationFeedba
 	}
 }
 
+func encodePostKnowledgeBaseBulkMoveRouteResponse(response PostKnowledgeBaseBulkMoveRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *PostKnowledgeBaseBulkMoveRouteOK:
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePostKnowledgeBaseMoveRouteResponse(response PostKnowledgeBaseMoveRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *PostKnowledgeBaseMoveRouteOK:
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicCreateOrderResponse(response PublicCreateOrderRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *CreateOrderResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicGetAvailableLanguagesResponse(response PublicGetAvailableLanguagesRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *LanguagesResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicGetMediaInfoResponse(response PublicGetMediaInfoRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *OrderMediaResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicGetOrderResponse(response PublicGetOrderRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *OrderResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicGetOrderDeliverablesResponse(response PublicGetOrderDeliverablesRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *OrderDeliverablesResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicListOrdersResponse(response PublicListOrdersRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ListOrdersResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicRegisterMediaResponse(response PublicRegisterMediaRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *RegisterMediaResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicRemoveOrderItemResponse(response PublicRemoveOrderItemRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *RemoveOrderItemResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicSubmitOrderResponse(response PublicSubmitOrderRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *SubmitOrderResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicUpdateOrderResponse(response PublicUpdateOrderRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *UpdateOrderResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodePublicUpsertOrderItemResponse(response PublicUpsertOrderItemRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *UpsertOrderItemResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeRagIndexStatusResponse(response RagIndexStatusRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *RAGDocumentIndexResponseModel:
@@ -5396,6 +6757,39 @@ func encodeRedirectToMintlifyResponse(response jx.Raw, w http.ResponseWriter, sp
 	}
 
 	return nil
+}
+
+func encodeRefreshURLDocumentRouteResponse(response RefreshURLDocumentRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *RefreshURLDocumentRouteOK:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
 }
 
 func encodeRegisterTwilioCallResponse(response RegisterTwilioCallRes, w http.ResponseWriter, span trace.Span) error {
@@ -5499,6 +6893,39 @@ func encodeRemoveRulesResponse(response RemoveRulesRes, w http.ResponseWriter, s
 	}
 }
 
+func encodeRenderResponse(response RenderRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *DubbingRenderResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeRequestPvcManualVerificationResponse(response RequestPvcManualVerificationRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *RequestPVCManualVerificationResponseModel:
@@ -5535,6 +6962,72 @@ func encodeRequestPvcManualVerificationResponse(response RequestPvcManualVerific
 func encodeRetryBatchCallResponse(response RetryBatchCallRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *BatchCallResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeRunConversationAnalysisResponse(response RunConversationAnalysisRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetConversationResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeRunConversationEvaluationsResponse(response RunConversationEvaluationsRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *GetConversationResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -5631,10 +7124,44 @@ func encodeSearchGroupsResponse(response SearchGroupsRes, w http.ResponseWriter,
 	}
 }
 
+func encodeSearchKnowledgeBaseContentRouteResponse(response SearchKnowledgeBaseContentRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *KnowledgeBaseContentSearchResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeSeparateSongStemsResponse(response SeparateSongStemsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *SeparateSongStemsOKHeaders:
 		w.Header().Set("Content-Type", "application/zip")
+		w.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")
 		// Encoding response headers.
 		{
 			h := uri.NewHeaderEncoder(w.Header())
@@ -5718,10 +7245,44 @@ func encodeShareResourceEndpointResponse(response ShareResourceEndpointRes, w ht
 	}
 }
 
+func encodeSmartSearchConversationMessagesRouteResponse(response SmartSearchConversationMessagesRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *MessagesSearchResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeSoundGenerationResponse(response SoundGenerationRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *SoundGenerationOKHeaders:
 		w.Header().Set("Content-Type", "audio/mpeg")
+		w.Header().Set("Access-Control-Expose-Headers", "Character-Cost")
 		// Encoding response headers.
 		{
 			h := uri.NewHeaderEncoder(w.Header())
@@ -5956,71 +7517,6 @@ func encodeStreamChapterSnapshotAudioResponse(response StreamChapterSnapshotAudi
 	}
 }
 
-func encodeStreamComposeResponse(response StreamComposeRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StreamComposeOKHeaders:
-		// Encoding response headers.
-		{
-			h := uri.NewHeaderEncoder(w.Header())
-			// Encode "Content-Type" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "Content-Type",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					return e.EncodeValue(conv.StringToString(response.ContentType))
-				}); err != nil {
-					return errors.Wrap(err, "encode Content-Type header")
-				}
-			}
-			// Encode "song-id" header.
-			{
-				cfg := uri.HeaderParameterEncodingConfig{
-					Name:    "song-id",
-					Explode: false,
-				}
-				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					if val, ok := response.SongID.Get(); ok {
-						return e.EncodeValue(conv.StringToString(val))
-					}
-					return nil
-				}); err != nil {
-					return errors.Wrap(err, "encode song-id header")
-				}
-			}
-		}
-		w.WriteHeader(200)
-		span.SetStatus(codes.Ok, http.StatusText(200))
-
-		writer := w
-		if closer, ok := response.Response.Data.(io.Closer); ok {
-			defer closer.Close()
-		}
-		if _, err := io.Copy(writer, response.Response); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *HTTPValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-		span.SetStatus(codes.Error, http.StatusText(422))
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
 func encodeStreamProjectSnapshotArchiveEndpointResponse(response StreamProjectSnapshotArchiveEndpointRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *StreamProjectSnapshotArchiveEndpointOK:
@@ -6061,6 +7557,39 @@ func encodeStreamProjectSnapshotAudioEndpointResponse(response StreamProjectSnap
 	case *StreamProjectSnapshotAudioEndpointOK:
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeTextSearchConversationMessagesRouteResponse(response TextSearchConversationMessagesRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *MessagesSearchResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
 
 		return nil
 
@@ -6554,6 +8083,32 @@ func encodeTranslateResponse(response TranslateRes, w http.ResponseWriter, span 
 	}
 }
 
+func encodeUnassignConversationTagRouteResponse(response UnassignConversationTagRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *UnassignConversationTagRouteNoContent:
+		w.WriteHeader(204)
+		span.SetStatus(codes.Ok, http.StatusText(204))
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeUnshareResourceEndpointResponse(response UnshareResourceEndpointRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *UnshareResourceEndpointOKApplicationJSON:
@@ -6587,9 +8142,75 @@ func encodeUnshareResourceEndpointResponse(response UnshareResourceEndpointRes, 
 	}
 }
 
-func encodeUpdateAgentResponseTestRouteResponse(response UpdateAgentResponseTestRouteRes, w http.ResponseWriter, span trace.Span) error {
+func encodeUpdateAgentTestFolderRouteResponse(response UpdateAgentTestFolderRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *GetUnitTestResponseModel:
+	case *GetAgentTestFolderResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeUpdateBranchRouteResponse(response UpdateBranchRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AgentBranchResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeUpdateConversationTagRouteResponse(response UpdateConversationTagRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ConversationTagResponseModel:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -6656,6 +8277,39 @@ func encodeUpdateDashboardSettingsRouteResponse(response UpdateDashboardSettings
 func encodeUpdateDocumentRouteResponse(response UpdateDocumentRouteRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *UpdateDocumentRouteOK:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeUpdateFileDocumentRouteResponse(response UpdateFileDocumentRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *UpdateFileDocumentRouteOK:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -6950,6 +8604,39 @@ func encodeUpdateWorkspaceMemberResponse(response UpdateWorkspaceMemberRes, w ht
 	}
 }
 
+func encodeUploadFileRouteResponse(response UploadFileRouteRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *ConvAIFileUploadResponseModel:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeUsageCharactersResponse(response UsageCharactersRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *UsageCharactersResponseModel:
@@ -7016,9 +8703,91 @@ func encodeVerifyPvcVoiceCaptchaResponse(response VerifyPvcVoiceCaptchaRes, w ht
 	}
 }
 
+func encodeVideoToMusicResponse(response VideoToMusicRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *VideoToMusicOKHeaders:
+		// Encoding response headers.
+		{
+			h := uri.NewHeaderEncoder(w.Header())
+			// Encode "Content-Type" header.
+			{
+				cfg := uri.HeaderParameterEncodingConfig{
+					Name:    "Content-Type",
+					Explode: false,
+				}
+				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+					return e.EncodeValue(conv.StringToString(response.ContentType))
+				}); err != nil {
+					return errors.Wrap(err, "encode Content-Type header")
+				}
+			}
+		}
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		writer := w
+		if closer, ok := response.Response.Data.(io.Closer); ok {
+			defer closer.Close()
+		}
+		if _, err := io.Copy(writer, response.Response); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *VideoToMusicForbidden:
+		w.WriteHeader(403)
+		span.SetStatus(codes.Error, http.StatusText(403))
+
+		return nil
+
+	case *VideoToMusicUnprocessableEntity:
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeWhatsappOutboundCallResponse(response WhatsappOutboundCallRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *WhatsAppOutboundCallResponse:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeWhatsappOutboundMessageResponse(response WhatsappOutboundMessageRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *WhatsAppOutboundMessageResponse:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))

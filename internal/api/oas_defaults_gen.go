@@ -3,10 +3,94 @@
 package api
 
 // setDefaults set default value of fields.
+func (s *AgentBranchResponse) setDefaults() {
+	{
+		val := float64(0)
+		s.CurrentLivePercentage.SetTo(val)
+	}
+	{
+		val := BranchProtectionStatus("writer_perms_required")
+		s.ProtectionStatus.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AgentBranchSummary) setDefaults() {
+	{
+		val := float64(0)
+		s.CurrentLivePercentage.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.DraftExists.SetTo(val)
+	}
+	{
+		val := BranchProtectionStatus("writer_perms_required")
+		s.ProtectionStatus.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AgentDeploymentPercentageStrategy) setDefaults() {
+	{
+		val := AgentDeploymentPercentageStrategyType("percentage")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AgentSummaryBatchSuccessfulResponseModel) setDefaults() {
+	{
+		val := AgentSummaryBatchSuccessfulResponseModelStatus("success")
+		s.Status = val
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *AgentSummaryResponseModel) setDefaults() {
 	{
 		val := bool(false)
 		s.Archived.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *AgentTestFolderPathSegmentResponseModel) setDefaults() {
+	{
+		val := string("")
+		s.Name.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ApiIntegrationOAuth2AuthCodeResponse) setDefaults() {
+	{
+		val := ApiIntegrationOAuth2AuthCodeResponseAuthType("api_integration_oauth2_auth_code")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := ApiIntegrationOAuth2AuthCodeResponseScopeSeparator(" ")
+		s.ScopeSeparator.SetTo(val)
+	}
+	{
+		val := OAuthConnectionStatus("active")
+		s.Status.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ApiIntegrationOAuth2CustomAppResponse) setDefaults() {
+	{
+		val := ApiIntegrationOAuth2CustomAppResponseAuthType("api_integration_oauth2_custom_app")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := ApiIntegrationOAuth2CustomAppResponseScopeSeparator(" ")
+		s.ScopeSeparator.SetTo(val)
+	}
+	{
+		val := OAuthConnectionStatus("active")
+		s.Status.SetTo(val)
 	}
 }
 
@@ -27,10 +111,46 @@ func (s *AudioNativeProjectSettingsResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *AutoSyncInfo) setDefaults() {
+	{
+		val := bool(false)
+		s.AutoRemove.SetTo(val)
+	}
+	{
+		val := int(0)
+		s.ConsecFailures.SetTo(val)
+	}
+	{
+		val := int(7)
+		s.MinimumFrequencyDays.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *BasicAuthResponse) setDefaults() {
+	{
+		val := BasicAuthResponseAuthType("basic_auth")
+		s.AuthType.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *BatchCallDetailedResponse) setDefaults() {
 	{
 		val := int(0)
-		s.RetryCount.SetTo(val)
+		s.RetryCount = val
+	}
+	{
+		val := int(0)
+		s.TotalCallsDispatched = val
+	}
+	{
+		val := int(0)
+		s.TotalCallsFinished = val
+	}
+	{
+		val := int(0)
+		s.TotalCallsScheduled = val
 	}
 }
 
@@ -38,7 +158,19 @@ func (s *BatchCallDetailedResponse) setDefaults() {
 func (s *BatchCallResponse) setDefaults() {
 	{
 		val := int(0)
-		s.RetryCount.SetTo(val)
+		s.RetryCount = val
+	}
+	{
+		val := int(0)
+		s.TotalCallsDispatched = val
+	}
+	{
+		val := int(0)
+		s.TotalCallsFinished = val
+	}
+	{
+		val := int(0)
+		s.TotalCallsScheduled = val
 	}
 }
 
@@ -51,10 +183,26 @@ func (s *BatchFailureResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *BearerAuthResponse) setDefaults() {
+	{
+		val := BearerAuthResponseAuthType("bearer_auth")
+		s.AuthType.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *BodyAddSamplesToPVCVoiceV1VoicesPvcVoiceIDSamplesPostMultipart) setDefaults() {
 	{
 		val := bool(false)
 		s.RemoveBackgroundNoise.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *BodyAddSharedVoiceV1VoicesAddPublicUserIDVoiceIDPost) setDefaults() {
+	{
+		val := bool(true)
+		s.Bookmarked.SetTo(val)
 	}
 }
 
@@ -83,58 +231,14 @@ func (s *BodyAudioIsolationV1AudioIsolationPostMultipart) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *BodyComposeMusicV1MusicPost) setDefaults() {
+func (s *BodyCreateFolderV1ConvaiKnowledgeBaseFolderPost) setDefaults() {
 	{
 		val := bool(false)
-		s.ForceInstrumental.SetTo(val)
-	}
-	{
-		val := BodyComposeMusicV1MusicPostModelID("music_v1")
-		s.ModelID.SetTo(val)
-	}
-	{
-		val := bool(true)
-		s.RespectSectionsDurations.SetTo(val)
+		s.AutoRemove.SetTo(val)
 	}
 	{
 		val := bool(false)
-		s.SignWithC2pa.SetTo(val)
-	}
-	{
-		val := bool(false)
-		s.StoreForInpainting.SetTo(val)
-	}
-}
-
-// setDefaults set default value of fields.
-func (s *BodyComposeMusicWithADetailedResponseV1MusicDetailedPost) setDefaults() {
-	{
-		val := bool(false)
-		s.ForceInstrumental.SetTo(val)
-	}
-	{
-		val := BodyComposeMusicWithADetailedResponseV1MusicDetailedPostModelID("music_v1")
-		s.ModelID.SetTo(val)
-	}
-	{
-		val := bool(false)
-		s.SignWithC2pa.SetTo(val)
-	}
-	{
-		val := bool(false)
-		s.StoreForInpainting.SetTo(val)
-	}
-	{
-		val := bool(false)
-		s.WithTimestamps.SetTo(val)
-	}
-}
-
-// setDefaults set default value of fields.
-func (s *BodyCreateForcedAlignmentV1ForcedAlignmentPostMultipart) setDefaults() {
-	{
-		val := bool(false)
-		s.EnabledSpooledFile.SetTo(val)
+		s.EnableAutoSync.SetTo(val)
 	}
 }
 
@@ -162,15 +266,31 @@ func (s *BodyCreateStudioProjectV1StudioProjectsPostMultipart) setDefaults() {
 	}
 	{
 		val := bool(false)
+		s.CreatePublishingRead.SetTo(val)
+	}
+	{
+		val := bool(false)
 		s.MatureContent.SetTo(val)
 	}
 	{
-		val := string("standard")
+		val := QualityPresetType("standard")
 		s.QualityPreset.SetTo(val)
 	}
 	{
 		val := bool(false)
 		s.VolumeNormalization.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *BodyCreateURLDocumentV1ConvaiKnowledgeBaseURLPost) setDefaults() {
+	{
+		val := bool(false)
+		s.AutoRemove.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.EnableAutoSync.SetTo(val)
 	}
 }
 
@@ -230,23 +350,39 @@ func (s *BodyDubAVideoOrAnAudioFileV1DubbingPostMultipart) setDefaults() {
 func (s *BodyEditVoiceV1VoicesVoiceIDEditPostMultipart) setDefaults() {
 	{
 		val := bool(false)
+		s.ModerateMetadata.SetTo(val)
+	}
+	{
+		val := bool(false)
 		s.RemoveBackgroundNoise.SetTo(val)
 	}
 }
 
 // setDefaults set default value of fields.
-func (s *BodyGenerateCompositionPlanV1MusicPlanPost) setDefaults() {
+func (s *BodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIDBranchesSourceBranchIDMergePost) setDefaults() {
 	{
-		val := BodyGenerateCompositionPlanV1MusicPlanPostModelID("music_v1")
-		s.ModelID.SetTo(val)
+		val := bool(true)
+		s.ArchiveSourceBranch.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Force.SetTo(val)
 	}
 }
 
 // setDefaults set default value of fields.
 func (s *BodyRegisterATwilioCallAndReturnTwiMLV1ConvaiTwilioRegisterCallPost) setDefaults() {
 	{
-		val := BodyRegisterATwilioCallAndReturnTwiMLV1ConvaiTwilioRegisterCallPostDirection("inbound")
+		val := TelephonyDirection("inbound")
 		s.Direction.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *BodyRenderAudioOrVideoForTheGivenLanguageV1DubbingResourceDubbingIDRenderLanguagePost) setDefaults() {
+	{
+		val := bool(false)
+		s.NormalizeVolume.SetTo(val)
 	}
 }
 
@@ -302,11 +438,23 @@ func (s *BodySpeechToSpeechV1SpeechToSpeechVoiceIDPostMultipart) setDefaults() {
 func (s *BodySpeechToTextV1SpeechToTextPostMultipart) setDefaults() {
 	{
 		val := bool(false)
+		s.DetectSpeakerRoles.SetTo(val)
+	}
+	{
+		val := bool(false)
 		s.Diarize.SetTo(val)
+	}
+	{
+		val := string("enumerated_entity_type")
+		s.EntityRedactionMode.SetTo(val)
 	}
 	{
 		val := BodySpeechToTextV1SpeechToTextPostMultipartFileFormat("other")
 		s.FileFormat.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.NoVerbatim.SetTo(val)
 	}
 	{
 		val := bool(true)
@@ -319,6 +467,10 @@ func (s *BodySpeechToTextV1SpeechToTextPostMultipart) setDefaults() {
 	{
 		val := bool(false)
 		s.UseMultiChannel.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.UseSpeakerLibrary.SetTo(val)
 	}
 	{
 		val := bool(false)
@@ -343,22 +495,6 @@ func (s *BodyStreamChapterAudioV1StudioProjectsProjectIDChaptersChapterIDSnapsho
 	{
 		val := bool(false)
 		s.ConvertToMpeg.SetTo(val)
-	}
-}
-
-// setDefaults set default value of fields.
-func (s *BodyStreamComposedMusicV1MusicStreamPost) setDefaults() {
-	{
-		val := bool(false)
-		s.ForceInstrumental.SetTo(val)
-	}
-	{
-		val := BodyStreamComposedMusicV1MusicStreamPostModelID("music_v1")
-		s.ModelID.SetTo(val)
-	}
-	{
-		val := bool(false)
-		s.StoreForInpainting.SetTo(val)
 	}
 }
 
@@ -499,6 +635,14 @@ func (s *BodyTextToSpeechStreamWithTimestamps) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *BodyUpdateAgentBranchV1ConvaiAgentsAgentIDBranchesBranchIDPatch) setDefaults() {
+	{
+		val := BranchProtectionStatus("writer_perms_required")
+		s.ProtectionStatus.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *BodyUpdateAudioNativeProjectContentV1AudioNativeProjectIDContentPostMultipart) setDefaults() {
 	{
 		val := bool(false)
@@ -535,10 +679,74 @@ func (s *BodyUpdateStudioProjectV1StudioProjectsProjectIDPost) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *BodyVideoToMusicV1MusicVideoToMusicPostMultipart) setDefaults() {
+	{
+		val := BodyVideoToMusicV1MusicVideoToMusicPostMultipartModelID("music_v1")
+		s.ModelID.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.SignWithC2pa.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *CaptionStyleTemplateModel) setDefaults() {
 	{
 		val := bool(false)
 		s.RequiresHighFps.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConstantSchemaOverride) setDefaults() {
+	{
+		val := ConstantSchemaOverrideSource("constant")
+		s.Source.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ContextualUpdateInfo) setDefaults() {
+	{
+		val := bool(false)
+		s.IsSuperseded.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConvAIStoredSecretDependencies) setDefaults() {
+	{
+		val := bool(false)
+		s.AgentsHasMore.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.PhoneNumbersHasMore.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.ToolsHasMore.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConvAIWebhooks) setDefaults() {
+	{
+		val := WebhookTranscriptFormat("json")
+		s.TranscriptFormat.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConversationASRUsageModel) setDefaults() {
+	{
+		val := float64(0)
+		s.TotalAudioInputSeconds.SetTo(val)
+	}
+	{
+		val := int(0)
+		s.TotalTranscriptionCalls.SetTo(val)
 	}
 }
 
@@ -583,6 +791,18 @@ func (s *ConversationHistoryElevenAssistantCommonModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *ConversationHistoryExotelPhoneCallModel) setDefaults() {
+	{
+		val := TelephonyDirection("inbound")
+		s.Direction = val
+	}
+	{
+		val := ConversationHistoryExotelPhoneCallModelType("exotel")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *ConversationHistoryFeedbackCommonModel) setDefaults() {
 	{
 		val := int(0)
@@ -623,18 +843,42 @@ func (s *ConversationHistoryMetadataCommonModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *ConversationHistoryTranscriptApiIntegrationWebhookToolsResultCommonModel) setDefaults() {
+func (s *ConversationHistorySIPTrunkingPhoneCallModel) setDefaults() {
 	{
-		val := float64(0)
-		s.ToolLatencySecs.SetTo(val)
+		val := TelephonyDirection("inbound")
+		s.Direction = val
 	}
 }
 
 // setDefaults set default value of fields.
-func (s *ConversationHistoryTranscriptCommonModelInput) setDefaults() {
+func (s *ConversationHistoryTranscriptApiIntegrationWebhookToolsResultCommonModelOutput) setDefaults() {
+	{
+		val := string("")
+		s.CredentialID = val
+	}
+	{
+		val := string("")
+		s.ErrorType = val
+	}
+	{
+		val := string("")
+		s.IntegrationConnectionID = val
+	}
+	{
+		val := string("")
+		s.IntegrationID = val
+	}
 	{
 		val := bool(false)
-		s.Interrupted.SetTo(val)
+		s.IsBlocked = val
+	}
+	{
+		val := string("")
+		s.RawErrorMessage = val
+	}
+	{
+		val := float64(0)
+		s.ToolLatencySecs = val
 	}
 }
 
@@ -649,13 +893,17 @@ func (s *ConversationHistoryTranscriptCommonModelOutput) setDefaults() {
 // setDefaults set default value of fields.
 func (s *ConversationHistoryTranscriptOtherToolsResultCommonModel) setDefaults() {
 	{
-		val := float64(0)
-		s.ToolLatencySecs.SetTo(val)
+		val := string("")
+		s.ErrorType.SetTo(val)
 	}
-}
-
-// setDefaults set default value of fields.
-func (s *ConversationHistoryTranscriptSystemToolResultCommonModel) setDefaults() {
+	{
+		val := bool(false)
+		s.IsBlocked.SetTo(val)
+	}
+	{
+		val := string("")
+		s.RawErrorMessage.SetTo(val)
+	}
 	{
 		val := float64(0)
 		s.ToolLatencySecs.SetTo(val)
@@ -663,10 +911,50 @@ func (s *ConversationHistoryTranscriptSystemToolResultCommonModel) setDefaults()
 }
 
 // setDefaults set default value of fields.
-func (s *ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetails) setDefaults() {
+func (s *ConversationHistoryTranscriptResponseModel) setDefaults() {
 	{
-		val := ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsType("api_integration_webhook")
-		s.Type.SetTo(val)
+		val := bool(false)
+		s.Interrupted.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConversationHistoryTranscriptSystemToolResultCommonModelOutput) setDefaults() {
+	{
+		val := string("")
+		s.ErrorType.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsBlocked.SetTo(val)
+	}
+	{
+		val := string("")
+		s.RawErrorMessage.SetTo(val)
+	}
+	{
+		val := float64(0)
+		s.ToolLatencySecs.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsOutput) setDefaults() {
+	{
+		val := string("")
+		s.CredentialID = val
+	}
+	{
+		val := string("")
+		s.IntegrationConnectionID = val
+	}
+	{
+		val := string("")
+		s.IntegrationID = val
+	}
+	{
+		val := ConversationHistoryTranscriptToolCallApiIntegrationWebhookDetailsOutputType("api_integration_webhook")
+		s.Type = val
 	}
 }
 
@@ -707,7 +995,19 @@ func (s *ConversationHistoryTranscriptToolCallWebhookDetails) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *ConversationHistoryTranscriptWorkflowToolsResultCommonModelInput) setDefaults() {
+func (s *ConversationHistoryTranscriptWorkflowToolsResultCommonModelOutput) setDefaults() {
+	{
+		val := string("")
+		s.ErrorType.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsBlocked.SetTo(val)
+	}
+	{
+		val := string("")
+		s.RawErrorMessage.SetTo(val)
+	}
 	{
 		val := float64(0)
 		s.ToolLatencySecs.SetTo(val)
@@ -715,10 +1015,10 @@ func (s *ConversationHistoryTranscriptWorkflowToolsResultCommonModelInput) setDe
 }
 
 // setDefaults set default value of fields.
-func (s *ConversationHistoryTranscriptWorkflowToolsResultCommonModelOutput) setDefaults() {
+func (s *ConversationHistoryTwilioPhoneCallModel) setDefaults() {
 	{
-		val := float64(0)
-		s.ToolLatencySecs.SetTo(val)
+		val := TelephonyDirection("inbound")
+		s.Direction = val
 	}
 }
 
@@ -731,10 +1031,82 @@ func (s *ConversationInitiationSourceInfo) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *ConversationTokenDBModel) setDefaults() {
+func (s *ConversationSummaryResponseModel) setDefaults() {
 	{
-		val := ConversationTokenPurpose("signed_url")
-		s.Purpose.SetTo(val)
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := TelephonyDirection("inbound")
+		s.Direction.SetTo(val)
+	}
+	{
+		val := string("")
+		s.TerminationReason.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConversationTTSUsageModel) setDefaults() {
+	{
+		val := float64(0)
+		s.TotalAudioOutputSeconds.SetTo(val)
+	}
+	{
+		val := int(0)
+		s.TotalCharacters.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ConversationVoiceUsageModel) setDefaults() {
+	{
+		val := float64(0)
+		s.AudioOutputSeconds.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *CreateOrderRequest) setDefaults() {
+	{
+		val := bool(false)
+		s.Sandbox.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *CreateOrderResponse) setDefaults() {
+	{
+		val := bool(false)
+		s.Sandbox.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *CueOptionsRequest) setDefaults() {
+	{
+		val := int(42)
+		s.MaxCharsPerLine.SetTo(val)
+	}
+	{
+		val := int(7000)
+		s.MaxDurationMs.SetTo(val)
+	}
+	{
+		val := int(2)
+		s.MaxLinesPerCue.SetTo(val)
+	}
+	{
+		val := int(1000)
+		s.MinDurationMs.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *CustomHeaderAuthResponse) setDefaults() {
+	{
+		val := CustomHeaderAuthResponseAuthType("custom_header_auth")
+		s.AuthType.SetTo(val)
 	}
 }
 
@@ -763,10 +1135,10 @@ func (s *DashboardDataCollectionChartModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *DefaultConversationInitiationTrigger) setDefaults() {
+func (s *DeliverableInfo) setDefaults() {
 	{
-		val := DefaultConversationInitiationTriggerTriggerType("default")
-		s.TriggerType.SetTo(val)
+		val := int(1)
+		s.Version.SetTo(val)
 	}
 }
 
@@ -774,6 +1146,14 @@ func (s *DefaultConversationInitiationTrigger) setDefaults() {
 func (s *DependentAvailableAgentIdentifier) setDefaults() {
 	{
 		val := DependentAvailableAgentIdentifierType("available")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *DependentAvailableMCPServerIdentifier) setDefaults() {
+	{
+		val := DependentAvailableMCPServerIdentifierType("available")
 		s.Type.SetTo(val)
 	}
 }
@@ -795,6 +1175,14 @@ func (s *DependentUnknownAgentIdentifier) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *DependentUnknownMCPServerIdentifier) setDefaults() {
+	{
+		val := DependentUnknownMCPServerIdentifierType("unknown")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *DependentUnknownToolIdentifier) setDefaults() {
 	{
 		val := DependentUnknownToolIdentifierType("unknown")
@@ -811,6 +1199,14 @@ func (s *DocxExportOptions) setDefaults() {
 	{
 		val := bool(true)
 		s.IncludeTimestamps.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *DubOrderItemRequest) setDefaults() {
+	{
+		val := DubOrderItemRequestKind("dub")
+		s.Kind.SetTo(val)
 	}
 }
 
@@ -881,7 +1277,23 @@ func (s *DubbingTranscriptWord) setDefaults() {
 // setDefaults set default value of fields.
 func (s *DynamicVariableAssignment) setDefaults() {
 	{
+		val := bool(false)
+		s.PreserveNativeType.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Sanitize.SetTo(val)
+	}
+	{
 		val := DynamicVariableAssignmentSource("response")
+		s.Source.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *DynamicVariableSchemaOverride) setDefaults() {
+	{
+		val := DynamicVariableSchemaOverrideSource("dynamic_variable")
 		s.Source.SetTo(val)
 	}
 }
@@ -935,6 +1347,14 @@ func (s *FeedbackResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *GetAgentTestFolderResponseModel) setDefaults() {
+	{
+		val := int(0)
+		s.ChildrenCount.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *GetConvAISettingsResponseModel) setDefaults() {
 	{
 		val := bool(false)
@@ -951,10 +1371,78 @@ func (s *GetConvAISettingsResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *GetConversationResponseModel) setDefaults() {
+	{
+		val := string("agent")
+		s.ConversationProduct.SetTo(val)
+	}
+	{
+		val := string("production")
+		s.Environment.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetKnowledgeBaseFileResponseModel) setDefaults() {
+	{
+		val := bool(false)
+		s.IsFrozen.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetKnowledgeBaseFolderResponseModel) setDefaults() {
+	{
+		val := bool(false)
+		s.IsFrozen.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetKnowledgeBaseSummaryFileResponseModel) setDefaults() {
+	{
+		val := bool(false)
+		s.IsFrozen.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetKnowledgeBaseSummaryFolderResponseModel) setDefaults() {
+	{
+		val := bool(false)
+		s.IsFrozen.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetLibraryVoicesResponseModel) setDefaults() {
+	{
+		val := int(0)
+		s.TotalCount.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *GetOrCreateRAGIndexRequestModel) setDefaults() {
 	{
 		val := EmbeddingModelEnum("e5_mistral_7b_instruct")
 		s.Model = val
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetPhoneNumberExotelResponseModel) setDefaults() {
+	{
+		val := GetPhoneNumberExotelResponseModelProvider("exotel")
+		s.Provider.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.SupportsInbound.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.SupportsOutbound.SetTo(val)
 	}
 }
 
@@ -994,6 +1482,10 @@ func (s *GetPhoneNumberSIPTrunkResponseModel) setDefaults() {
 	}
 	{
 		val := bool(true)
+		s.StoreSipMessages.SetTo(val)
+	}
+	{
+		val := bool(true)
 		s.SupportsInbound.SetTo(val)
 	}
 	{
@@ -1019,6 +1511,98 @@ func (s *GetPhoneNumberTwilioResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *GetResponseUnitTestResponseModel) setDefaults() {
+	{
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := string("")
+		s.SuccessCondition.SetTo(val)
+	}
+	{
+		val := GetResponseUnitTestResponseModelType("llm")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetSIPLogMessagesResponse) setDefaults() {
+	{
+		val := bool(false)
+		s.HasMore.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetSimulationTestResponseModel) setDefaults() {
+	{
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := LLM("gemini-2.5-flash")
+		s.EvaluationModel.SetTo(val)
+	}
+	{
+		val := LLM("gemini-2.5-flash")
+		s.SimulatedUserModel.SetTo(val)
+	}
+	{
+		val := int(5)
+		s.SimulationMaxTurns.SetTo(val)
+	}
+	{
+		val := string("")
+		s.SimulationScenario.SetTo(val)
+	}
+	{
+		val := string("")
+		s.SuccessCondition.SetTo(val)
+	}
+	{
+		val := GetSimulationTestResponseModelType("simulation")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetTestSuiteInvocationResponseModel) setDefaults() {
+	{
+		val := int(1)
+		s.RepeatCount.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetToolCallUnitTestResponseModel) setDefaults() {
+	{
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := GetToolCallUnitTestResponseModelType("tool")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *GetWhatsAppAccountResponse) setDefaults() {
+	{
+		val := bool(true)
+		s.EnableAudioMessageResponse.SetTo(val)
+	}
+	{
+		val := bool(true)
+		s.EnableMessaging.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsTokenExpired.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *HtmlExportOptions) setDefaults() {
 	{
 		val := bool(true)
@@ -1039,10 +1623,78 @@ func (s *InboundSIPTrunkConfigRequestModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *KnowledgeBaseLocator) setDefaults() {
+	{
+		val := DocumentUsageModeEnum("auto")
+		s.UsageMode.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *KnowledgeBaseRagToolResultModel) setDefaults() {
+	{
+		val := int(0)
+		s.ChunkCount.SetTo(val)
+	}
+	{
+		val := string("Referenced knowledge base.")
+		s.Message.SetTo(val)
+	}
+	{
+		val := KnowledgeBaseRagToolResultModelResultType("knowledge_base_rag_success")
+		s.ResultType.SetTo(val)
+	}
+	{
+		val := KnowledgeBaseRagToolStatus("success")
+		s.Status.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *KnowledgeBaseSummaryBatchSuccessfulResponseModel) setDefaults() {
 	{
 		val := KnowledgeBaseSummaryBatchSuccessfulResponseModelStatus("success")
 		s.Status = val
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *LLMDeprecationInfoModel) setDefaults() {
+	{
+		val := int(0)
+		s.FallbackPercentage.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsInFallbackPeriod.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.IsInWarningPeriod.SetTo(val)
+	}
+	{
+		val := LLM("gemini-2.5-flash")
+		s.Llm = val
+	}
+	{
+		val := LLM("gemini-2.5-flash")
+		s.ReplacementModel.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *LLMInfoModelInput) setDefaults() {
+	{
+		val := LLM("gemini-2.5-flash")
+		s.Llm = val
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *LLMSchemaOverride) setDefaults() {
+	{
+		val := LLMSchemaOverrideSource("llm")
+		s.Source.SetTo(val)
 	}
 }
 
@@ -1090,19 +1742,43 @@ func (s *LiteralJsonSchemaProperty) setDefaults() {
 	}
 	{
 		val := bool(false)
+		s.IsOmitted.SetTo(val)
+	}
+	{
+		val := bool(false)
 		s.IsSystemProvided.SetTo(val)
 	}
 }
 
 // setDefaults set default value of fields.
-func (s *MCPToolConfigOverride) setDefaults() {
+func (s *MCPToolConfigOverrideOutput) setDefaults() {
 	{
 		val := ToolExecutionMode("immediate")
 		s.ExecutionMode.SetTo(val)
 	}
 	{
+		val := PreToolSpeechMode("auto")
+		s.PreToolSpeech.SetTo(val)
+	}
+	{
 		val := ToolCallSoundBehavior("auto")
 		s.ToolCallSoundBehavior.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *MTLSAuthResponse) setDefaults() {
+	{
+		val := MTLSAuthResponseAuthType("mtls")
+		s.AuthType.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ModelRatesResponseModel) setDefaults() {
+	{
+		val := float64(1)
+		s.CostDiscountMultiplier.SetTo(val)
 	}
 }
 
@@ -1115,6 +1791,74 @@ func (s *ModelSettingsResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *OAuth2ClientCredsResponse) setDefaults() {
+	{
+		val := OAuth2ClientCredsResponseAuthType("oauth2_client_credentials")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.BasicAuthInHeader.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *OAuth2JWTResponse) setDefaults() {
+	{
+		val := OAuth2JWTResponseAlgorithm("HS256")
+		s.Algorithm.SetTo(val)
+	}
+	{
+		val := OAuth2JWTResponseAuthType("oauth2_jwt")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := int(3600)
+		s.ExpirationSeconds.SetTo(val)
+	}
+	{
+		val := OAuth2JWTResponseTokenResponseField("access_token")
+		s.TokenResponseField.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *OmitSchemaOverride) setDefaults() {
+	{
+		val := OmitSchemaOverrideSource("omit")
+		s.Source.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *OrchestratorToolMockBehaviorConfig) setDefaults() {
+	{
+		val := MockNoMatchBehavior("raise_error")
+		s.FallbackStrategy.SetTo(val)
+	}
+	{
+		val := MockingStrategy("none")
+		s.MockingStrategy.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *OrderResponse) setDefaults() {
+	{
+		val := bool(false)
+		s.Sandbox.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *OrderSummary) setDefaults() {
+	{
+		val := bool(false)
+		s.Sandbox.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *OutboundSIPTrunkConfigRequestModel) setDefaults() {
 	{
 		val := SIPMediaEncryptionEnum("allowed")
@@ -1123,6 +1867,14 @@ func (s *OutboundSIPTrunkConfigRequestModel) setDefaults() {
 	{
 		val := SIPTrunkTransportEnum("auto")
 		s.Transport.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *PairedLanguagesResponse) setDefaults() {
+	{
+		val := PairedLanguagesResponseKind("pair")
+		s.Kind.SetTo(val)
 	}
 }
 
@@ -1179,6 +1931,22 @@ func (s *PlayDTMFResultSuccessModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *PrivateKeyJWTResponse) setDefaults() {
+	{
+		val := PrivateKeyJWTResponseAlgorithm("HS256")
+		s.Algorithm.SetTo(val)
+	}
+	{
+		val := PrivateKeyJWTResponseAuthType("private_key_jwt")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := int(3600)
+		s.ExpirationSeconds.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *ProjectResponseModel) setDefaults() {
 	{
 		val := bool(true)
@@ -1191,7 +1959,15 @@ func (s *ProjectResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *PromptAgentAPIModelOverride) setDefaults() {
+func (s *PromptAgentAPIModelOverrideInput) setDefaults() {
+	{
+		val := LLM("gemini-2.5-flash")
+		s.Llm.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *PromptAgentAPIModelOverrideOutput) setDefaults() {
 	{
 		val := LLM("gemini-2.5-flash")
 		s.Llm.SetTo(val)
@@ -1239,6 +2015,38 @@ func (s *RagRetrievalInfo) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *ResponseUnitTestModel) setDefaults() {
+	{
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := string("")
+		s.SuccessCondition.SetTo(val)
+	}
+	{
+		val := ResponseUnitTestModelType("llm")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *RunConversationEvaluationsRequest) setDefaults() {
+	{
+		val := AnalysisScope("conversation")
+		s.Scope.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ScopedAnalysisResult) setDefaults() {
+	{
+		val := AnalysisScope("conversation")
+		s.Scope = val
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *SegmentedJsonExportOptions) setDefaults() {
 	{
 		val := bool(true)
@@ -1251,6 +2059,58 @@ func (s *SegmentedJsonExportOptions) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *SimulationTestModel) setDefaults() {
+	{
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := LLM("gemini-2.5-flash")
+		s.EvaluationModel.SetTo(val)
+	}
+	{
+		val := LLM("gemini-2.5-flash")
+		s.SimulatedUserModel.SetTo(val)
+	}
+	{
+		val := int(5)
+		s.SimulationMaxTurns.SetTo(val)
+	}
+	{
+		val := string("")
+		s.SimulationScenario.SetTo(val)
+	}
+	{
+		val := string("")
+		s.SuccessCondition.SetTo(val)
+	}
+	{
+		val := SimulationTestModelType("simulation")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *SimulationToolMockBehaviorConfig) setDefaults() {
+	{
+		val := MockNoMatchBehavior("raise_error")
+		s.FallbackStrategy.SetTo(val)
+	}
+	{
+		val := MockingStrategy("none")
+		s.MockingStrategy.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *SingleLanguagesResponse) setDefaults() {
+	{
+		val := SingleLanguagesResponseKind("single")
+		s.Kind.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *SkipTurnToolResponseModel) setDefaults() {
 	{
 		val := SkipTurnToolResponseModelResultType("skip_turn_success")
@@ -1259,6 +2119,18 @@ func (s *SkipTurnToolResponseModel) setDefaults() {
 	{
 		val := SkipTurnToolResponseModelStatus("success")
 		s.Status.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *SlackBotAuthResponse) setDefaults() {
+	{
+		val := SlackBotAuthResponseAuthType("slack_bot_auth")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := SlackBotAuthResponseProvider("Slack")
+		s.Provider.SetTo(val)
 	}
 }
 
@@ -1291,10 +2163,46 @@ func (s *SrtExportOptions) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *StudioAgentToolSettingsModel) setDefaults() {
+	{
+		val := bool(false)
+		s.SkipConfirmation.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *SubtitleOrderItemRequest) setDefaults() {
+	{
+		val := SubtitleOrderItemRequestKind("subtitles")
+		s.Kind.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.Sdh.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *TelephonyCallConfig) setDefaults() {
+	{
+		val := int(60)
+		s.RingingTimeoutSecs.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *TestConditionRationaleCommonModel) setDefaults() {
 	{
 		val := string("")
 		s.Summary.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *TestInvocationSummaryResponseModel) setDefaults() {
+	{
+		val := int(1)
+		s.RepeatCount.SetTo(val)
 	}
 }
 
@@ -1339,6 +2247,26 @@ func (s *TestsFeatureUsageCommonModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *ToolCallUnitTestModel) setDefaults() {
+	{
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := ToolCallUnitTestModelType("tool")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *ToolExecutionResponseModel) setDefaults() {
+	{
+		val := bool(false)
+		s.IsError.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *TransferToAgentToolResultErrorModel) setDefaults() {
 	{
 		val := TransferToAgentToolResultErrorModelResultType("transfer_to_agent_error")
@@ -1361,6 +2289,10 @@ func (s *TransferToAgentToolResultSuccessModel) setDefaults() {
 		s.EnableTransferredAgentFirstMessage.SetTo(val)
 	}
 	{
+		val := bool(false)
+		s.PreserveClientTtsOverrides.SetTo(val)
+	}
+	{
 		val := TransferToAgentToolResultSuccessModelResultType("transfer_to_agent_success")
 		s.ResultType.SetTo(val)
 	}
@@ -1378,6 +2310,18 @@ func (s *TransferToNumberResultErrorModel) setDefaults() {
 	}
 	{
 		val := TransferToNumberResultErrorModelStatus("error")
+		s.Status.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *TransferToNumberResultExotelSuccessModel) setDefaults() {
+	{
+		val := TransferToNumberResultExotelSuccessModelResultType("transfer_to_number_exotel_success")
+		s.ResultType.SetTo(val)
+	}
+	{
+		val := TransferToNumberResultExotelSuccessModelStatus("success")
 		s.Status.SetTo(val)
 	}
 }
@@ -1431,10 +2375,14 @@ func (s *UnitTestRunResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *UnitTestToolCallEvaluationModelInput) setDefaults() {
+func (s *UnitTestSummaryResponseModel) setDefaults() {
 	{
-		val := bool(false)
-		s.VerifyAbsence.SetTo(val)
+		val := ConversationInitiationSource("unknown")
+		s.ConversationInitiationSource.SetTo(val)
+	}
+	{
+		val := AgentTestEntityType("test")
+		s.EntityType.SetTo(val)
 	}
 }
 
@@ -1447,6 +2395,14 @@ func (s *UnitTestToolCallEvaluationModelOutput) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *UnitTestWorkflowNodeTransitionEvaluationNodeId) setDefaults() {
+	{
+		val := UnitTestWorkflowNodeTransitionEvaluationNodeIdType("node_id")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *UpdatePhoneNumberRequest) setDefaults() {
 	{
 		val := LivekitStackType("standard")
@@ -1455,10 +2411,22 @@ func (s *UpdatePhoneNumberRequest) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *UrlSecretAuthResponse) setDefaults() {
+	{
+		val := UrlSecretAuthResponseAuthType("url_secret")
+		s.AuthType.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *UserResponseModel) setDefaults() {
 	{
 		val := bool(false)
 		s.IsAPIKeyHashed.SetTo(val)
+	}
+	{
+		val := bool(false)
+		s.ShowComplianceTerms.SetTo(val)
 	}
 }
 
@@ -1583,10 +2551,78 @@ func (s *VoiceSettingsResponseModel) setDefaults() {
 }
 
 // setDefaults set default value of fields.
+func (s *WhatsAppAuthResponse) setDefaults() {
+	{
+		val := WhatsAppAuthResponseAuthType("whatsapp_auth")
+		s.AuthType.SetTo(val)
+	}
+	{
+		val := WhatsAppAuthResponseProvider("whatsapp")
+		s.Provider.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
 func (s *WhatsAppConversationInfo) setDefaults() {
 	{
 		val := WhatsAppConversationInfoDirection("unknown")
 		s.Direction.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateBodyComponentParams) setDefaults() {
+	{
+		val := WhatsAppTemplateBodyComponentParamsType("body")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateButtonComponentParams) setDefaults() {
+	{
+		val := WhatsAppTemplateButtonComponentParamsType("button")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateDocumentParam) setDefaults() {
+	{
+		val := WhatsAppTemplateDocumentParamType("document")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateHeaderComponentParams) setDefaults() {
+	{
+		val := WhatsAppTemplateHeaderComponentParamsType("header")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateImageParam) setDefaults() {
+	{
+		val := WhatsAppTemplateImageParamType("image")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateLocationParam) setDefaults() {
+	{
+		val := WhatsAppTemplateLocationParamType("location")
+		s.Type.SetTo(val)
+	}
+}
+
+// setDefaults set default value of fields.
+func (s *WhatsAppTemplateTextParam) setDefaults() {
+	{
+		val := WhatsAppTemplateTextParamType("text")
+		s.Type.SetTo(val)
 	}
 }
 
@@ -1610,14 +2646,6 @@ func (s *WorkflowToolEdgeStepModel) setDefaults() {
 func (s *WorkflowToolMaxIterationsExceededStepModel) setDefaults() {
 	{
 		val := WorkflowToolMaxIterationsExceededStepModelType("max_iterations_exceeded")
-		s.Type.SetTo(val)
-	}
-}
-
-// setDefaults set default value of fields.
-func (s *WorkflowToolNestedToolsStepModelInput) setDefaults() {
-	{
-		val := WorkflowToolNestedToolsStepModelInputType("nested_tools")
 		s.Type.SetTo(val)
 	}
 }
@@ -1647,9 +2675,9 @@ func (s *WorkspaceBatchCallsResponse) setDefaults() {
 }
 
 // setDefaults set default value of fields.
-func (s *ZendeskConversationInitiationTrigger) setDefaults() {
+func (s *WorkspaceGroupResponseModel) setDefaults() {
 	{
-		val := ZendeskConversationInitiationTriggerTriggerType("zendesk")
-		s.TriggerType.SetTo(val)
+		val := bool(false)
+		s.IsScimSynced.SetTo(val)
 	}
 }

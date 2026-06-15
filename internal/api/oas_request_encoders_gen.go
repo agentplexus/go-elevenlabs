@@ -302,6 +302,22 @@ func encodeAddProjectRequest(
 		}
 	}
 	{
+		// Encode "create_publishing_read" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "create_publishing_read",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.CreatePublishingRead.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
 		// Encode "default_model_id" form field.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "default_model_id",
@@ -565,7 +581,7 @@ func encodeAddProjectRequest(
 		}
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := request.QualityPreset.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
+				return e.EncodeValue(conv.StringToString(string(val)))
 			}
 			return nil
 		}); err != nil {
@@ -736,7 +752,9 @@ func encodeAddVoiceRequest(
 	const contentType = "multipart/form-data"
 	request := req
 
-	q := uri.NewFormEncoder(map[string]string{})
+	q := uri.NewFormEncoder(map[string]string{
+		"labels": "application/json; charset=utf-8",
+	})
 	{
 		// Encode "description" form field.
 		cfg := uri.QueryParameterEncodingConfig{
@@ -761,10 +779,16 @@ func encodeAddVoiceRequest(
 			Explode: true,
 		}
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := request.Labels.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
+			var enc jx.Encoder
+			func(e *jx.Encoder) {
+				if request.Labels.Set {
+					request.Labels.Encode(e)
+				}
+			}(&enc)
+			if len(enc.Bytes()) > 0 {
+			return e.EncodeValue(string(enc.Bytes()))
+		}
+		return nil
 		}); err != nil {
 			return errors.Wrap(err, "encode query")
 		}
@@ -815,6 +839,34 @@ func encodeAddVoiceRequest(
 		return nil
 	})
 	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
+	return nil
+}
+
+func encodeAgentTestingBulkMoveRouteRequest(
+	req *BodyBulkMoveTestsToFolderV1ConvaiAgentTestingBulkMovePost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeAssignConversationTagsRouteRequest(
+	req *AssignConversationTagsRequestModel,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
 	return nil
 }
 
@@ -967,28 +1019,8 @@ func encodeAudioNativeProjectUpdateContentEndpointRequest(
 	return nil
 }
 
-func encodeComposeDetailedRequest(
-	req OptBodyComposeMusicWithADetailedResponseV1MusicDetailedPost,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	if !req.Set {
-		// Keep request with empty body if value is not set.
-		return nil
-	}
-	e := new(jx.Encoder)
-	{
-		if req.Set {
-			req.Encode(e)
-		}
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeComposePlanRequest(
-	req *BodyGenerateCompositionPlanV1MusicPlanPost,
+func encodeAudioNativeUpdateContentFromURLRequest(
+	req *BodyUpdateAudioNativeContentFromURLV1AudioNativeContentPost,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -1001,8 +1033,22 @@ func encodeComposePlanRequest(
 	return nil
 }
 
-func encodeCreateAgentResponseTestRouteRequest(
-	req *CreateUnitTestRequest,
+func encodeCreateAgentDeploymentRouteRequest(
+	req *BodyCreateOrUpdateDeploymentsV1ConvaiAgentsAgentIDDeploymentsPost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeCreateAgentTestFolderRouteRequest(
+	req *BodyCreateAgentTestFolderV1ConvaiAgentTestingFoldersPost,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -1268,6 +1314,20 @@ func encodeCreateBatchCallRequest(
 
 func encodeCreateClipRequest(
 	req *SegmentCreatePayload,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeCreateConversationTagRouteRequest(
+	req *CreateConversationTagRequestModel,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -1675,6 +1735,20 @@ func encodeCreateFileDocumentRouteRequest(
 	return nil
 }
 
+func encodeCreateFolderRouteRequest(
+	req *BodyCreateFolderV1ConvaiKnowledgeBaseFolderPost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeCreatePvcVoiceRequest(
 	req *BodyCreatePVCVoiceV1VoicesPvcPost,
 	r *http.Request,
@@ -1767,20 +1841,6 @@ func encodeCreateURLDocumentRouteRequest(
 
 func encodeCreateVoiceRequest(
 	req *BodyCreateANewVoiceFromVoicePreviewV1TextToVoicePost,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeCreateVoiceOldRequest(
-	req *BodyCreateAPreviouslyGeneratedVoiceV1VoiceGenerationCreateVoicePost,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -2010,13 +2070,19 @@ func encodeEditPvcVoiceSampleRequest(
 }
 
 func encodeEditServiceAccountAPIKeyRequest(
-	req *BodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch,
+	req OptBodyEditServiceAccountAPIKeyV1ServiceAccountsServiceAccountUserIDAPIKeysAPIKeyIDPatch,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
 	e := new(jx.Encoder)
 	{
-		req.Encode(e)
+		if req.Set {
+			req.Encode(e)
+		}
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
@@ -2030,7 +2096,9 @@ func encodeEditVoiceRequest(
 	const contentType = "multipart/form-data"
 	request := req
 
-	q := uri.NewFormEncoder(map[string]string{})
+	q := uri.NewFormEncoder(map[string]string{
+		"labels": "application/json; charset=utf-8",
+	})
 	{
 		// Encode "description" form field.
 		cfg := uri.QueryParameterEncodingConfig{
@@ -2055,8 +2123,30 @@ func encodeEditVoiceRequest(
 			Explode: true,
 		}
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := request.Labels.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
+			var enc jx.Encoder
+			func(e *jx.Encoder) {
+				if request.Labels.Set {
+					request.Labels.Encode(e)
+				}
+			}(&enc)
+			if len(enc.Bytes()) > 0 {
+			return e.EncodeValue(string(enc.Bytes()))
+		}
+		return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "moderate_metadata" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "moderate_metadata",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.ModerateMetadata.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -2149,22 +2239,6 @@ func encodeForcedAlignmentRequest(
 
 	q := uri.NewFormEncoder(map[string]string{})
 	{
-		// Encode "enabled_spooled_file" form field.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "enabled_spooled_file",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := request.EnabledSpooledFile.Get(); ok {
-				return e.EncodeValue(conv.BoolToString(val))
-			}
-			return nil
-		}); err != nil {
-			return errors.Wrap(err, "encode query")
-		}
-	}
-	{
 		// Encode "text" form field.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "text",
@@ -2187,40 +2261,6 @@ func encodeForcedAlignmentRequest(
 		return nil
 	})
 	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
-	return nil
-}
-
-func encodeGenerateRequest(
-	req OptBodyComposeMusicV1MusicPost,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	if !req.Set {
-		// Keep request with empty body if value is not set.
-		return nil
-	}
-	e := new(jx.Encoder)
-	{
-		if req.Set {
-			req.Encode(e)
-		}
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeGenerateRandomVoiceRequest(
-	req *BodyGenerateARandomVoiceV1VoiceGenerationGenerateVoicePost,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
 	return nil
 }
 
@@ -2339,6 +2379,20 @@ func encodeGetSimilarLibraryVoicesRequest(
 	return nil
 }
 
+func encodeHandleExotelOutboundCallRequest(
+	req *BodyHandleAnOutboundCallViaExotelV1ConvaiExotelOutboundCallPost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeHandleSipTrunkOutboundCallRequest(
 	req *BodyHandleAnOutboundCallViaSIPTrunkV1ConvaiSipTrunkOutboundCallPost,
 	r *http.Request,
@@ -2355,20 +2409,6 @@ func encodeHandleSipTrunkOutboundCallRequest(
 
 func encodeHandleTwilioOutboundCallRequest(
 	req *BodyHandleAnOutboundCallViaTwilioV1ConvaiTwilioOutboundCallPost,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeImportWhatsappAccountRequest(
-	req *ImportWhatsAppAccountRequest,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -2403,6 +2443,26 @@ func encodeInviteUsersBulkRequest(
 	e := new(jx.Encoder)
 	{
 		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeMergeBranchIntoTargetRequest(
+	req OptBodyMergeABranchIntoATargetBranchV1ConvaiAgentsAgentIDBranchesSourceBranchIDMergePost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
@@ -2478,6 +2538,183 @@ func encodePostConversationFeedbackRouteRequest(
 	return nil
 }
 
+func encodePostKnowledgeBaseBulkMoveRouteRequest(
+	req *BodyBulkMoveEntitiesToFolderV1ConvaiKnowledgeBaseBulkMovePost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodePostKnowledgeBaseMoveRouteRequest(
+	req OptBodyMoveEntityToFolderV1ConvaiKnowledgeBaseDocumentIDMovePost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodePublicCreateOrderRequest(
+	req OptCreateOrderRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodePublicRegisterMediaRequest(
+	req *BodyRegisterMediaV1ProductionsOrdersOrderIDMediaPostMultipart,
+	r *http.Request,
+) error {
+	const contentType = "multipart/form-data"
+	request := req
+
+	q := uri.NewFormEncoder(map[string]string{})
+	{
+		// Encode "declared_language" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "declared_language",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(request.DeclaredLanguage))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "media" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "media",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.Media.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "media_url" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "media_url",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.MediaURL.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "media_url_content_type" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "media_url_content_type",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.MediaURLContentType.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "media_url_filename" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "media_url_filename",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.MediaURLFilename.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	body, boundary := ht.CreateMultipartBody(func(w *multipart.Writer) error {
+		if err := q.WriteMultipart(w); err != nil {
+			return errors.Wrap(err, "write multipart")
+		}
+		return nil
+	})
+	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
+	return nil
+}
+
+func encodePublicUpdateOrderRequest(
+	req *BodyUpdateOrderV1ProductionsOrdersOrderIDPatch,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodePublicUpsertOrderItemRequest(
+	req *BodyUpsertOrderItemV1ProductionsOrdersOrderIDItemsPost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeRagIndexStatusRequest(
 	req *RAGIndexRequestModel,
 	r *http.Request,
@@ -2534,6 +2771,20 @@ func encodeRemoveRulesRequest(
 	return nil
 }
 
+func encodeRenderRequest(
+	req *BodyRenderAudioOrVideoForTheGivenLanguageV1DubbingResourceDubbingIDRenderLanguagePost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeRequestPvcManualVerificationRequest(
 	req *BodyRequestManualVerificationV1VoicesPvcVoiceIDVerificationPostMultipart,
 	r *http.Request,
@@ -2575,6 +2826,20 @@ func encodeRequestPvcManualVerificationRequest(
 		return nil
 	})
 	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
+	return nil
+}
+
+func encodeRunConversationEvaluationsRequest(
+	req *RunConversationEvaluationsRequest,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
 	return nil
 }
 
@@ -2890,6 +3155,8 @@ func encodeSpeechToTextRequest(
 
 	q := uri.NewFormEncoder(map[string]string{
 		"additional_formats": "application/json; charset=utf-8",
+		"entity_detection":   "application/json; charset=utf-8",
+		"entity_redaction":   "application/json; charset=utf-8",
 		"webhook_metadata":   "application/json; charset=utf-8",
 	})
 	{
@@ -2906,7 +3173,10 @@ func encodeSpeechToTextRequest(
 					request.AdditionalFormats.Encode(e)
 				}
 			}(&enc)
+			if len(enc.Bytes()) > 0 {
 			return e.EncodeValue(string(enc.Bytes()))
+		}
+		return nil
 		}); err != nil {
 			return errors.Wrap(err, "encode query")
 		}
@@ -2921,6 +3191,22 @@ func encodeSpeechToTextRequest(
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := request.CloudStorageURL.Get(); ok {
 				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "detect_speaker_roles" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "detect_speaker_roles",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.DetectSpeakerRoles.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -2960,6 +3246,66 @@ func encodeSpeechToTextRequest(
 		}
 	}
 	{
+		// Encode "entity_detection" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "entity_detection",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			var enc jx.Encoder
+			func(e *jx.Encoder) {
+				if request.EntityDetection.Set {
+					request.EntityDetection.Encode(e)
+				}
+			}(&enc)
+			if len(enc.Bytes()) > 0 {
+			return e.EncodeValue(string(enc.Bytes()))
+		}
+		return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "entity_redaction" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "entity_redaction",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			var enc jx.Encoder
+			func(e *jx.Encoder) {
+				if request.EntityRedaction.Set {
+					request.EntityRedaction.Encode(e)
+				}
+			}(&enc)
+			if len(enc.Bytes()) > 0 {
+			return e.EncodeValue(string(enc.Bytes()))
+		}
+		return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "entity_redaction_mode" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "entity_redaction_mode",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.EntityRedactionMode.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
 		// Encode "file" form field.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "file",
@@ -2992,6 +3338,31 @@ func encodeSpeechToTextRequest(
 		}
 	}
 	{
+		// Encode "keyterms" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "keyterms",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if request.Keyterms != nil {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range request.Keyterms {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
 		// Encode "language_code" form field.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "language_code",
@@ -3015,7 +3386,23 @@ func encodeSpeechToTextRequest(
 			Explode: true,
 		}
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			return e.EncodeValue(conv.StringToString(request.ModelID))
+			return e.EncodeValue(conv.StringToString(string(request.ModelID)))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "no_verbatim" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "no_verbatim",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.NoVerbatim.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
 		}); err != nil {
 			return errors.Wrap(err, "encode query")
 		}
@@ -3046,6 +3433,22 @@ func encodeSpeechToTextRequest(
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
 			if val, ok := request.Seed.Get(); ok {
 				return e.EncodeValue(conv.IntToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "source_url" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "source_url",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.SourceURL.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
 			}
 			return nil
 		}); err != nil {
@@ -3117,6 +3520,22 @@ func encodeSpeechToTextRequest(
 		}
 	}
 	{
+		// Encode "use_speaker_library" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "use_speaker_library",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.UseSpeakerLibrary.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
 		// Encode "webhook" form field.
 		cfg := uri.QueryParameterEncodingConfig{
 			Name:    "webhook",
@@ -3162,7 +3581,10 @@ func encodeSpeechToTextRequest(
 					request.WebhookMetadata.Encode(e)
 				}
 			}(&enc)
+			if len(enc.Bytes()) > 0 {
 			return e.EncodeValue(string(enc.Bytes()))
+		}
+		return nil
 		}); err != nil {
 			return errors.Wrap(err, "encode query")
 		}
@@ -3179,26 +3601,6 @@ func encodeSpeechToTextRequest(
 
 func encodeStreamChapterSnapshotAudioRequest(
 	req OptBodyStreamChapterAudioV1StudioProjectsProjectIDChaptersChapterIDSnapshotsChapterSnapshotIDStreamPost,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	if !req.Set {
-		// Keep request with empty body if value is not set.
-		return nil
-	}
-	e := new(jx.Encoder)
-	{
-		if req.Set {
-			req.Encode(e)
-		}
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeStreamComposeRequest(
-	req OptBodyStreamComposedMusicV1MusicStreamPost,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -3433,8 +3835,42 @@ func encodeUnshareResourceEndpointRequest(
 	return nil
 }
 
-func encodeUpdateAgentResponseTestRouteRequest(
-	req *UpdateUnitTestRequest,
+func encodeUpdateAgentTestFolderRouteRequest(
+	req *BodyUpdateAgentTestFolderV1ConvaiAgentTestingFoldersFolderIDPatch,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateBranchRouteRequest(
+	req OptBodyUpdateAgentBranchV1ConvaiAgentsAgentIDBranchesBranchIDPatch,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
+	e := new(jx.Encoder)
+	{
+		if req.Set {
+			req.Encode(e)
+		}
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateConversationTagRouteRequest(
+	req *PatchConversationTagRequestModel,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -3462,16 +3898,43 @@ func encodeUpdateDashboardSettingsRouteRequest(
 }
 
 func encodeUpdateDocumentRouteRequest(
-	req *BodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch,
+	req OptBodyUpdateDocumentV1ConvaiKnowledgeBaseDocumentationIDPatch,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
+	if !req.Set {
+		// Keep request with empty body if value is not set.
+		return nil
+	}
 	e := new(jx.Encoder)
 	{
-		req.Encode(e)
+		if req.Set {
+			req.Encode(e)
+		}
 	}
 	encoded := e.Bytes()
 	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateFileDocumentRouteRequest(
+	req *BodyUpdateFileDocumentV1ConvaiKnowledgeBaseDocumentationIDUpdateFilePatchMultipart,
+	r *http.Request,
+) error {
+	const contentType = "multipart/form-data"
+	request := req
+
+	q := uri.NewFormEncoder(map[string]string{})
+	body, boundary := ht.CreateMultipartBody(func(w *multipart.Writer) error {
+		if err := request.File.WriteMultipart("file", w); err != nil {
+			return errors.Wrap(err, "write \"file\"")
+		}
+		if err := q.WriteMultipart(w); err != nil {
+			return errors.Wrap(err, "write multipart")
+		}
+		return nil
+	})
+	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
 	return nil
 }
 
@@ -3593,6 +4056,27 @@ func encodeUpdateWorkspaceMemberRequest(
 	return nil
 }
 
+func encodeUploadFileRouteRequest(
+	req *BodyUploadFileV1ConvaiConversationsConversationIDFilesPostMultipart,
+	r *http.Request,
+) error {
+	const contentType = "multipart/form-data"
+	request := req
+
+	q := uri.NewFormEncoder(map[string]string{})
+	body, boundary := ht.CreateMultipartBody(func(w *multipart.Writer) error {
+		if err := request.File.WriteMultipart("file", w); err != nil {
+			return errors.Wrap(err, "write \"file\"")
+		}
+		if err := q.WriteMultipart(w); err != nil {
+			return errors.Wrap(err, "write multipart")
+		}
+		return nil
+	})
+	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
+	return nil
+}
+
 func encodeVerifyPvcVoiceCaptchaRequest(
 	req *BodyVerifyPVCVoiceCaptchaV1VoicesPvcVoiceIDCaptchaPostMultipart,
 	r *http.Request,
@@ -3614,8 +4098,123 @@ func encodeVerifyPvcVoiceCaptchaRequest(
 	return nil
 }
 
+func encodeVideoToMusicRequest(
+	req *BodyVideoToMusicV1MusicVideoToMusicPostMultipart,
+	r *http.Request,
+) error {
+	const contentType = "multipart/form-data"
+	request := req
+
+	q := uri.NewFormEncoder(map[string]string{})
+	{
+		// Encode "description" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "description",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.Description.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "model_id" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "model_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.ModelID.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sign_with_c2pa" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sign_with_c2pa",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := request.SignWithC2pa.Get(); ok {
+				return e.EncodeValue(conv.BoolToString(val))
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "tags" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "tags",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if request.Tags != nil {
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range request.Tags {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
+			}
+			return nil
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	body, boundary := ht.CreateMultipartBody(func(w *multipart.Writer) error {
+		if err := func() error {
+			for idx, val := range request.Videos {
+				if err := val.WriteMultipart("videos", w); err != nil {
+					return errors.Wrapf(err, "file [%d]", idx)
+				}
+			}
+			return nil
+		}(); err != nil {
+			return errors.Wrap(err, "write \"videos\"")
+		}
+		if err := q.WriteMultipart(w); err != nil {
+			return errors.Wrap(err, "write multipart")
+		}
+		return nil
+	})
+	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
+	return nil
+}
+
 func encodeWhatsappOutboundCallRequest(
 	req *BodyMakeAnOutboundCallViaWhatsAppV1ConvaiWhatsappOutboundCallPost,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeWhatsappOutboundMessageRequest(
+	req *BodySendAnOutboundMessageViaWhatsAppV1ConvaiWhatsappOutboundMessagePost,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

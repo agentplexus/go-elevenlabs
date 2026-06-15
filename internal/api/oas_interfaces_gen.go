@@ -33,6 +33,14 @@ type AddVoiceRes interface {
 	addVoiceRes()
 }
 
+type AgentTestingBulkMoveRouteRes interface {
+	agentTestingBulkMoveRouteRes()
+}
+
+type AssignConversationTagsRouteRes interface {
+	assignConversationTagsRouteRes()
+}
+
 type AudioIsolationRes interface {
 	audioIsolationRes()
 }
@@ -45,16 +53,16 @@ type AudioNativeProjectUpdateContentEndpointRes interface {
 	audioNativeProjectUpdateContentEndpointRes()
 }
 
+type AudioNativeUpdateContentFromURLRes interface {
+	audioNativeUpdateContentFromURLRes()
+}
+
 type CancelBatchCallRes interface {
 	cancelBatchCallRes()
 }
 
-type ComposeDetailedRes interface {
-	composeDetailedRes()
-}
-
-type ComposePlanRes interface {
-	composePlanRes()
+type CancelFileUploadRouteRes interface {
+	cancelFileUploadRouteRes()
 }
 
 type ConvertChapterEndpointRes interface {
@@ -65,8 +73,12 @@ type ConvertProjectEndpointRes interface {
 	convertProjectEndpointRes()
 }
 
-type CreateAgentResponseTestRouteRes interface {
-	createAgentResponseTestRouteRes()
+type CreateAgentDeploymentRouteRes interface {
+	createAgentDeploymentRouteRes()
+}
+
+type CreateAgentTestFolderRouteRes interface {
+	createAgentTestFolderRouteRes()
 }
 
 type CreateAudioNativeProjectRes interface {
@@ -81,12 +93,20 @@ type CreateClipRes interface {
 	createClipRes()
 }
 
+type CreateConversationTagRouteRes interface {
+	createConversationTagRouteRes()
+}
+
 type CreateDubbingRes interface {
 	createDubbingRes()
 }
 
 type CreateFileDocumentRouteRes interface {
 	createFileDocumentRouteRes()
+}
+
+type CreateFolderRouteRes interface {
+	createFolderRouteRes()
 }
 
 type CreatePvcVoiceRes interface {
@@ -113,10 +133,6 @@ type CreateURLDocumentRouteRes interface {
 	createURLDocumentRouteRes()
 }
 
-type CreateVoiceOldRes interface {
-	createVoiceOldRes()
-}
-
 type CreateVoiceRes interface {
 	createVoiceRes()
 }
@@ -125,8 +141,28 @@ type CreateWorkspaceWebhookRouteRes interface {
 	createWorkspaceWebhookRouteRes()
 }
 
+type DeleteAgentDraftRouteRes interface {
+	deleteAgentDraftRouteRes()
+}
+
 type DeleteAgentRouteRes interface {
 	deleteAgentRouteRes()
+}
+
+type DeleteAgentTestFolderRouteRes interface {
+	deleteAgentTestFolderRouteRes()
+}
+
+type DeleteAudioIsolationHistoryItemRes interface {
+	deleteAudioIsolationHistoryItemRes()
+}
+
+type DeleteAuthConnectionRes interface {
+	deleteAuthConnectionRes()
+}
+
+type DeleteBatchCallRes interface {
+	deleteBatchCallRes()
 }
 
 type DeleteChapterEndpointRes interface {
@@ -139,6 +175,10 @@ type DeleteChatResponseTestRouteRes interface {
 
 type DeleteConversationRouteRes interface {
 	deleteConversationRouteRes()
+}
+
+type DeleteConversationTagRouteRes interface {
+	deleteConversationTagRouteRes()
 }
 
 type DeleteDubbingRes interface {
@@ -189,6 +229,10 @@ type DeleteServiceAccountAPIKeyRes interface {
 	deleteServiceAccountAPIKeyRes()
 }
 
+type DeleteSpeechEngineRes interface {
+	deleteSpeechEngineRes()
+}
+
 type DeleteSpeechHistoryItemRes interface {
 	deleteSpeechHistoryItemRes()
 }
@@ -211,6 +255,10 @@ type DeleteWhatsappAccountRes interface {
 
 type DeleteWorkspaceWebhookRouteRes interface {
 	deleteWorkspaceWebhookRouteRes()
+}
+
+type DisableRes interface {
+	disableRes()
 }
 
 type DownloadSpeechHistoryItemsRes interface {
@@ -261,14 +309,6 @@ type ForcedAlignmentRes interface {
 	forcedAlignmentRes()
 }
 
-type GenerateRandomVoiceRes interface {
-	generateRandomVoiceRes()
-}
-
-type GenerateRes interface {
-	generateRes()
-}
-
 type GetAgentKnowledgeBaseSizeRes interface {
 	getAgentKnowledgeBaseSizeRes()
 }
@@ -293,6 +333,18 @@ type GetAgentResponseTestsSummariesRouteRes interface {
 	getAgentResponseTestsSummariesRouteRes()
 }
 
+type GetAgentSummariesRouteRes interface {
+	getAgentSummariesRouteRes()
+}
+
+type GetAgentTestFolderRouteRes interface {
+	getAgentTestFolderRouteRes()
+}
+
+type GetAgentTopicsRouteRes interface {
+	getAgentTopicsRouteRes()
+}
+
 type GetAgentsRouteRes interface {
 	getAgentsRouteRes()
 }
@@ -305,12 +357,24 @@ type GetAudioFullFromSpeechHistoryItemRes interface {
 	getAudioFullFromSpeechHistoryItemRes()
 }
 
+type GetAudioIsolationHistoryRes interface {
+	getAudioIsolationHistoryRes()
+}
+
 type GetAudioNativeProjectSettingsEndpointRes interface {
 	getAudioNativeProjectSettingsEndpointRes()
 }
 
 type GetBatchCallRes interface {
 	getBatchCallRes()
+}
+
+type GetBranchRouteRes interface {
+	getBranchRouteRes()
+}
+
+type GetBranchesRouteRes interface {
+	getBranchesRouteRes()
 }
 
 type GetChapterSnapshotEndpointRes interface {
@@ -341,12 +405,28 @@ type GetConversationSignedLinkRes interface {
 	getConversationSignedLinkRes()
 }
 
+type GetConversationSipMessagesRes interface {
+	getConversationSipMessagesRes()
+}
+
+type GetConversationTagRouteRes interface {
+	getConversationTagRouteRes()
+}
+
+type GetConversationUsersRouteRes interface {
+	getConversationUsersRouteRes()
+}
+
 type GetDashboardSettingsRouteRes interface {
 	getDashboardSettingsRouteRes()
 }
 
 type GetDocumentationChunkFromKnowledgeBaseRes interface {
 	getDocumentationChunkFromKnowledgeBaseRes()
+}
+
+type GetDocumentationChunksFromKnowledgeBaseRes interface {
+	getDocumentationChunksFromKnowledgeBaseRes()
 }
 
 type GetDocumentationFromKnowledgeBaseRes interface {
@@ -369,6 +449,14 @@ type GetDubbingResourceRes interface {
 	getDubbingResourceRes()
 }
 
+type GetDubbingTranscriptsRes interface {
+	getDubbingTranscriptsRes()
+}
+
+type GetGroupsEndpointRes interface {
+	getGroupsEndpointRes()
+}
+
 type GetKnowledgeBaseContentRes interface {
 	getKnowledgeBaseContentRes()
 }
@@ -379,6 +467,10 @@ type GetKnowledgeBaseDependentAgentsRes interface {
 
 type GetKnowledgeBaseListRouteRes interface {
 	getKnowledgeBaseListRouteRes()
+}
+
+type GetKnowledgeBaseSourceFileURLRes interface {
+	getKnowledgeBaseSourceFileURLRes()
 }
 
 type GetLibraryVoicesRes interface {
@@ -409,6 +501,10 @@ type GetPhoneNumberRouteRes interface {
 	getPhoneNumberRouteRes()
 }
 
+type GetProjectMutedTracksEndpointRes interface {
+	getProjectMutedTracksEndpointRes()
+}
+
 type GetProjectSnapshotEndpointRes interface {
 	getProjectSnapshotEndpointRes()
 }
@@ -423,10 +519,6 @@ type GetProjectsRes interface {
 
 type GetPronunciationDictionariesMetadataRes interface {
 	getPronunciationDictionariesMetadataRes()
-}
-
-type GetPronunciationDictionaryMetadataRes interface {
-	getPronunciationDictionaryMetadataRes()
 }
 
 type GetPronunciationDictionaryVersionPlsRes interface {
@@ -463,6 +555,10 @@ type GetRagIndexesRes interface {
 
 type GetResourceMetadataRes interface {
 	getResourceMetadataRes()
+}
+
+type GetSecretRouteRes interface {
+	getSecretRouteRes()
 }
 
 type GetSecretsRouteRes interface {
@@ -513,6 +609,10 @@ type GetToolDependentAgentsRouteRes interface {
 	getToolDependentAgentsRouteRes()
 }
 
+type GetToolExecutionsRouteRes interface {
+	getToolExecutionsRouteRes()
+}
+
 type GetTranscriptByIDRes interface {
 	getTranscriptByIDRes()
 }
@@ -523,6 +623,10 @@ type GetUserInfoRes interface {
 
 type GetUserVoicesV2Res interface {
 	getUserVoicesV2Res()
+}
+
+type GetVersionMetadataRouteRes interface {
+	getVersionMetadataRouteRes()
 }
 
 type GetVoiceByIDRes interface {
@@ -553,16 +657,16 @@ type GetWorkspaceWebhooksRouteRes interface {
 	getWorkspaceWebhooksRouteRes()
 }
 
+type HandleExotelOutboundCallRes interface {
+	handleExotelOutboundCallRes()
+}
+
 type HandleSipTrunkOutboundCallRes interface {
 	handleSipTrunkOutboundCallRes()
 }
 
 type HandleTwilioOutboundCallRes interface {
 	handleTwilioOutboundCallRes()
-}
-
-type ImportWhatsappAccountRes interface {
-	importWhatsappAccountRes()
 }
 
 type InviteUserRes interface {
@@ -573,8 +677,20 @@ type InviteUsersBulkRes interface {
 	inviteUsersBulkRes()
 }
 
+type ListAuthConnectionsRes interface {
+	listAuthConnectionsRes()
+}
+
+type ListAvailableLlmsRes interface {
+	listAvailableLlmsRes()
+}
+
 type ListChatResponseTestsRouteRes interface {
 	listChatResponseTestsRouteRes()
+}
+
+type ListConversationTagsRouteRes interface {
+	listConversationTagsRouteRes()
 }
 
 type ListDubsRes interface {
@@ -589,12 +705,24 @@ type ListPhoneNumbersRouteRes interface {
 	listPhoneNumbersRouteRes()
 }
 
+type ListSipMessagesRes interface {
+	listSipMessagesRes()
+}
+
+type ListSpeechEnginesRes interface {
+	listSpeechEnginesRes()
+}
+
 type ListTestInvocationsRouteRes interface {
 	listTestInvocationsRouteRes()
 }
 
 type ListWhatsappAccountsRes interface {
 	listWhatsappAccountsRes()
+}
+
+type MergeBranchIntoTargetRes interface {
+	mergeBranchIntoTargetRes()
 }
 
 type MigrateSegmentsRes interface {
@@ -613,8 +741,64 @@ type PostConversationFeedbackRouteRes interface {
 	postConversationFeedbackRouteRes()
 }
 
+type PostKnowledgeBaseBulkMoveRouteRes interface {
+	postKnowledgeBaseBulkMoveRouteRes()
+}
+
+type PostKnowledgeBaseMoveRouteRes interface {
+	postKnowledgeBaseMoveRouteRes()
+}
+
+type PublicCreateOrderRes interface {
+	publicCreateOrderRes()
+}
+
+type PublicGetAvailableLanguagesRes interface {
+	publicGetAvailableLanguagesRes()
+}
+
+type PublicGetMediaInfoRes interface {
+	publicGetMediaInfoRes()
+}
+
+type PublicGetOrderDeliverablesRes interface {
+	publicGetOrderDeliverablesRes()
+}
+
+type PublicGetOrderRes interface {
+	publicGetOrderRes()
+}
+
+type PublicListOrdersRes interface {
+	publicListOrdersRes()
+}
+
+type PublicRegisterMediaRes interface {
+	publicRegisterMediaRes()
+}
+
+type PublicRemoveOrderItemRes interface {
+	publicRemoveOrderItemRes()
+}
+
+type PublicSubmitOrderRes interface {
+	publicSubmitOrderRes()
+}
+
+type PublicUpdateOrderRes interface {
+	publicUpdateOrderRes()
+}
+
+type PublicUpsertOrderItemRes interface {
+	publicUpsertOrderItemRes()
+}
+
 type RagIndexStatusRes interface {
 	ragIndexStatusRes()
+}
+
+type RefreshURLDocumentRouteRes interface {
+	refreshURLDocumentRouteRes()
 }
 
 type RegisterTwilioCallRes interface {
@@ -629,12 +813,24 @@ type RemoveRulesRes interface {
 	removeRulesRes()
 }
 
+type RenderRes interface {
+	renderRes()
+}
+
 type RequestPvcManualVerificationRes interface {
 	requestPvcManualVerificationRes()
 }
 
 type RetryBatchCallRes interface {
 	retryBatchCallRes()
+}
+
+type RunConversationAnalysisRes interface {
+	runConversationAnalysisRes()
+}
+
+type RunConversationEvaluationsRes interface {
+	runConversationEvaluationsRes()
 }
 
 type RunPvcVoiceTrainingRes interface {
@@ -645,12 +841,20 @@ type SearchGroupsRes interface {
 	searchGroupsRes()
 }
 
+type SearchKnowledgeBaseContentRouteRes interface {
+	searchKnowledgeBaseContentRouteRes()
+}
+
 type SeparateSongStemsRes interface {
 	separateSongStemsRes()
 }
 
 type ShareResourceEndpointRes interface {
 	shareResourceEndpointRes()
+}
+
+type SmartSearchConversationMessagesRouteRes interface {
+	smartSearchConversationMessagesRouteRes()
 }
 
 type SoundGenerationRes interface {
@@ -677,16 +881,16 @@ type StreamChapterSnapshotAudioRes interface {
 	streamChapterSnapshotAudioRes()
 }
 
-type StreamComposeRes interface {
-	streamComposeRes()
-}
-
 type StreamProjectSnapshotArchiveEndpointRes interface {
 	streamProjectSnapshotArchiveEndpointRes()
 }
 
 type StreamProjectSnapshotAudioEndpointRes interface {
 	streamProjectSnapshotAudioEndpointRes()
+}
+
+type TextSearchConversationMessagesRouteRes interface {
+	textSearchConversationMessagesRouteRes()
 }
 
 type TextToDialogueFullWithTimestampsRes interface {
@@ -745,12 +949,24 @@ type TranslateRes interface {
 	translateRes()
 }
 
+type UnassignConversationTagRouteRes interface {
+	unassignConversationTagRouteRes()
+}
+
 type UnshareResourceEndpointRes interface {
 	unshareResourceEndpointRes()
 }
 
-type UpdateAgentResponseTestRouteRes interface {
-	updateAgentResponseTestRouteRes()
+type UpdateAgentTestFolderRouteRes interface {
+	updateAgentTestFolderRouteRes()
+}
+
+type UpdateBranchRouteRes interface {
+	updateBranchRouteRes()
+}
+
+type UpdateConversationTagRouteRes interface {
+	updateConversationTagRouteRes()
 }
 
 type UpdateDashboardSettingsRouteRes interface {
@@ -759,6 +975,10 @@ type UpdateDashboardSettingsRouteRes interface {
 
 type UpdateDocumentRouteRes interface {
 	updateDocumentRouteRes()
+}
+
+type UpdateFileDocumentRouteRes interface {
+	updateFileDocumentRouteRes()
 }
 
 type UpdatePhoneNumberRouteRes interface {
@@ -793,6 +1013,10 @@ type UpdateWorkspaceMemberRes interface {
 	updateWorkspaceMemberRes()
 }
 
+type UploadFileRouteRes interface {
+	uploadFileRouteRes()
+}
+
 type UsageCharactersRes interface {
 	usageCharactersRes()
 }
@@ -801,6 +1025,14 @@ type VerifyPvcVoiceCaptchaRes interface {
 	verifyPvcVoiceCaptchaRes()
 }
 
+type VideoToMusicRes interface {
+	videoToMusicRes()
+}
+
 type WhatsappOutboundCallRes interface {
 	whatsappOutboundCallRes()
+}
+
+type WhatsappOutboundMessageRes interface {
+	whatsappOutboundMessageRes()
 }
