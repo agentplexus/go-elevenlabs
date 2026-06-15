@@ -7,6 +7,54 @@
   "maintainers": ["johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.11.0",
+      "date": "2026-06-15",
+      "highlights": [
+        { "description": "STT file upload support via handwritten multipart request, bypassing ogen limitations" },
+        { "description": "Updated to latest ElevenLabs OpenAPI specification with new endpoints" },
+        { "description": "Breaking API changes to TranscriptionRequest for cleaner file upload interface" }
+      ],
+      "breaking": [
+        { "description": "`TranscriptionRequest.FileContent` renamed to `FileBytes` with type change from `string` to `[]byte`", "commit": "a9eaf23" },
+        { "description": "`TranscriptionRequest.Filename` renamed to `FileName`", "commit": "a9eaf23" },
+        { "description": "Music composition methods (`Generate`, `GenerateStream`) now return `ErrMusicCompositionUnavailable` due to API schema complexity", "commit": "20cc974" },
+        { "description": "VoiceDesign legacy API (gender/age/accent) deprecated; use `GenerateFromDescription` instead", "commit": "7662c64" }
+      ],
+      "added": [
+        { "description": "STT file upload via handwritten multipart HTTP request, bypassing ogen nullable binary field limitation", "commit": "a9eaf23", "file": "speechtotext.go" },
+        { "description": "`SpeechToTextService.TranscribeFile()` convenience method for transcribing raw audio bytes", "commit": "a9eaf23", "file": "speechtotext.go" },
+        { "description": "`VoiceDesignService.GenerateFromDescription()` for text-based voice design", "commit": "7662c64", "file": "voicedesign.go" },
+        { "description": "OpenAPI spec archive directory (`openapi/archive/`) for tracking API versions used in code generation", "commit": "7da6d18" }
+      ],
+      "changed": [
+        { "description": "Regenerated ogen client from latest ElevenLabs OpenAPI specification", "commit": "c4dbe05" },
+        { "description": "Projects `QualityPreset` now uses typed enum instead of string", "commit": "67ebb4c" },
+        { "description": "Pronunciation `AddRule` updated to use new API types", "commit": "67ebb4c" },
+        { "description": "SoundEffects service updated to use new response types", "commit": "67ebb4c" }
+      ],
+      "fixed": [
+        { "description": "Integer overflow conversion in validation error formatting (gosec G115)", "commit": "6833cd0" },
+        { "description": "Duplicate code in STT provider tests refactored to helper functions", "commit": "6833cd0" }
+      ],
+      "build": [
+        { "description": "Add `ogen-fixformdata` post-processing step to `generate.sh` for form-data encoding fixes", "commit": "be24e30" },
+        { "description": "Update ogen-tools references from `agentplexus` to `plexusone` org", "commit": "be24e30" }
+      ],
+      "documentation": [
+        { "description": "Update all import paths from `agentplexus/go-elevenlabs` to `plexusone/elevenlabs-go`", "commit": "2e47766" },
+        { "description": "Update STT documentation to use new `FileBytes`/`FileName` API", "commit": "2e47766" }
+      ],
+      "tests": [
+        { "description": "Projects List test now skips on 403 for subscription tier-limited API", "commit": "2b825ba" },
+        { "description": "STT provider tests refactored with `newTestProvider()` and `assertTranscriptionResult()` helpers", "commit": "6833cd0" }
+      ],
+      "dependencies": [
+        { "description": "Bump `github.com/plexusone/omnivoice-core` to v0.13.0", "commit": "688ad5b" },
+        { "description": "Bump `github.com/grokify/mogo` from 0.74.3 to 0.74.6", "commit": "a96e0fb" },
+        { "description": "Bump `go.opentelemetry.io/otel/metric` from 1.43.0 to 1.44.0", "commit": "dc4b6a7" }
+      ]
+    },
+    {
       "version": "v0.10.0",
       "date": "2026-04-04",
       "highlights": [
