@@ -2,26 +2,63 @@ package elevenlabs
 
 import (
 	"context"
+	"errors"
 	"testing"
 )
 
-func TestMusicRequestValidation(t *testing.T) {
+// dummyReader is a minimal io.Reader for testing validation
+type dummyReader struct{}
+
+func (d dummyReader) Read(p []byte) (n int, err error) {
+	return 0, nil
+}
+
+func TestMusicCompositionUnavailable(t *testing.T) {
 	client, _ := NewClient()
 	ctx := context.Background()
 
-	// Test empty prompt
-	_, err := client.Music().Generate(ctx, &MusicRequest{})
-	if err == nil {
-		t.Error("Generate() with empty prompt should return error")
-	}
+	// All composition methods should return ErrMusicCompositionUnavailable
+	t.Run("Generate", func(t *testing.T) {
+		_, err := client.Music().Generate(ctx, &MusicRequest{Prompt: "test"})
+		if !errors.Is(err, ErrMusicCompositionUnavailable) {
+			t.Errorf("Generate() error = %v, want ErrMusicCompositionUnavailable", err)
+		}
+	})
 
-	var valErr *ValidationError
-	if !isValidationError(err, &valErr) {
-		t.Errorf("Expected ValidationError, got %T", err)
-	}
-	if valErr.Field != "prompt" {
-		t.Errorf("ValidationError field = %s, want prompt", valErr.Field)
-	}
+	t.Run("GenerateStream", func(t *testing.T) {
+		_, err := client.Music().GenerateStream(ctx, &MusicRequest{Prompt: "test"})
+		if !errors.Is(err, ErrMusicCompositionUnavailable) {
+			t.Errorf("GenerateStream() error = %v, want ErrMusicCompositionUnavailable", err)
+		}
+	})
+
+	t.Run("Simple", func(t *testing.T) {
+		_, err := client.Music().Simple(ctx, "test prompt")
+		if !errors.Is(err, ErrMusicCompositionUnavailable) {
+			t.Errorf("Simple() error = %v, want ErrMusicCompositionUnavailable", err)
+		}
+	})
+
+	t.Run("GenerateInstrumental", func(t *testing.T) {
+		_, err := client.Music().GenerateInstrumental(ctx, "test prompt", 30000)
+		if !errors.Is(err, ErrMusicCompositionUnavailable) {
+			t.Errorf("GenerateInstrumental() error = %v, want ErrMusicCompositionUnavailable", err)
+		}
+	})
+
+	t.Run("GeneratePlan", func(t *testing.T) {
+		_, err := client.Music().GeneratePlan(ctx, &CompositionPlanRequest{Prompt: "test"})
+		if !errors.Is(err, ErrMusicCompositionUnavailable) {
+			t.Errorf("GeneratePlan() error = %v, want ErrMusicCompositionUnavailable", err)
+		}
+	})
+
+	t.Run("GenerateDetailed", func(t *testing.T) {
+		_, err := client.Music().GenerateDetailed(ctx, &MusicDetailedRequest{Prompt: "test"})
+		if !errors.Is(err, ErrMusicCompositionUnavailable) {
+			t.Errorf("GenerateDetailed() error = %v, want ErrMusicCompositionUnavailable", err)
+		}
+	})
 }
 
 func TestMusicService(t *testing.T) {
@@ -67,43 +104,70 @@ func TestMusicResponse(t *testing.T) {
 	}
 }
 
-func TestGenerateStreamValidation(t *testing.T) {
+func TestStemSeparationValidation(t *testing.T) {
 	client, _ := NewClient()
 	ctx := context.Background()
 
-	// Test GenerateStream with empty prompt
-	_, err := client.Music().GenerateStream(ctx, &MusicRequest{})
+	// Test nil file
+	_, err := client.Music().SeparateStems(ctx, &StemSeparationRequest{
+		Filename: "test.mp3",
+	})
 	if err == nil {
-		t.Error("GenerateStream() with empty prompt should return error")
+		t.Error("SeparateStems() with nil file should return error")
 	}
-
 	var valErr *ValidationError
 	if !isValidationError(err, &valErr) {
 		t.Errorf("Expected ValidationError, got %T", err)
 	}
-	if valErr.Field != "prompt" {
-		t.Errorf("ValidationError field = %s, want prompt", valErr.Field)
+	if valErr.Field != "file" {
+		t.Errorf("ValidationError field = %s, want file", valErr.Field)
+	}
+
+	// Test empty filename
+	_, err = client.Music().SeparateStems(ctx, &StemSeparationRequest{
+		File: dummyReader{},
+	})
+	if err == nil {
+		t.Error("SeparateStems() with empty filename should return error")
+	}
+	if !isValidationError(err, &valErr) {
+		t.Errorf("Expected ValidationError, got %T", err)
+	}
+	if valErr.Field != "filename" {
+		t.Errorf("ValidationError field = %s, want filename", valErr.Field)
 	}
 }
 
-func TestSimpleMusicValidation(t *testing.T) {
+func TestVideoToMusicValidation(t *testing.T) {
 	client, _ := NewClient()
 	ctx := context.Background()
 
-	// Test Simple with empty prompt
-	_, err := client.Music().Simple(ctx, "")
+	// Test empty videos
+	_, err := client.Music().VideoToMusic(ctx, &VideoToMusicRequest{})
 	if err == nil {
-		t.Error("Simple() with empty prompt should return error")
+		t.Error("VideoToMusic() with empty videos should return error")
 	}
-}
+	var valErr *ValidationError
+	if !isValidationError(err, &valErr) {
+		t.Errorf("Expected ValidationError, got %T", err)
+	}
+	if valErr.Field != "videos" {
+		t.Errorf("ValidationError field = %s, want videos", valErr.Field)
+	}
 
-func TestGenerateInstrumentalValidation(t *testing.T) {
-	client, _ := NewClient()
-	ctx := context.Background()
-
-	// Test GenerateInstrumental with empty prompt
-	_, err := client.Music().GenerateInstrumental(ctx, "", 30000)
+	// Test nil file in video
+	_, err = client.Music().VideoToMusic(ctx, &VideoToMusicRequest{
+		Videos: []VideoFile{{Name: "test.mp4"}},
+	})
 	if err == nil {
-		t.Error("GenerateInstrumental() with empty prompt should return error")
+		t.Error("VideoToMusic() with nil video file should return error")
+	}
+
+	// Test empty filename in video
+	_, err = client.Music().VideoToMusic(ctx, &VideoToMusicRequest{
+		Videos: []VideoFile{{File: dummyReader{}}},
+	})
+	if err == nil {
+		t.Error("VideoToMusic() with empty video filename should return error")
 	}
 }

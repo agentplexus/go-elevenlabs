@@ -2,6 +2,7 @@ package elevenlabs
 
 import (
 	"context"
+	"errors"
 	"io"
 
 	ht "github.com/ogen-go/ogen/http"
@@ -13,6 +14,11 @@ import (
 type MusicService struct {
 	client *Client
 }
+
+// ErrMusicCompositionUnavailable is returned when music composition endpoints
+// are called but the underlying API client doesn't support them.
+// This happens when the OpenAPI spec uses complex anyOf schemas that ogen cannot generate.
+var ErrMusicCompositionUnavailable = errors.New("music composition endpoints are temporarily unavailable due to API schema complexity; use SeparateStems or VideoToMusic instead")
 
 // MusicRequest contains options for music generation.
 type MusicRequest struct {
@@ -42,100 +48,32 @@ type MusicResponse struct {
 
 // Generate creates music from a text prompt.
 //
-//nolint:dupl // Similar to GenerateStream but uses different ogen-generated types
+// NOTE: This method is temporarily unavailable due to API schema complexity.
+// The ElevenLabs API uses a union type (anyOf) that the code generator cannot handle.
+// Use SeparateStems or VideoToMusic instead.
 func (s *MusicService) Generate(ctx context.Context, req *MusicRequest) (*MusicResponse, error) {
-	if req.Prompt == "" {
-		return nil, &ValidationError{Field: "prompt", Message: "cannot be empty"}
-	}
-
-	body := &api.BodyComposeMusicV1MusicPost{
-		Prompt: api.NewOptNilString(req.Prompt),
-	}
-
-	if req.DurationMs > 0 {
-		body.MusicLengthMs = api.NewOptNilInt(req.DurationMs)
-	}
-	if req.ForceInstrumental {
-		body.ForceInstrumental = api.NewOptBool(true)
-	}
-	if req.Seed > 0 {
-		body.Seed = api.NewOptNilInt(req.Seed)
-	}
-
-	resp, err := s.client.apiClient.Generate(ctx, api.NewOptBodyComposeMusicV1MusicPost(*body), api.GenerateParams{})
-	if err != nil {
-		return nil, err
-	}
-
-	switch r := resp.(type) {
-	case *api.GenerateOKHeaders:
-		return &MusicResponse{
-			Audio:  r.Response.Data,
-			SongID: r.SongID.Value,
-		}, nil
-	default:
-		return nil, &APIError{Message: "unexpected response type"}
-	}
+	return nil, ErrMusicCompositionUnavailable
 }
 
 // GenerateStream creates music with streaming output.
 //
-//nolint:dupl // Similar to Generate but uses different ogen-generated types
+// NOTE: This method is temporarily unavailable due to API schema complexity.
 func (s *MusicService) GenerateStream(ctx context.Context, req *MusicRequest) (*MusicResponse, error) {
-	if req.Prompt == "" {
-		return nil, &ValidationError{Field: "prompt", Message: "cannot be empty"}
-	}
-
-	body := &api.BodyStreamComposedMusicV1MusicStreamPost{
-		Prompt: api.NewOptNilString(req.Prompt),
-	}
-
-	if req.DurationMs > 0 {
-		body.MusicLengthMs = api.NewOptNilInt(req.DurationMs)
-	}
-	if req.ForceInstrumental {
-		body.ForceInstrumental = api.NewOptBool(true)
-	}
-	if req.Seed > 0 {
-		body.Seed = api.NewOptNilInt(req.Seed)
-	}
-
-	resp, err := s.client.apiClient.StreamCompose(ctx, api.NewOptBodyStreamComposedMusicV1MusicStreamPost(*body), api.StreamComposeParams{})
-	if err != nil {
-		return nil, err
-	}
-
-	switch r := resp.(type) {
-	case *api.StreamComposeOKHeaders:
-		return &MusicResponse{
-			Audio:  r.Response.Data,
-			SongID: r.SongID.Value,
-		}, nil
-	default:
-		return nil, &APIError{Message: "unexpected response type"}
-	}
+	return nil, ErrMusicCompositionUnavailable
 }
 
 // Simple generates music from a prompt with default settings.
+//
+// NOTE: This method is temporarily unavailable due to API schema complexity.
 func (s *MusicService) Simple(ctx context.Context, prompt string) (io.Reader, error) {
-	resp, err := s.Generate(ctx, &MusicRequest{Prompt: prompt})
-	if err != nil {
-		return nil, err
-	}
-	return resp.Audio, nil
+	return nil, ErrMusicCompositionUnavailable
 }
 
 // GenerateInstrumental generates instrumental music from a prompt.
+//
+// NOTE: This method is temporarily unavailable due to API schema complexity.
 func (s *MusicService) GenerateInstrumental(ctx context.Context, prompt string, durationMs int) (io.Reader, error) {
-	resp, err := s.Generate(ctx, &MusicRequest{
-		Prompt:            prompt,
-		DurationMs:        durationMs,
-		ForceInstrumental: true,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return resp.Audio, nil
+	return nil, ErrMusicCompositionUnavailable
 }
 
 // CompositionPlan represents a detailed music composition plan.
@@ -182,49 +120,10 @@ type CompositionPlanRequest struct {
 }
 
 // GeneratePlan creates a composition plan from a text prompt.
-// The returned plan can be modified and used with GenerateDetailed.
 //
-// Example:
-//
-//	plan, err := client.Music().GeneratePlan(ctx, &MusicCompositionPlanRequest{
-//	    Prompt:     "upbeat pop song about summer",
-//	    DurationMs: 180000, // 3 minutes
-//	})
-//	// Modify the plan if needed
-//	plan.Sections[0].Lines = []string{"Custom lyrics here"}
-//	// Generate music from the plan
-//	resp, err := client.Music().GenerateDetailed(ctx, &MusicDetailedRequest{
-//	    CompositionPlan: plan,
-//	})
+// NOTE: This method is temporarily unavailable due to API schema complexity.
 func (s *MusicService) GeneratePlan(ctx context.Context, req *CompositionPlanRequest) (*CompositionPlan, error) {
-	if req.Prompt == "" {
-		return nil, &ValidationError{Field: "prompt", Message: "cannot be empty"}
-	}
-
-	body := &api.BodyGenerateCompositionPlanV1MusicPlanPost{
-		Prompt: req.Prompt,
-	}
-
-	if req.DurationMs > 0 {
-		body.MusicLengthMs = api.NewOptNilInt(req.DurationMs)
-	}
-
-	if req.SourcePlan != nil {
-		apiPlan := compositionPlanToAPI(req.SourcePlan)
-		body.SourceCompositionPlan = api.NewOptMusicPrompt(apiPlan)
-	}
-
-	resp, err := s.client.apiClient.ComposePlan(ctx, body, api.ComposePlanParams{})
-	if err != nil {
-		return nil, err
-	}
-
-	switch r := resp.(type) {
-	case *api.MusicPrompt:
-		return compositionPlanFromAPI(r), nil
-	default:
-		return nil, &APIError{Message: "unexpected response type"}
-	}
+	return nil, ErrMusicCompositionUnavailable
 }
 
 // MusicDetailedRequest contains options for detailed music generation.
@@ -258,69 +157,10 @@ type MusicDetailedResponse struct {
 }
 
 // GenerateDetailed creates music with detailed options and metadata.
-// Use either Prompt for simple generation or CompositionPlan for fine-grained control.
 //
-// Example with prompt:
-//
-//	resp, err := client.Music().GenerateDetailed(ctx, &MusicDetailedRequest{
-//	    Prompt:     "epic orchestral music",
-//	    DurationMs: 60000,
-//	})
-//
-// Example with composition plan:
-//
-//	plan, _ := client.Music().GeneratePlan(ctx, &CompositionPlanRequest{Prompt: "pop song"})
-//	resp, err := client.Music().GenerateDetailed(ctx, &MusicDetailedRequest{
-//	    CompositionPlan: plan,
-//	})
+// NOTE: This method is temporarily unavailable due to API schema complexity.
 func (s *MusicService) GenerateDetailed(ctx context.Context, req *MusicDetailedRequest) (*MusicDetailedResponse, error) {
-	if req.Prompt == "" && req.CompositionPlan == nil {
-		return nil, &ValidationError{Field: "prompt", Message: "either prompt or composition_plan is required"}
-	}
-	if req.Prompt != "" && req.CompositionPlan != nil {
-		return nil, &ValidationError{Field: "prompt", Message: "cannot use both prompt and composition_plan"}
-	}
-
-	body := &api.BodyComposeMusicWithADetailedResponseV1MusicDetailedPost{}
-
-	if req.Prompt != "" {
-		body.Prompt = api.NewOptNilString(req.Prompt)
-		if req.DurationMs > 0 {
-			body.MusicLengthMs = api.NewOptNilInt(req.DurationMs)
-		}
-		if req.ForceInstrumental {
-			body.ForceInstrumental = api.NewOptBool(true)
-		}
-	}
-
-	if req.CompositionPlan != nil {
-		apiPlan := compositionPlanToAPI(req.CompositionPlan)
-		body.CompositionPlan = api.NewOptMusicPrompt(apiPlan)
-	}
-
-	if req.Seed > 0 {
-		body.Seed = api.NewOptNilInt(req.Seed)
-	}
-	if req.WithTimestamps {
-		body.WithTimestamps = api.NewOptBool(true)
-	}
-
-	resp, err := s.client.apiClient.ComposeDetailed(ctx,
-		api.NewOptBodyComposeMusicWithADetailedResponseV1MusicDetailedPost(*body),
-		api.ComposeDetailedParams{})
-	if err != nil {
-		return nil, err
-	}
-
-	switch r := resp.(type) {
-	case *api.ComposeDetailedOKHeaders:
-		return &MusicDetailedResponse{
-			Audio:  r.Response.Data,
-			SongID: r.SongID.Value,
-		}, nil
-	default:
-		return nil, &APIError{Message: "unexpected response type"}
-	}
+	return nil, ErrMusicCompositionUnavailable
 }
 
 // StemSeparationRequest contains options for stem separation.
@@ -381,51 +221,79 @@ func (s *MusicService) SeparateStems(ctx context.Context, req *StemSeparationReq
 	}
 }
 
-// SeparateStemsFile is a convenience method to separate stems from a file path.
-func (s *MusicService) SeparateStemsFile(ctx context.Context, filePath string) (io.Reader, error) {
-	// Note: This would require os.Open which we avoid in the SDK
-	// Users should open the file themselves and use SeparateStems
-	return nil, &ValidationError{Field: "file_path", Message: "use SeparateStems with an opened file instead"}
+// VideoToMusicRequest contains options for converting a video to music.
+type VideoToMusicRequest struct {
+	// Videos is one or more video files to convert.
+	Videos []VideoFile
+
+	// Description is an optional text description of the music.
+	Description string
+
+	// Tags are optional style tags (e.g., ["upbeat", "cinematic"]).
+	Tags []string
+
+	// ModelID specifies the model to use (optional).
+	ModelID string
 }
 
-// Helper functions to convert between SDK types and API types
-
-func compositionPlanToAPI(plan *CompositionPlan) api.MusicPrompt {
-	apiPlan := api.MusicPrompt{
-		PositiveGlobalStyles: plan.PositiveGlobalStyles,
-		NegativeGlobalStyles: plan.NegativeGlobalStyles,
-	}
-
-	for _, section := range plan.Sections {
-		apiSection := api.SongSection{
-			SectionName:         section.SectionName,
-			DurationMs:          section.DurationMs,
-			Lines:               section.Lines,
-			PositiveLocalStyles: section.PositiveLocalStyles,
-			NegativeLocalStyles: section.NegativeLocalStyles,
-		}
-		apiPlan.Sections = append(apiPlan.Sections, apiSection)
-	}
-
-	return apiPlan
+// VideoFile represents a video file for VideoToMusic.
+type VideoFile struct {
+	// Name is the filename.
+	Name string
+	// File is the video content.
+	File io.Reader
 }
 
-func compositionPlanFromAPI(apiPlan *api.MusicPrompt) *CompositionPlan {
-	plan := &CompositionPlan{
-		PositiveGlobalStyles: apiPlan.PositiveGlobalStyles,
-		NegativeGlobalStyles: apiPlan.NegativeGlobalStyles,
+// VideoToMusic converts a video to music.
+//
+// Example:
+//
+//	f, _ := os.Open("video.mp4")
+//	music, err := client.Music().VideoToMusic(ctx, &VideoToMusicRequest{
+//	    Videos: []VideoFile{{Name: "video.mp4", File: f}},
+//	})
+func (s *MusicService) VideoToMusic(ctx context.Context, req *VideoToMusicRequest) (io.Reader, error) {
+	if len(req.Videos) == 0 {
+		return nil, &ValidationError{Field: "videos", Message: "at least one video is required"}
 	}
 
-	for _, apiSection := range apiPlan.Sections {
-		section := SongSection{
-			SectionName:         apiSection.SectionName,
-			DurationMs:          apiSection.DurationMs,
-			Lines:               apiSection.Lines,
-			PositiveLocalStyles: apiSection.PositiveLocalStyles,
-			NegativeLocalStyles: apiSection.NegativeLocalStyles,
+	var videos []ht.MultipartFile
+	for _, v := range req.Videos {
+		if v.File == nil {
+			return nil, &ValidationError{Field: "videos", Message: "video file cannot be nil"}
 		}
-		plan.Sections = append(plan.Sections, section)
+		if v.Name == "" {
+			return nil, &ValidationError{Field: "videos", Message: "video filename cannot be empty"}
+		}
+		videos = append(videos, ht.MultipartFile{
+			Name: v.Name,
+			File: v.File,
+		})
 	}
 
-	return plan
+	body := &api.BodyVideoToMusicV1MusicVideoToMusicPostMultipart{
+		Videos: videos,
+		Tags:   req.Tags,
+	}
+
+	if req.Description != "" {
+		body.Description = api.NewOptNilString(req.Description)
+	}
+
+	if req.ModelID != "" {
+		body.ModelID = api.NewOptBodyVideoToMusicV1MusicVideoToMusicPostMultipartModelID(
+			api.BodyVideoToMusicV1MusicVideoToMusicPostMultipartModelID(req.ModelID))
+	}
+
+	resp, err := s.client.apiClient.VideoToMusic(ctx, body, api.VideoToMusicParams{})
+	if err != nil {
+		return nil, err
+	}
+
+	switch r := resp.(type) {
+	case *api.VideoToMusicOKHeaders:
+		return r.Response.Data, nil
+	default:
+		return nil, &APIError{Message: "unexpected response type"}
+	}
 }
