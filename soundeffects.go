@@ -76,8 +76,8 @@ func (s *SoundEffectsService) Generate(ctx context.Context, req *SoundEffectRequ
 
 	params := api.SoundGenerationParams{}
 	if req.OutputFormat != "" {
-		params.OutputFormat = api.NewOptSoundGenerationOutputFormat(
-			api.SoundGenerationOutputFormat(req.OutputFormat),
+		params.OutputFormat = api.NewOptAllowedOutputFormats(
+			api.AllowedOutputFormats(req.OutputFormat),
 		)
 	}
 

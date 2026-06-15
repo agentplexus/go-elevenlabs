@@ -112,36 +112,45 @@ func (s *PronunciationService) List(ctx context.Context, opts *PronunciationDict
 }
 
 // Get returns a pronunciation dictionary by ID.
+// This method fetches all dictionaries and filters by ID since the single
+// dictionary endpoint is not available in the current API version.
 func (s *PronunciationService) Get(ctx context.Context, dictionaryID string) (*PronunciationDictionary, error) {
 	if dictionaryID == "" {
 		return nil, &ValidationError{Field: "dictionary_id", Message: "cannot be empty"}
 	}
 
-	resp, err := s.client.apiClient.GetPronunciationDictionaryMetadata(ctx, api.GetPronunciationDictionaryMetadataParams{
-		PronunciationDictionaryID: dictionaryID,
-	})
+	// Fetch dictionaries and search for the one with matching ID
+	// This is a workaround since the single dictionary metadata endpoint
+	// is not currently available
+	result, err := s.List(ctx, &PronunciationDictionaryListOptions{PageSize: 100})
 	if err != nil {
 		return nil, err
 	}
 
-	// Handle response type
-	switch r := resp.(type) {
-	case *api.GetPronunciationDictionaryMetadataResponseModel:
-		dict := &PronunciationDictionary{
-			ID:              r.ID,
-			Name:            r.Name,
-			LatestVersionID: r.LatestVersionID,
-			RulesCount:      r.LatestVersionRulesNum,
-			CreatedBy:       r.CreatedBy,
-			CreatedAt:       time.Unix(int64(r.CreationTimeUnix), 0),
+	for _, dict := range result.Dictionaries {
+		if dict.ID == dictionaryID {
+			return dict, nil
 		}
-		if r.Description.Set && !r.Description.Null {
-			dict.Description = r.Description.Value
-		}
-		return dict, nil
-	default:
-		return nil, &APIError{Message: "unexpected response type"}
 	}
+
+	// If we have more pages and didn't find it, keep searching
+	for result.HasMore && result.NextCursor != "" {
+		result, err = s.List(ctx, &PronunciationDictionaryListOptions{
+			PageSize: 100,
+			Cursor:   result.NextCursor,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		for _, dict := range result.Dictionaries {
+			if dict.ID == dictionaryID {
+				return dict, nil
+			}
+		}
+	}
+
+	return nil, &APIError{Message: "pronunciation dictionary not found: " + dictionaryID}
 }
 
 // CreatePronunciationDictionaryRequest contains options for creating a pronunciation dictionary.

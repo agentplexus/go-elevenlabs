@@ -232,7 +232,7 @@ func (s *ProjectsService) Create(ctx context.Context, req *CreateProjectRequest)
 		body.Genres = req.Genres
 	}
 	if req.QualityPreset != "" {
-		body.QualityPreset = api.NewOptString(req.QualityPreset)
+		body.QualityPreset = api.NewOptQualityPresetType(api.QualityPresetType(req.QualityPreset))
 	}
 	if req.AutoConvert {
 		body.AutoConvert = api.NewOptBool(true)
