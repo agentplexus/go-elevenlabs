@@ -65,3 +65,29 @@ func isValidationError(err error, valErr **ValidationError) bool {
 	}
 	return ok
 }
+
+func TestSpeechToTextTranscribe_Live(t *testing.T) {
+	apiKey := getAPIKey(t)
+
+	client, err := NewClient(WithAPIKey(apiKey))
+	if err != nil {
+		t.Fatalf("NewClient() error = %v", err)
+	}
+
+	ctx := context.Background()
+
+	// Use a public audio sample URL for testing
+	// Note: Wikipedia URLs don't work because they block requests without proper User-Agent
+	testURL := "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3"
+
+	resp, err := client.SpeechToText().TranscribeURL(ctx, testURL)
+	if err != nil {
+		t.Fatalf("SpeechToText().TranscribeURL() error = %v", err)
+	}
+
+	if resp.Text == "" {
+		t.Error("Transcription text should not be empty")
+	}
+
+	t.Logf("Transcribed text: %q", resp.Text)
+}

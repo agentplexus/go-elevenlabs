@@ -3,7 +3,6 @@ package stt
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"io"
 	"os"
@@ -87,11 +86,8 @@ func (p *Provider) Name() string {
 
 // Transcribe converts audio bytes to text.
 func (p *Provider) Transcribe(ctx context.Context, audio []byte, config stt.TranscriptionConfig) (*stt.TranscriptionResult, error) {
-	// Base64 encode the audio
-	encoded := base64.StdEncoding.EncodeToString(audio)
-
 	req := configToTranscriptionRequest(config)
-	req.FileContent = encoded
+	req.FileBytes = audio
 
 	resp, err := p.client.SpeechToText().Transcribe(ctx, req)
 	if err != nil {
@@ -103,7 +99,6 @@ func (p *Provider) Transcribe(ctx context.Context, audio []byte, config stt.Tran
 
 // TranscribeFile transcribes audio from a file path.
 func (p *Provider) TranscribeFile(ctx context.Context, filePath string, config stt.TranscriptionConfig) (*stt.TranscriptionResult, error) {
-	// Read the file
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
