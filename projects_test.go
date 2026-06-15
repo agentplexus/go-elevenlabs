@@ -3,6 +3,7 @@ package elevenlabs
 import (
 	"context"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -65,6 +66,10 @@ func TestProjectsService(t *testing.T) {
 	t.Run("List", func(t *testing.T) {
 		projects, err := client.Projects().List(ctx)
 		if err != nil {
+			// Projects API requires specific subscription tier
+			if strings.Contains(err.Error(), "403") {
+				t.Skip("Projects API requires Studio subscription tier")
+			}
 			t.Errorf("List() error = %v", err)
 			return
 		}
