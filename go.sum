@@ -44,8 +44,8 @@ github.com/mattn/go-isatty v0.0.22 h1:j8l17JJ9i6VGPUFUYoTUKPSgKe/83EYU2zBC7YNKMw
 github.com/mattn/go-isatty v0.0.22/go.mod h1:ZXfXG4SQHsB/w3ZeOYbR0PrPwLy+n6xiMrJlRFqopa4=
 github.com/ogen-go/ogen v1.22.0 h1:7wU+jcIKg/JBAhM95909ULLdAkGr43KQOuvNpJ7Mxb4=
 github.com/ogen-go/ogen v1.22.0/go.mod h1:7BOh9a51QiPCC92RMrj1LlkLjejhBAyPhR+oMc6lR9g=
-github.com/plexusone/ogen-tools v0.2.1 h1:S9QAKhWzjlJD1t5GbRhoxQziORiQZKBo/W0/49OiXKY=
-github.com/plexusone/ogen-tools v0.2.1/go.mod h1:vVWHWJbGjYjowi7aZu3DoZTDK4MVf9x05pk4p+cYnAI=
+github.com/plexusone/ogen-tools v0.3.0 h1:UVNRxobvfcG8h/dD+Zy/KedtaCveT+V9w50MAEYy2tM=
+github.com/plexusone/ogen-tools v0.3.0/go.mod h1:fj6ekLGUiVQkS6NRSfxMvQTCJtK/xVRarCroMA0iCK0=
 github.com/plexusone/omnivoice-core v0.14.0 h1:6KGvVwJI2RWcK0y1A91pVFn7lyuWsYjFPKxsAzIZPNA=
 github.com/plexusone/omnivoice-core v0.14.0/go.mod h1:ghbU63vSkn09vz1Mb9uQrePVcNLpXXBB9IMZ2wkzePM=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
