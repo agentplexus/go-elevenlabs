@@ -82,6 +82,13 @@ nav:
     - WebSocket TTS: services/websocket-tts.md
     - WebSocket STT: services/websocket-stt.md
     - Twilio Integration: services/twilio.md
+  - Conversational AI:
+    - Agents: services/agents.md
+    - Conversations: services/conversations.md
+    - Knowledge Base: services/knowledge-base.md
+    - Batch Calling: services/batch-calling.md
+    - Agent Testing: services/agent-testing.md
+    - Analytics: services/analytics.md
   - OmniVoice:
     - Overview: omnivoice/index.md
     - Capabilities: omnivoice/capabilities.md

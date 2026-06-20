@@ -30,7 +30,7 @@ This page documents the ElevenLabs API coverage in this Go SDK.
 | Phone / Twilio | 7 | ✓ Partial |
 | Professional Voice Cloning | 12 | ✗ Not covered |
 | Voice Library | 5 | ✗ Not covered |
-| Conversational AI | 26 | ✗ Not covered |
+| Conversational AI | 26+ | ✓ Partial |
 | Knowledge Base / RAG | 15 | ✗ Not covered |
 | Workspace Management | 20 | ✗ Not covered |
 | MCP / Tools | 5 | ✗ Not covered |
@@ -274,6 +274,61 @@ Phone call and Twilio integration for conversational AI agents.
 - Manage phone numbers associated with agents
 - Dynamic variables and prompt overrides per call
 
+### Conversational AI Agents (26+ methods) - Partial ✓
+
+AI agent management, branches, deployment, and testing.
+
+| Method | SDK Support |
+|--------|-------------|
+| `GetAgentsRoute` | ✓ `Agents().List()` |
+| `GetAgent` | ✓ `Agents().Get()` |
+| `CreateAgent` | ✓ `Agents().Create()` |
+| `UpdateAgent` | ✓ `Agents().Update()` |
+| `DeleteAgentRoute` | ✓ `Agents().Delete()` |
+| `DuplicateAgentRoute` | ✓ `Agents().Duplicate()` |
+| `PostAgentAvatarRoute` | ✓ `Agents().UploadAvatar()` |
+| `GetAgentLinkRoute` | ✓ `Agents().GetLink()` |
+| `GetAgentTopicsRoute` | ✓ `Agents().GetTopics()` |
+| `GetWidgetRoute` | ✓ `Agents().GetWidget()` |
+| `GetBranchesRoute` | ✓ `Agents().ListBranches()` |
+| `GetBranchRoute` | ✓ `Agents().GetBranch()` |
+| `CreateBranch` | ✓ `Agents().CreateBranch()` |
+| `UpdateBranchRoute` | ✓ `Agents().UpdateBranch()` |
+| `MergeBranchIntoTarget` | ✓ `Agents().MergeBranch()` |
+| `CreateAgentDeploymentRoute` | ✓ `Agents().Deploy()` |
+| `SimulateConversation` | ✓ `Agents().SimulateConversation()` |
+| `SimulateConversationStream` | ✓ `Agents().SimulateConversationStream()` |
+| `CreateAgentTestFolderRoute` | ✓ `Agents().CreateTestFolder()` |
+| `GetAgentTestFolderRoute` | ✓ `Agents().GetTestFolder()` |
+| `UpdateAgentTestFolderRoute` | ✓ `Agents().UpdateTestFolder()` |
+| `DeleteAgentTestFolderRoute` | ✓ `Agents().DeleteTestFolder()` |
+| `BulkMoveAgentTestsRoute` | ✓ `Agents().BulkMoveTests()` |
+| `GetAgentKnowledgeBaseSize` | ✓ `Agents().GetKnowledgeBaseSize()` |
+| `GetConversationHistoriesRoute` | ✓ `Conversations().List()` |
+| `GetConversationHistoryRoute` | ✓ `Conversations().Get()` |
+| `DeleteConversationRoute` | ✓ `Conversations().Delete()` |
+| `GetConversationAudioRoute` | ✓ `Conversations().GetAudio()` |
+| `PostConversationFeedbackRoute` | ✓ `Conversations().SubmitFeedback()` |
+| `RunConversationAnalysis` | ✓ `Conversations().RunAnalysis()` |
+| `CreateBatchCall` | ✓ `BatchCalling().Create()` |
+| `GetBatchCall` | ✓ `BatchCalling().Get()` |
+| `CancelBatchCall` | ✓ `BatchCalling().Cancel()` |
+| `RetryBatchCall` | ✓ `BatchCalling().Retry()` |
+| `DeleteBatchCall` | ✓ `BatchCalling().Delete()` |
+| `GetWorkspaceBatchCalls` | ✓ `BatchCalling().List()` |
+| `GetLiveCount` | ✓ `Analytics().GetLiveCount()` |
+
+**Key Features:**
+
+- Full agent CRUD (create, read, update, delete, duplicate)
+- Branch management with version control and merging
+- Traffic splitting deployment for A/B testing
+- Conversation simulation for agent testing (streaming and non-streaming)
+- Test folder organization
+- Conversation history with search and analytics
+- Batch calling for outbound call campaigns
+- Real-time analytics (live call count)
+
 ---
 
 ## Not Covered APIs
@@ -309,35 +364,19 @@ Community voice discovery and sharing.
 | `ShareResourceEndpoint` | Share a resource |
 | `UnshareResourceEndpoint` | Unshare a resource |
 
-### Conversational AI (26 methods)
+### Conversational AI - Remaining (Not Covered)
 
-AI agents and conversational interfaces.
+Methods not yet covered in the Agents service.
 
 | Method | Description |
 |--------|-------------|
-| `GetAgentsRoute` | List agents |
-| `DeleteAgentRoute` | Delete an agent |
-| `DuplicateAgentRoute` | Duplicate an agent |
-| `PostAgentAvatarRoute` | Upload agent avatar |
-| `GetAgentLinkRoute` | Get shareable agent link |
-| `GetAgentKnowledgeBaseSize` | Get KB size |
 | `GetAgentKnowledgeBaseSummariesRoute` | Get KB summaries |
 | `GetAgentLlmExpectedCostCalculation` | Estimate LLM costs |
 | `CreateAgentResponseTestRoute` | Create response test |
 | `GetAgentResponseTestRoute` | Get test results |
 | `UpdateAgentResponseTestRoute` | Update test |
 | `GetAgentResponseTestsSummariesRoute` | Get test summaries |
-| `DeleteConversationRoute` | Delete conversation |
-| `GetConversationHistoriesRoute` | List conversations |
-| `GetConversationAudioRoute` | Get conversation audio |
-| `GetConversationSignedLink` | Get signed link |
-| `PostConversationFeedbackRoute` | Submit feedback |
-| `CreateBatchCall` | Create batch call job |
-| `GetBatchCall` | Get batch call status |
-| `CancelBatchCall` | Cancel batch call |
-| `RetryBatchCall` | Retry failed calls |
-| `GetWorkspaceBatchCalls` | List workspace batch calls |
-| `GetLiveCount` | Get live call count |
+| `GetConversationSignedLink` | Get signed link for agents |
 | `GetLivekitToken` | Get LiveKit token |
 | `ListChatResponseTestsRoute` | List chat tests |
 | `DeleteChatResponseTestRoute` | Delete chat test |
@@ -463,9 +502,10 @@ Advanced transcription features.
 
 Want to help expand SDK coverage? Contributions are welcome! Priority areas:
 
-1. **Conversational AI Agents** - Agent management and conversation APIs
+1. **Knowledge Base / RAG** - Document management for agent context
 2. **Voice Library** - Community voice discovery and sharing
 3. **Professional Voice Cloning** - Premium voice training features
-4. **Knowledge Base / RAG** - Document management for agent context
+4. **Conversation History** - Conversation management and analytics
+5. **Batch Calls** - Batch call management for agents
 
 See the [Contributing Guide](https://github.com/plexusone/elevenlabs-go/blob/main/CONTRIBUTING.md) for details.

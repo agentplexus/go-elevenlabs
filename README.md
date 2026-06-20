@@ -42,6 +42,16 @@ Go SDK for the [ElevenLabs API](https://elevenlabs.io/).
 - 📚 **Projects**: Manage long-form audio content (audiobooks, podcasts)
 - 📖 **Pronunciation Dictionaries**: Control pronunciation of specific terms
 
+### Conversational AI
+
+- 🤖 **Agents**: Create and manage conversational AI agents with branching and deployment
+- 🔀 **Branches**: Version control for agent configurations with traffic splitting
+- 💬 **Conversations**: Access conversation history, transcripts, audio, and analysis
+- 📚 **Knowledge Base**: RAG document management (files, text, URLs) for agent context
+- 📞 **Batch Calling**: Schedule and manage bulk outbound calls
+- 🧪 **Agent Testing**: Organize test folders and run response tests
+- 📊 **Analytics**: Live conversation counts and agent insights
+
 ### Real-Time Services
 
 - ⚡ **WebSocket TTS**: Low-latency text-to-speech streaming for real-time voice synthesis
@@ -389,6 +399,157 @@ call, err := client.Twilio().OutboundCall(ctx, &elevenlabs.TwilioOutboundCallReq
 
 // List phone numbers
 numbers, err := client.PhoneNumbers().List(ctx)
+```
+
+### Conversational AI Agents
+
+```go
+// Create an agent
+agent, err := client.Agents().Create(ctx, &elevenlabs.CreateAgentRequest{
+    Name: "Support Agent",
+    Tags: []string{"support"},
+    ConversationConfig: map[string]any{
+        "agent": map[string]any{
+            "prompt": map[string]any{
+                "prompt": "You are a helpful support agent.",
+            },
+            "first_message": "Hello! How can I help?",
+        },
+    },
+})
+
+// List agents
+resp, err := client.Agents().List(ctx, &elevenlabs.ListAgentsOptions{
+    PageSize: 10,
+    Search:   "support",
+})
+
+// Get agent branches
+branches, err := client.Agents().ListBranches(ctx, agentID)
+for _, b := range branches {
+    fmt.Printf("Branch: %s (%.0f%% live)\n", b.Name, b.CurrentLivePercentage)
+}
+
+// Deploy with traffic splitting (A/B testing)
+err = client.Agents().Deploy(ctx, agentID, []elevenlabs.DeploymentRequest{
+    {BranchID: mainBranchID, Percentage: 80.0},
+    {BranchID: testBranchID, Percentage: 20.0},
+})
+
+// Get conversation topics
+topics, err := client.Agents().GetTopics(ctx, agentID)
+
+// Delete agent
+err = client.Agents().Delete(ctx, agentID)
+```
+
+### Conversations
+
+```go
+// List conversations with filters
+resp, err := client.Conversations().List(ctx, &elevenlabs.ListConversationsOptions{
+    AgentID:        agentID,
+    CallSuccessful: "success",
+    PageSize:       10,
+})
+
+// Get conversation details with transcript
+conv, err := client.Conversations().Get(ctx, conversationID)
+for _, msg := range conv.Transcript {
+    fmt.Printf("[%s] %s\n", msg.Role, msg.Message)
+}
+
+// Get conversation audio recording
+audio, err := client.Conversations().GetAudio(ctx, conversationID)
+
+// Search conversation transcripts
+results, err := client.Conversations().Search(ctx, "refund policy", nil)
+```
+
+### Knowledge Base
+
+```go
+// Upload a file document for RAG
+f, _ := os.Open("product-manual.pdf")
+doc, err := client.KnowledgeBase().CreateFileDocument(ctx, &elevenlabs.CreateFileDocumentRequest{
+    File:     f,
+    FileName: "product-manual.pdf",
+    Name:     "Product Manual",
+})
+
+// Create a text document
+doc, err := client.KnowledgeBase().CreateTextDocument(ctx, &elevenlabs.CreateTextDocumentRequest{
+    Content: "Your company FAQ content here...",
+    Name:    "Company FAQ",
+})
+
+// Index a URL
+doc, err := client.KnowledgeBase().CreateURLDocument(ctx, &elevenlabs.CreateURLDocumentRequest{
+    URL:  "https://docs.example.com/api",
+    Name: "API Documentation",
+})
+
+// List documents
+resp, err := client.KnowledgeBase().List(ctx, &elevenlabs.ListDocumentsOptions{
+    PageSize: 20,
+})
+
+// Get document chunks for RAG
+chunks, err := client.KnowledgeBase().GetChunks(ctx, documentID)
+```
+
+### Batch Calling
+
+```go
+// Create a batch call job
+batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
+    Name:          "Customer Outreach Campaign",
+    AgentID:       agentID,
+    PhoneNumberID: phoneNumberID,
+    Recipients: []elevenlabs.BatchCallRecipient{
+        {PhoneNumber: "+14155551234"},
+        {PhoneNumber: "+14155555678"},
+    },
+    Timezone: "America/New_York",
+})
+
+// List batch calls
+batches, err := client.BatchCalling().List(ctx, nil)
+
+// Cancel or retry a batch
+err = client.BatchCalling().Cancel(ctx, batchID)
+err = client.BatchCalling().Retry(ctx, batchID)
+```
+
+### Agent Testing
+
+```go
+// Create a test folder
+folder, err := client.AgentTesting().CreateFolder(ctx, &elevenlabs.CreateTestFolderRequest{
+    Name: "Regression Tests",
+})
+
+// List tests and folders
+tests, err := client.AgentTesting().ListTests(ctx, &elevenlabs.ListTestsOptions{
+    PageSize: 20,
+})
+
+// Get test details
+test, err := client.AgentTesting().GetResponseTest(ctx, testID)
+
+// Bulk move tests to a folder
+err = client.AgentTesting().BulkMoveTests(ctx, &elevenlabs.BulkMoveTestsRequest{
+    TestIDs:        []string{"test1", "test2"},
+    TargetFolderID: folderID,
+})
+```
+
+### Analytics
+
+```go
+// Get number of active conversations
+count, err := client.Analytics().GetLiveCount(ctx)
+fmt.Printf("Active conversations: %d\n", count)
 ```
 
 ## Examples

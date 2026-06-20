@@ -21,6 +21,16 @@ A Go SDK for the [ElevenLabs](https://elevenlabs.io/) AI Audio API.
 - **Twilio Integration** - Phone call integration for voice agents
 - **Phone Numbers** - Manage phone numbers for conversational AI
 
+### Conversational AI
+
+- **Agents** - Create and manage conversational AI agents
+- **Branches** - Version control with traffic splitting for A/B testing
+- **Conversations** - Access conversation history, transcripts, and audio
+- **Knowledge Base** - RAG document management for agent context
+- **Batch Calling** - Schedule and manage bulk outbound calls
+- **Agent Testing** - Organize test folders and run response tests
+- **Analytics** - Live conversation counts and insights
+
 ### Agent Experience (AX)
 
 - **Machine-Readable Errors** - Error codes for programmatic error handling
