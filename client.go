@@ -51,6 +51,14 @@ type Client struct {
 	twilio         *TwilioService
 	phoneNumbers   *PhoneNumberService
 	speechToSpeech *SpeechToSpeechService
+
+	// Conversational AI services
+	agents        *AgentsService
+	conversations *ConversationsService
+	batchCalling  *BatchCallingService
+	analytics     *AnalyticsService
+	knowledgeBase *KnowledgeBaseService
+	agentTesting  *AgentTestingService
 }
 
 // NewClient creates a new ElevenLabs client with the given options.
@@ -117,6 +125,14 @@ func NewClient(opts ...Option) (*Client, error) {
 	c.twilio = &TwilioService{client: c}
 	c.phoneNumbers = &PhoneNumberService{client: c}
 	c.speechToSpeech = &SpeechToSpeechService{client: c}
+
+	// Initialize conversational AI services
+	c.agents = &AgentsService{client: c}
+	c.conversations = &ConversationsService{client: c}
+	c.batchCalling = &BatchCallingService{client: c}
+	c.analytics = &AnalyticsService{client: c}
+	c.knowledgeBase = &KnowledgeBaseService{client: c}
+	c.agentTesting = &AgentTestingService{client: c}
 
 	return c, nil
 }
@@ -246,6 +262,36 @@ func (c *Client) PhoneNumbers() *PhoneNumberService {
 // SpeechToSpeech returns the speech-to-speech voice conversion service.
 func (c *Client) SpeechToSpeech() *SpeechToSpeechService {
 	return c.speechToSpeech
+}
+
+// Agents returns the conversational AI agents service.
+func (c *Client) Agents() *AgentsService {
+	return c.agents
+}
+
+// Conversations returns the conversations service.
+func (c *Client) Conversations() *ConversationsService {
+	return c.conversations
+}
+
+// BatchCalling returns the batch calling service.
+func (c *Client) BatchCalling() *BatchCallingService {
+	return c.batchCalling
+}
+
+// Analytics returns the analytics service.
+func (c *Client) Analytics() *AnalyticsService {
+	return c.analytics
+}
+
+// KnowledgeBase returns the knowledge base service.
+func (c *Client) KnowledgeBase() *KnowledgeBaseService {
+	return c.knowledgeBase
+}
+
+// AgentTesting returns the agent testing service.
+func (c *Client) AgentTesting() *AgentTestingService {
+	return c.agentTesting
 }
 
 // clientOptions holds the options for creating a Client.
