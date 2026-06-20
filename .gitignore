@@ -41,3 +41,6 @@ vendor/
 
 # Local examples (see agentplexus/omnivoice-examples for published examples)
 omnivoice/examples/
+
+# Claude Code local settings
+.claude/settings.local.json
