@@ -7,6 +7,51 @@
   "maintainers": ["johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.12.0",
+      "date": "2026-06-20",
+      "highlights": [
+        { "description": "Comprehensive Conversational AI support with six new services" },
+        { "description": "Agent management with branching, deployment, and traffic splitting" },
+        { "description": "Knowledge Base (RAG) for document management and agent context" }
+      ],
+      "added": [
+        { "description": "`AgentsService` for creating, managing, and deploying conversational AI agents", "commit": "efc9be9", "file": "agents.go" },
+        { "description": "`AgentsService.SimulateConversation()` and `SimulateConversationStream()` for agent testing", "commit": "efc9be9", "file": "agents_simulation.go" },
+        { "description": "Agent branch management: `ListBranches()`, `CreateBranch()`, `UpdateBranch()`, `MergeBranch()`", "commit": "efc9be9", "file": "agents.go" },
+        { "description": "Agent deployment with traffic splitting for A/B testing via `Deploy()`", "commit": "efc9be9", "file": "agents.go" },
+        { "description": "`ConversationsService` for accessing conversation history, transcripts, and audio", "commit": "7d775d2", "file": "conversations.go" },
+        { "description": "`ConversationsService.Search()` for searching conversation transcripts", "commit": "7d775d2", "file": "conversations.go" },
+        { "description": "`ConversationsService.RunAnalysis()` for conversation analysis", "commit": "7d775d2", "file": "conversations.go" },
+        { "description": "`KnowledgeBaseService` for RAG document management (files, text, URLs)", "commit": "dd10e73", "file": "knowledge_base.go" },
+        { "description": "`KnowledgeBaseService.GetChunks()` for retrieving document chunks", "commit": "dd10e73", "file": "knowledge_base.go" },
+        { "description": "`BatchCallingService` for scheduling and managing bulk outbound calls", "commit": "05d92cd", "file": "batch_calling.go" },
+        { "description": "`AnalyticsService.GetLiveCount()` for real-time active conversation count", "commit": "a2c2e34", "file": "analytics.go" },
+        { "description": "`AgentTestingService` for test folder organization and response test management", "commit": "1ac5ff4", "file": "agents_testing.go" },
+        { "description": "Client service accessors: `Agents()`, `Conversations()`, `KnowledgeBase()`, `BatchCalling()`, `Analytics()`, `AgentTesting()`", "commit": "c7348d7", "file": "client.go" }
+      ],
+      "documentation": [
+        { "description": "Conversational AI service documentation for all six new services", "commit": "d7dd5a2" },
+        { "description": "README updated with Conversational AI usage examples", "commit": "d7dd5a2" },
+        { "description": "API coverage documentation updated for new endpoints", "commit": "d7dd5a2" }
+      ],
+      "tests": [
+        { "description": "Unit tests for AgentsService", "commit": "efc9be9", "file": "agents_test.go" },
+        { "description": "Unit tests for ConversationsService", "commit": "7d775d2", "file": "conversations_test.go" },
+        { "description": "Unit tests for KnowledgeBaseService", "commit": "dd10e73", "file": "knowledge_base_test.go" },
+        { "description": "Unit tests for BatchCallingService", "commit": "05d92cd", "file": "batch_calling_test.go" },
+        { "description": "Unit tests for AnalyticsService", "commit": "a2c2e34", "file": "analytics_test.go" },
+        { "description": "Unit tests for AgentTestingService", "commit": "1ac5ff4", "file": "agents_testing_test.go" }
+      ],
+      "dependencies": [
+        { "description": "Bump `github.com/ogen-go/ogen` from 1.20.3 to 1.22.0", "commit": "bed78db" },
+        { "description": "Bump `github.com/plexusone/ogen-tools` from 0.2.1 to 0.3.0", "commit": "42b7d2c" },
+        { "description": "Bump `github.com/plexusone/omnivoice-core` from 0.13.0 to 0.14.0", "commit": "89b9a1e" }
+      ],
+      "build": [
+        { "description": "Bump `actions/checkout` from 6 to 7 in GitHub Actions", "commit": "84b3dcf" }
+      ]
+    },
+    {
       "version": "v0.11.0",
       "date": "2026-06-15",
       "highlights": [
