@@ -19,6 +19,7 @@ import (
 
 	"github.com/grokify/mogo/log/slogutil"
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/realtime"
 )
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 	}
 
 	// Get a voice to use
-	voices, err := client.Voices().List(ctx)
+	voices, err := client.Voice().List(ctx)
 	if err != nil {
 		logError(ctx, "Failed to list voices", err)
 		os.Exit(1)
@@ -48,7 +49,7 @@ func main() {
 	logInfo(ctx, "Using voice", "name", voices[0].Name, "id", voiceID)
 
 	// Connect to WebSocket TTS with low-latency settings
-	conn, err := client.WebSocketTTS().Connect(ctx, voiceID, &elevenlabs.WebSocketTTSOptions{
+	conn, err := client.Realtime().ConnectTTS(ctx, voiceID, &realtime.TTSOptions{
 		ModelID:                  "eleven_turbo_v2_5", // Fast model for real-time
 		OutputFormat:             "mp3_44100_128",     // MP3 for easy playback
 		OptimizeStreamingLatency: 3,                   // Balance latency vs quality
@@ -143,7 +144,7 @@ func logError(ctx context.Context, msg string, err error, args ...any) {
 //
 //nolint:unused // Example function for documentation
 func streamTextExample(ctx context.Context, client *elevenlabs.Client, voiceID string) {
-	conn, err := client.WebSocketTTS().Connect(ctx, voiceID, nil)
+	conn, err := client.Realtime().ConnectTTS(ctx, voiceID, nil)
 	if err != nil {
 		logError(ctx, "Failed to connect", err)
 		os.Exit(1)
@@ -179,7 +180,7 @@ func streamTextExample(ctx context.Context, client *elevenlabs.Client, voiceID s
 //
 //nolint:unused // Example function for documentation
 func alignmentExample(ctx context.Context, client *elevenlabs.Client, voiceID string) {
-	conn, err := client.WebSocketTTS().Connect(ctx, voiceID, nil)
+	conn, err := client.Realtime().ConnectTTS(ctx, voiceID, nil)
 	if err != nil {
 		logError(ctx, "Failed to connect", err)
 		os.Exit(1)

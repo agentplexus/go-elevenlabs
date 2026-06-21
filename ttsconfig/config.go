@@ -4,7 +4,7 @@ package ttsconfig
 import (
 	"os"
 
-	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/tts"
 	"gopkg.in/yaml.v3"
 )
 
@@ -84,13 +84,19 @@ func Save(path string, config *Config) error {
 	return os.WriteFile(path, []byte(header+string(data)), 0600)
 }
 
-// ToElevenLabsSettings converts VoiceSettings to elevenlabs.VoiceSettings.
-func (v *VoiceSettings) ToElevenLabsSettings() *elevenlabs.VoiceSettings {
+// ToElevenLabsSettings converts VoiceSettings to tts.VoiceSettings.
+// Deprecated: Use ToTTSSettings instead.
+func (v *VoiceSettings) ToElevenLabsSettings() *tts.VoiceSettings {
+	return v.ToTTSSettings()
+}
+
+// ToTTSSettings converts VoiceSettings to tts.VoiceSettings.
+func (v *VoiceSettings) ToTTSSettings() *tts.VoiceSettings {
 	if v == nil {
-		return elevenlabs.DefaultVoiceSettings()
+		return tts.DefaultVoiceSettings()
 	}
 
-	settings := elevenlabs.DefaultVoiceSettings()
+	settings := tts.DefaultVoiceSettings()
 
 	if v.Stability != nil {
 		settings.Stability = *v.Stability

@@ -20,6 +20,7 @@ import (
 
 	"github.com/grokify/mogo/log/slogutil"
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/tts"
 )
 
 func main() {
@@ -47,7 +48,7 @@ func main() {
 	}
 
 	// Get a voice to convert to
-	voices, err := client.Voices().List(ctx)
+	voices, err := client.Voice().List(ctx)
 	if err != nil {
 		logError(ctx, "Failed to list voices", err)
 		os.Exit(1)
@@ -78,7 +79,7 @@ func main() {
 
 	// Convert voice
 	logInfo(ctx, "Converting...")
-	resp, err := client.SpeechToSpeech().Convert(ctx, &elevenlabs.SpeechToSpeechRequest{
+	resp, err := client.TTS().ConvertSpeech(ctx, &tts.SpeechToSpeechRequest{
 		VoiceID:       targetVoice.VoiceID,
 		Audio:         inputFile,
 		AudioFilename: inputPath,
@@ -87,7 +88,7 @@ func main() {
 		ModelID: "eleven_english_sts_v2",
 
 		// Optional: configure voice settings
-		VoiceSettings: &elevenlabs.VoiceSettings{
+		VoiceSettings: &tts.VoiceSettings{
 			Stability:       0.5,
 			SimilarityBoost: 0.8,
 		},
@@ -136,7 +137,7 @@ func logError(ctx context.Context, msg string, err error, args ...any) {
 //nolint:unused // Example function for documentation
 func simpleConversion(ctx context.Context, client *elevenlabs.Client, voiceID string, audio io.Reader) {
 	// Simple method for quick conversion
-	output, err := client.SpeechToSpeech().Simple(ctx, voiceID, audio)
+	output, err := client.TTS().SimpleSpeechToSpeech(ctx, voiceID, audio)
 	if err != nil {
 		logError(ctx, "Conversion failed", err)
 		os.Exit(1)
@@ -160,7 +161,7 @@ func simpleConversion(ctx context.Context, client *elevenlabs.Client, voiceID st
 //
 //nolint:unused // Example function for documentation
 func streamingConversion(ctx context.Context, client *elevenlabs.Client, voiceID string, audio io.Reader) {
-	resp, err := client.SpeechToSpeech().ConvertStream(ctx, &elevenlabs.SpeechToSpeechRequest{
+	resp, err := client.TTS().ConvertSpeechStream(ctx, &tts.SpeechToSpeechRequest{
 		VoiceID:      voiceID,
 		Audio:        audio,
 		OutputFormat: "pcm_22050", // PCM for real-time playback
@@ -193,7 +194,7 @@ func seededConversion(ctx context.Context, client *elevenlabs.Client, voiceID st
 	}
 	defer seedFile.Close()
 
-	resp, err := client.SpeechToSpeech().Convert(ctx, &elevenlabs.SpeechToSpeechRequest{
+	resp, err := client.TTS().ConvertSpeech(ctx, &tts.SpeechToSpeechRequest{
 		VoiceID: voiceID,
 		Audio:   sourceFile,
 

@@ -199,7 +199,7 @@ func generateAudio(script *ttsscript.Script, language string) {
 
 		fmt.Printf("Generating segment %d/%d: %s\n", i+1, len(jobs), truncate(job.Text, 40))
 
-		audio, err := client.TextToSpeech().Simple(ctx, job.VoiceID, job.Text)
+		audio, err := client.TTS().Simple(ctx, job.VoiceID, job.Text)
 		if err != nil {
 			log.Printf("Failed to generate segment %d: %v", i+1, err)
 			continue

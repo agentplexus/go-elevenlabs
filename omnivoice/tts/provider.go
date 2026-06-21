@@ -139,7 +139,7 @@ func (p *Provider) Synthesize(ctx context.Context, text string, config tts.Synth
 	req := omnivoice.ConfigToTTSRequest(text, config)
 
 	result, err := resilience.RetryWithResult(ctx, p.retryConfig, func() (*tts.SynthesisResult, error) {
-		resp, err := p.client.TextToSpeech().Generate(ctx, req)
+		resp, err := p.client.TTS().Generate(ctx, req)
 		if err != nil {
 			return nil, p.classifier.WrapError("Synthesize", err)
 		}
@@ -184,7 +184,7 @@ func (p *Provider) SynthesizeStream(ctx context.Context, text string, config tts
 		opts.InactivityTimeout = 5 // 5 seconds
 	}
 
-	conn, err := p.client.WebSocketTTS().Connect(ctx, config.VoiceID, opts)
+	conn, err := p.client.Realtime().ConnectTTS(ctx, config.VoiceID, opts)
 	if err != nil {
 		return nil, p.classifier.WrapError("SynthesizeStream", err)
 	}
@@ -267,7 +267,7 @@ func (p *Provider) SynthesizeFromReader(ctx context.Context, reader io.Reader, c
 		opts.InactivityTimeout = 5 // 5 seconds
 	}
 
-	conn, err := p.client.WebSocketTTS().Connect(ctx, config.VoiceID, opts)
+	conn, err := p.client.Realtime().ConnectTTS(ctx, config.VoiceID, opts)
 	if err != nil {
 		return nil, p.classifier.WrapError("SynthesizeFromReader", err)
 	}
@@ -359,7 +359,7 @@ func (p *Provider) ListVoices(ctx context.Context) ([]tts.Voice, error) {
 
 	// Fetch from API with retry
 	result, err := resilience.RetryWithResult(ctx, p.retryConfig, func() ([]tts.Voice, error) {
-		voices, err := p.client.Voices().List(ctx)
+		voices, err := p.client.Voice().List(ctx)
 		if err != nil {
 			return nil, p.classifier.WrapError("ListVoices", err)
 		}
@@ -388,7 +388,7 @@ func (p *Provider) ListVoices(ctx context.Context) ([]tts.Voice, error) {
 // Returns tts.ErrVoiceNotFound for invalid voice IDs.
 func (p *Provider) GetVoice(ctx context.Context, voiceID string) (*tts.Voice, error) {
 	result, err := resilience.RetryWithResult(ctx, p.retryConfig, func() (*tts.Voice, error) {
-		voice, err := p.client.Voices().Get(ctx, voiceID)
+		voice, err := p.client.Voice().Get(ctx, voiceID)
 		if err != nil {
 			// Parse the error to get API-level details
 			apiErr := elevenlabs.ParseAPIError(err)

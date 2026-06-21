@@ -19,6 +19,7 @@ import (
 
 	"github.com/grokify/mogo/log/slogutil"
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/realtime"
 )
 
 func main() {
@@ -45,7 +46,7 @@ func main() {
 	}
 
 	// Connect to WebSocket STT with scribe_v2_realtime
-	conn, err := client.WebSocketSTT().Connect(ctx, &elevenlabs.WebSocketSTTOptions{
+	conn, err := client.Realtime().ConnectSTT(ctx, &realtime.STTOptions{
 		ModelID:           "scribe_v2_realtime",
 		AudioFormat:       "pcm_16000", // 16kHz PCM audio
 		IncludeTimestamps: true,        // Get word-level timing
@@ -168,7 +169,7 @@ func logError(ctx context.Context, msg string, err error, args ...any) {
 //
 //nolint:unused // Example function for documentation
 func streamAudioExample(ctx context.Context, client *elevenlabs.Client) {
-	conn, err := client.WebSocketSTT().Connect(ctx, &elevenlabs.WebSocketSTTOptions{
+	conn, err := client.Realtime().ConnectSTT(ctx, &realtime.STTOptions{
 		AudioFormat:       "pcm_16000",
 		IncludeTimestamps: true,
 	})

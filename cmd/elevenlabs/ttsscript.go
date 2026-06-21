@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/tts"
 	"github.com/plexusone/elevenlabs-go/ttsscript"
 	"github.com/spf13/cobra"
 )
@@ -171,11 +172,11 @@ func runTTSScript(cmd *cobra.Command, args []string) error {
 			"type", segType,
 			"text", truncateText(job.Text, 50))
 
-		resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+		resp, err := client.TTS().Generate(ctx, &tts.Request{
 			VoiceID:       job.VoiceID,
 			Text:          job.Text,
 			ModelID:       ttsscriptModelID,
-			VoiceSettings: elevenlabs.DefaultVoiceSettings(),
+			VoiceSettings: tts.DefaultVoiceSettings(),
 		})
 		if err != nil {
 			logger.Error("failed to generate speech", "error", err)

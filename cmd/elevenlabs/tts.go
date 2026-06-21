@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/tts"
 	"github.com/plexusone/elevenlabs-go/ttsconfig"
 	"github.com/spf13/cobra"
 )
@@ -199,7 +200,7 @@ func runTTS(cmd *cobra.Command, args []string) error {
 	ctx := context.Background()
 
 	// Build voice settings from config
-	voiceSettings := config.VoiceSettings.ToElevenLabsSettings()
+	voiceSettings := config.VoiceSettings.ToTTSSettings()
 
 	logger.Info("generating speech",
 		"input", inputFile,
@@ -214,7 +215,7 @@ func runTTS(cmd *cobra.Command, args []string) error {
 		"speed", voiceSettings.Speed)
 
 	// Generate speech
-	resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+	resp, err := client.TTS().Generate(ctx, &tts.Request{
 		VoiceID:       config.VoiceID,
 		Text:          text,
 		ModelID:       config.ModelID,

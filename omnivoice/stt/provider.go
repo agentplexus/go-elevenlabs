@@ -10,6 +10,8 @@ import (
 
 	elevenlabs "github.com/plexusone/elevenlabs-go"
 	"github.com/plexusone/elevenlabs-go/omnivoice"
+	"github.com/plexusone/elevenlabs-go/realtime"
+	sttpkg "github.com/plexusone/elevenlabs-go/stt"
 	"github.com/plexusone/omnivoice-core/stt"
 )
 
@@ -89,7 +91,7 @@ func (p *Provider) Transcribe(ctx context.Context, audio []byte, config stt.Tran
 	req := configToTranscriptionRequest(config)
 	req.FileBytes = audio
 
-	resp, err := p.client.SpeechToText().Transcribe(ctx, req)
+	resp, err := p.client.STT().Transcribe(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("elevenlabs stt failed: %w", err)
 	}
@@ -112,7 +114,7 @@ func (p *Provider) TranscribeURL(ctx context.Context, url string, config stt.Tra
 	req := configToTranscriptionRequest(config)
 	req.FileURL = url
 
-	resp, err := p.client.SpeechToText().Transcribe(ctx, req)
+	resp, err := p.client.STT().Transcribe(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("elevenlabs stt failed: %w", err)
 	}
@@ -121,8 +123,8 @@ func (p *Provider) TranscribeURL(ctx context.Context, url string, config stt.Tra
 }
 
 // configToTranscriptionRequest converts OmniVoice config to ElevenLabs request.
-func configToTranscriptionRequest(config stt.TranscriptionConfig) *elevenlabs.TranscriptionRequest {
-	req := &elevenlabs.TranscriptionRequest{
+func configToTranscriptionRequest(config stt.TranscriptionConfig) *sttpkg.Request {
+	req := &sttpkg.Request{
 		LanguageCode: config.Language,
 		Diarize:      config.EnableSpeakerDiarization,
 		NumSpeakers:  config.MaxSpeakers,
@@ -146,7 +148,7 @@ func configToTranscriptionRequest(config stt.TranscriptionConfig) *elevenlabs.Tr
 func (p *Provider) TranscribeStream(ctx context.Context, config stt.TranscriptionConfig) (io.WriteCloser, <-chan stt.StreamEvent, error) {
 	opts := omnivoice.ConfigToWebSocketSTTOptions(config)
 
-	conn, err := p.client.WebSocketSTT().Connect(ctx, opts)
+	conn, err := p.client.Realtime().ConnectSTT(ctx, opts)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to connect WebSocket STT: %w", err)
 	}
@@ -194,7 +196,7 @@ func (p *Provider) TranscribeStream(ctx context.Context, config stt.Transcriptio
 
 // streamWriter wraps the WebSocket connection to implement io.WriteCloser.
 type streamWriter struct {
-	conn    *elevenlabs.WebSocketSTTConnection
+	conn    *realtime.STTConnection
 	eventCh chan stt.StreamEvent
 	ctx     context.Context
 	mu      sync.Mutex

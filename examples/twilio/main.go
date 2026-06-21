@@ -26,6 +26,7 @@ import (
 
 	"github.com/grokify/mogo/log/slogutil"
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/telephony"
 )
 
 var client *elevenlabs.Client
@@ -72,7 +73,7 @@ func listPhoneNumbers(ctx context.Context) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	numbers, err := client.PhoneNumbers().List(ctx)
+	numbers, err := client.Telephony().ListPhoneNumbers(ctx)
 	if err != nil {
 		logError(ctx, "Failed to list phone numbers", err)
 		return
@@ -126,7 +127,7 @@ func handleIncomingCall(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Register call with ElevenLabs
-	resp, err := client.Twilio().RegisterCall(ctx, &elevenlabs.TwilioRegisterCallRequest{
+	resp, err := client.Telephony().RegisterCall(ctx, &telephony.RegisterCallRequest{
 		AgentID: agentID,
 
 		// Inject caller info as dynamic variables
@@ -189,7 +190,7 @@ func handleOutboundCall(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Make outbound call
-	call, err := client.Twilio().OutboundCall(ctx, &elevenlabs.TwilioOutboundCallRequest{
+	call, err := client.Telephony().OutboundCall(ctx, &telephony.OutboundCallRequest{
 		AgentID:            req.AgentID,
 		AgentPhoneNumberID: req.AgentPhoneNumberID,
 		ToNumber:           req.ToNumber,
@@ -219,7 +220,7 @@ func handleOutboundCall(w http.ResponseWriter, r *http.Request) {
 func handleListPhoneNumbers(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	numbers, err := client.PhoneNumbers().List(ctx)
+	numbers, err := client.Telephony().ListPhoneNumbers(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -249,7 +250,7 @@ func logError(ctx context.Context, msg string, err error, args ...any) {
 //
 //nolint:unused // Example function for documentation
 func sipOutboundExample(ctx context.Context, client *elevenlabs.Client) {
-	call, err := client.Twilio().SIPOutboundCall(ctx, &elevenlabs.SIPOutboundCallRequest{
+	call, err := client.Telephony().SIPOutboundCall(ctx, &telephony.SIPOutboundCallRequest{
 		AgentID:    "your-agent-id",
 		SIPTrunkID: "your-sip-trunk-id",
 		ToNumber:   "+1234567890",
@@ -272,8 +273,8 @@ func sipOutboundExample(ctx context.Context, client *elevenlabs.Client) {
 //
 //nolint:unused // Example function for documentation
 func updatePhoneNumberExample(ctx context.Context, client *elevenlabs.Client) {
-	updated, err := client.PhoneNumbers().Update(ctx, "phone-number-id",
-		&elevenlabs.UpdatePhoneNumberRequest{
+	updated, err := client.Telephony().UpdatePhoneNumber(ctx, "phone-number-id",
+		&telephony.UpdatePhoneNumberRequest{
 			Label:   "Customer Support Line",
 			AgentID: "new-agent-id",
 		})

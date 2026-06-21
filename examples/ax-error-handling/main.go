@@ -24,7 +24,7 @@ func main() {
 	ctx := context.Background()
 
 	// Example: Attempt to get a non-existent voice
-	_, err = client.Voices().Get(ctx, "non-existent-voice-id")
+	_, err = client.Voice().Get(ctx, "non-existent-voice-id")
 	if err != nil {
 		handleError(err)
 	}

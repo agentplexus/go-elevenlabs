@@ -10,6 +10,7 @@ import (
 	"github.com/grokify/mogo/os/osutil"
 	"github.com/grokify/mogo/text/stringcase"
 	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/tts"
 )
 
 const (
@@ -26,7 +27,7 @@ func main() {
 	ctx := context.Background()
 
 	// List available voices
-	voices, err := client.Voices().List(ctx)
+	voices, err := client.Voice().List(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,10 +58,10 @@ func main() {
 
 	if 1 == 0 {
 		// Generate speech with voice settings preset
-		audio, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+		audio, err := client.TTS().Generate(ctx, &tts.Request{
 			VoiceID:       voiceID,
 			Text:          quoteText,
-			VoiceSettings: elevenlabs.VoiceSettingsForYouTube(),
+			VoiceSettings: tts.VoiceSettingsForYouTube(),
 		})
 		if err != nil {
 			log.Fatal(err)
@@ -85,15 +86,15 @@ func main() {
 	//format := "mp3_44100_192"
 
 	model := "eleven_multilingual_v2"
-	req := &elevenlabs.TTSRequest{
+	req := &tts.Request{
 		VoiceID:       voiceID,
 		Text:          quoteText,
 		ModelID:       model,
-		VoiceSettings: elevenlabs.VoiceSettingsForCoursera(),
+		VoiceSettings: tts.VoiceSettingsForCoursera(),
 		OutputFormat:  format,
 	}
 
-	resp, err := client.TextToSpeech().Generate(context.Background(), req)
+	resp, err := client.TTS().Generate(context.Background(), req)
 	if err != nil {
 		fmt.Println("ERR_HERE")
 		if apiErr := elevenlabs.ParseAPIError(err); apiErr != nil {

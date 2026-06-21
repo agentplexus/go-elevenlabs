@@ -26,7 +26,7 @@ func main() {
 
 	// List available voices
 	fmt.Println("=== Available Voices ===")
-	voices, err := client.Voices().List(ctx)
+	voices, err := client.Voice().List(ctx)
 	if err != nil {
 		log.Fatalf("Failed to list voices: %v", err)
 	}
@@ -36,7 +36,7 @@ func main() {
 
 	// List available models
 	fmt.Println("\n=== Available Models ===")
-	models, err := client.Models().ListTTSModels(ctx)
+	models, err := client.Account().ListModels(ctx)
 	if err != nil {
 		log.Fatalf("Failed to list models: %v", err)
 	}
@@ -46,7 +46,7 @@ func main() {
 
 	// Check subscription
 	fmt.Println("\n=== Subscription ===")
-	sub, err := client.User().GetSubscription(ctx)
+	sub, err := client.Account().GetSubscription(ctx)
 	if err != nil {
 		log.Fatalf("Failed to get subscription: %v", err)
 	}
@@ -56,7 +56,7 @@ func main() {
 
 	// List Studio Projects
 	fmt.Println("\n=== Studio Projects ===")
-	projects, err := client.Projects().List(ctx)
+	projects, err := client.Content().ListProjects(ctx)
 	if err != nil {
 		log.Printf("  Failed to list projects: %v", err)
 	} else {
@@ -68,7 +68,7 @@ func main() {
 
 	// List Pronunciation Dictionaries
 	fmt.Println("\n=== Pronunciation Dictionaries ===")
-	dictResp, err := client.Pronunciation().List(ctx, nil)
+	dictResp, err := client.Account().ListPronunciationDictionaries(ctx, nil)
 	if err != nil {
 		log.Printf("  Failed to list dictionaries: %v", err)
 	} else {
@@ -83,7 +83,7 @@ func main() {
 		fmt.Println("\n=== Generating Speech ===")
 		voiceID := voices[0].VoiceID
 
-		audio, err := client.TextToSpeech().Simple(ctx, voiceID, "Hello, welcome to ElevenLabs!")
+		audio, err := client.TTS().Simple(ctx, voiceID, "Hello, welcome to ElevenLabs!")
 		if err != nil {
 			log.Fatalf("Failed to generate speech: %v", err)
 		}

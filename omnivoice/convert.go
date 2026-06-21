@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	elevenlabs "github.com/plexusone/elevenlabs-go"
+	"github.com/plexusone/elevenlabs-go/realtime"
+	sttpkg "github.com/plexusone/elevenlabs-go/stt"
+	ttspkg "github.com/plexusone/elevenlabs-go/tts"
+	"github.com/plexusone/elevenlabs-go/voice"
 	"github.com/plexusone/omnivoice-core/stt"
 	"github.com/plexusone/omnivoice-core/tts"
 )
@@ -17,7 +20,7 @@ const (
 )
 
 // VoiceToOmniVoice converts an ElevenLabs Voice to an OmniVoice Voice.
-func VoiceToOmniVoice(v *elevenlabs.Voice) tts.Voice {
+func VoiceToOmniVoice(v *voice.Voice) tts.Voice {
 	voice := tts.Voice{
 		ID:       v.VoiceID,
 		Name:     v.Name,
@@ -49,11 +52,11 @@ func VoiceToOmniVoice(v *elevenlabs.Voice) tts.Voice {
 }
 
 // ConfigToTTSRequest converts an OmniVoice SynthesisConfig to an ElevenLabs TTSRequest.
-func ConfigToTTSRequest(text string, config tts.SynthesisConfig) *elevenlabs.TTSRequest {
+func ConfigToTTSRequest(text string, config tts.SynthesisConfig) *ttspkg.Request {
 	// Apply pitch adjustment via SSML if specified
 	processedText := applyPitchSSML(text, config.Pitch)
 
-	req := &elevenlabs.TTSRequest{
+	req := &ttspkg.Request{
 		VoiceID: config.VoiceID,
 		Text:    processedText,
 		ModelID: config.Model,
@@ -70,7 +73,7 @@ func ConfigToTTSRequest(text string, config tts.SynthesisConfig) *elevenlabs.TTS
 
 	// Set voice settings if any are specified (core or extensions)
 	if config.Stability > 0 || config.SimilarityBoost > 0 || config.Speed > 0 || style > 0 || speakerBoost {
-		settings := elevenlabs.DefaultVoiceSettings()
+		settings := ttspkg.DefaultVoiceSettings()
 		if config.Stability > 0 {
 			settings.Stability = config.Stability
 		}
@@ -132,8 +135,8 @@ func applyPitchSSML(text string, pitch float64) string {
 }
 
 // ConfigToWebSocketTTSOptions converts OmniVoice SynthesisConfig to ElevenLabs WebSocket options.
-func ConfigToWebSocketTTSOptions(config tts.SynthesisConfig) *elevenlabs.WebSocketTTSOptions {
-	opts := elevenlabs.DefaultWebSocketTTSOptions()
+func ConfigToWebSocketTTSOptions(config tts.SynthesisConfig) *realtime.TTSOptions {
+	opts := realtime.DefaultTTSOptions()
 
 	if config.Model != "" {
 		opts.ModelID = config.Model
@@ -149,7 +152,7 @@ func ConfigToWebSocketTTSOptions(config tts.SynthesisConfig) *elevenlabs.WebSock
 
 	// Set voice settings if any are specified (core or extensions)
 	if config.Stability > 0 || config.SimilarityBoost > 0 || config.Speed > 0 || style > 0 || speakerBoost {
-		settings := elevenlabs.DefaultVoiceSettings()
+		settings := realtime.DefaultVoiceSettings()
 		if config.Stability > 0 {
 			settings.Stability = config.Stability
 		}
@@ -228,8 +231,8 @@ func mapOutputFormat(format string, sampleRate int) string {
 }
 
 // ConfigToWebSocketSTTOptions converts OmniVoice TranscriptionConfig to ElevenLabs WebSocket options.
-func ConfigToWebSocketSTTOptions(config stt.TranscriptionConfig) *elevenlabs.WebSocketSTTOptions {
-	opts := elevenlabs.DefaultWebSocketSTTOptions()
+func ConfigToWebSocketSTTOptions(config stt.TranscriptionConfig) *realtime.STTOptions {
+	opts := realtime.DefaultSTTOptions()
 
 	if config.Model != "" {
 		opts.ModelID = config.Model
@@ -282,7 +285,7 @@ func mapAudioFormat(encoding string, sampleRate int) string {
 }
 
 // TranscriptToStreamEvent converts an ElevenLabs STT transcript to an OmniVoice stream event.
-func TranscriptToStreamEvent(t *elevenlabs.STTTranscript) stt.StreamEvent {
+func TranscriptToStreamEvent(t *realtime.STTTranscript) stt.StreamEvent {
 	event := stt.StreamEvent{
 		Transcript: t.Text,
 		IsFinal:    t.IsFinal,
@@ -320,7 +323,7 @@ func TranscriptToStreamEvent(t *elevenlabs.STTTranscript) stt.StreamEvent {
 }
 
 // TranscriptionResultFromResponse converts an ElevenLabs transcription response to OmniVoice format.
-func TranscriptionResultFromResponse(resp *elevenlabs.TranscriptionResponse) *stt.TranscriptionResult {
+func TranscriptionResultFromResponse(resp *sttpkg.Response) *stt.TranscriptionResult {
 	result := &stt.TranscriptionResult{
 		Text:     resp.Text,
 		Language: resp.LanguageCode,

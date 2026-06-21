@@ -48,7 +48,7 @@ func main() {
 	ctx := context.Background()
 
 	// Make API calls - they will automatically retry on rate limits
-	audio, err := client.TextToSpeech().Simple(ctx, voices.Rachel, "Hello world!")
+	audio, err := client.TTS().Simple(ctx, voices.Rachel, "Hello world!")
 	if err != nil {
 		log.Fatalf("TTS failed: %v", err)
 	}

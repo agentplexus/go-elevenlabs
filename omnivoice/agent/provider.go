@@ -10,6 +10,7 @@ import (
 
 	elevenlabs "github.com/plexusone/elevenlabs-go"
 	"github.com/plexusone/elevenlabs-go/omnivoice"
+	"github.com/plexusone/elevenlabs-go/realtime"
 	"github.com/plexusone/omnivoice-core/agent"
 )
 
@@ -157,8 +158,8 @@ type Session struct {
 	client *elevenlabs.Client
 
 	// Connections
-	ttsConn *elevenlabs.WebSocketTTSConnection
-	sttConn *elevenlabs.WebSocketSTTConnection
+	ttsConn *realtime.TTSConnection
+	sttConn *realtime.STTConnection
 
 	// Channels
 	events   chan agent.Event
@@ -191,27 +192,27 @@ func (s *Session) Start(ctx context.Context) error {
 	s.mu.Unlock()
 
 	// Connect TTS
-	ttsOpts := &elevenlabs.WebSocketTTSOptions{
+	ttsOpts := &realtime.TTSOptions{
 		ModelID:                  "eleven_turbo_v2_5",
 		OutputFormat:             "pcm_16000",
 		OptimizeStreamingLatency: 3,
 	}
 
 	var err error
-	s.ttsConn, err = s.client.WebSocketTTS().Connect(ctx, s.config.VoiceID, ttsOpts)
+	s.ttsConn, err = s.client.Realtime().ConnectTTS(ctx, s.config.VoiceID, ttsOpts)
 	if err != nil {
 		return fmt.Errorf("failed to connect TTS: %w", err)
 	}
 
 	// Connect STT
-	sttOpts := &elevenlabs.WebSocketSTTOptions{
+	sttOpts := &realtime.STTOptions{
 		ModelID:           "scribe_v2_realtime",
 		AudioFormat:       "pcm_16000",
 		IncludeTimestamps: true,
 		LanguageCode:      s.config.Language,
 	}
 
-	s.sttConn, err = s.client.WebSocketSTT().Connect(ctx, sttOpts)
+	s.sttConn, err = s.client.Realtime().ConnectSTT(ctx, sttOpts)
 	if err != nil {
 		_ = s.ttsConn.Close() // Best effort cleanup
 		return fmt.Errorf("failed to connect STT: %w", err)
