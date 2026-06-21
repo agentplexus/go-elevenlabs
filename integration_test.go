@@ -18,6 +18,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/plexusone/elevenlabs-go/account"
 )
 
 func skipIfNoAPIKey(t *testing.T) {
@@ -50,9 +52,9 @@ func TestVoicesListNullHandling(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	voices, err := client.Voices().List(ctx)
+	voices, err := client.Voice().List(ctx)
 	if err != nil {
-		t.Fatalf("Voices().List: %v", err)
+		t.Fatalf("Voice().List: %v", err)
 	}
 
 	t.Logf("Successfully listed %d voices", len(voices))
@@ -85,10 +87,10 @@ func TestModelsListNullHandling(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	models, err := client.Models().List(ctx)
+	models, err := client.Account().ListModels(ctx)
 	skipOn401(t, err)
 	if err != nil {
-		t.Fatalf("Models().List: %v", err)
+		t.Fatalf("Account().ListModels: %v", err)
 	}
 
 	t.Logf("Successfully listed %d models", len(models))
@@ -111,10 +113,10 @@ func TestUserGetNullHandling(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	user, err := client.User().GetInfo(ctx)
+	user, err := client.Account().GetUser(ctx)
 	skipOn401(t, err)
 	if err != nil {
-		t.Fatalf("User().GetInfo: %v", err)
+		t.Fatalf("Account().GetUser: %v", err)
 	}
 
 	t.Logf("Successfully got user info for: %s", user.FirstName)
@@ -134,10 +136,10 @@ func TestHistoryListNullHandling(t *testing.T) {
 	defer cancel()
 
 	// Just fetch first page with a small limit
-	history, err := client.History().List(ctx, &HistoryListOptions{PageSize: 10})
+	history, err := client.Account().ListHistory(ctx, &account.HistoryListOptions{PageSize: 10})
 	skipOn401(t, err)
 	if err != nil {
-		t.Fatalf("History().List: %v", err)
+		t.Fatalf("Account().ListHistory: %v", err)
 	}
 
 	t.Logf("Successfully listed %d history items", len(history.Items))
