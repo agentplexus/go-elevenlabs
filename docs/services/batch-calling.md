@@ -2,6 +2,9 @@
 
 Schedule and manage bulk outbound calls with Conversational AI agents.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Batch Calling methods are accessed via `client.Agents()` instead of `client.BatchCalling()`.
+
 ## Overview
 
 The Batch Calling service enables:
@@ -17,11 +20,13 @@ The Batch Calling service enables:
 ### Basic Batch Call
 
 ```go
-batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
-    Name:          "Customer Outreach",
-    AgentID:       agentID,
-    PhoneNumberID: phoneNumberID,
-    Recipients: []elevenlabs.BatchCallRecipient{
+import "github.com/plexusone/elevenlabs-go/agents"
+
+batch, err := client.Agents().CreateBatchCall(ctx, &agents.CreateBatchCallRequest{
+    Name:               "Customer Outreach",
+    AgentID:            agentID,
+    AgentPhoneNumberID: phoneNumberID,
+    Recipients: []agents.BatchCallRecipient{
         {PhoneNumber: "+14155551234"},
         {PhoneNumber: "+14155555678"},
         {PhoneNumber: "+14155559012"},
@@ -41,13 +46,13 @@ fmt.Printf("Scheduled: %d calls\n", batch.TotalCallsScheduled)
 // Schedule for tomorrow at 9 AM EST
 scheduledTime := int(time.Now().Add(24 * time.Hour).Unix())
 
-batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
-    Name:              "Appointment Reminders",
-    AgentID:           agentID,
-    PhoneNumberID:     phoneNumberID,
-    ScheduledTimeUnix: &scheduledTime,
-    Timezone:          "America/New_York",
-    Recipients: []elevenlabs.BatchCallRecipient{
+batch, err := client.Agents().CreateBatchCall(ctx, &agents.CreateBatchCallRequest{
+    Name:               "Appointment Reminders",
+    AgentID:            agentID,
+    AgentPhoneNumberID: phoneNumberID,
+    ScheduledTimeUnix:  &scheduledTime,
+    Timezone:           "America/New_York",
+    Recipients: []agents.BatchCallRecipient{
         {PhoneNumber: "+14155551234"},
         {PhoneNumber: "+14155555678"},
     },
@@ -59,12 +64,12 @@ batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallReque
 ```go
 concurrencyLimit := 5 // Max 5 simultaneous calls
 
-batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
+batch, err := client.Agents().CreateBatchCall(ctx, &agents.CreateBatchCallRequest{
     Name:                   "High-Volume Campaign",
     AgentID:                agentID,
-    PhoneNumberID:          phoneNumberID,
+    AgentPhoneNumberID:     phoneNumberID,
     TargetConcurrencyLimit: &concurrencyLimit,
-    Recipients: []elevenlabs.BatchCallRecipient{
+    Recipients: []agents.BatchCallRecipient{
         {PhoneNumber: "+14155551234"},
         // ... many more recipients
     },
@@ -74,15 +79,15 @@ batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallReque
 ### With Custom Data per Recipient
 
 ```go
-batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
-    Name:          "Personalized Outreach",
-    AgentID:       agentID,
-    PhoneNumberID: phoneNumberID,
-    Recipients: []elevenlabs.BatchCallRecipient{
+batch, err := client.Agents().CreateBatchCall(ctx, &agents.CreateBatchCallRequest{
+    Name:               "Personalized Outreach",
+    AgentID:            agentID,
+    AgentPhoneNumberID: phoneNumberID,
+    Recipients: []agents.BatchCallRecipient{
         {
             PhoneNumber: "+14155551234",
             ID:          "customer-001",
-            CustomData: map[string]any{
+            DynamicVariables: map[string]any{
                 "name":        "John Smith",
                 "account_id":  "ACC-12345",
                 "appointment": "2024-01-15 10:00",
@@ -91,7 +96,7 @@ batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallReque
         {
             PhoneNumber: "+14155555678",
             ID:          "customer-002",
-            CustomData: map[string]any{
+            DynamicVariables: map[string]any{
                 "name":        "Jane Doe",
                 "account_id":  "ACC-67890",
                 "appointment": "2024-01-15 14:00",
@@ -106,7 +111,7 @@ batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallReque
 ### List All Batches
 
 ```go
-resp, err := client.BatchCalling().List(ctx, nil)
+resp, err := client.Agents().ListBatchCalls(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -121,24 +126,24 @@ for _, batch := range resp.BatchCalls {
 ### Filter by Agent
 
 ```go
-resp, err := client.BatchCalling().List(ctx, &elevenlabs.ListBatchCallsOptions{
-    AgentID: agentID,
-    Limit:   20,
+resp, err := client.Agents().ListBatchCalls(ctx, &agents.ListBatchCallsOptions{
+    AgentID:  agentID,
+    PageSize: 20,
 })
 ```
 
 ### Pagination
 
 ```go
-resp, err := client.BatchCalling().List(ctx, &elevenlabs.ListBatchCallsOptions{
-    Limit: 10,
+resp, err := client.Agents().ListBatchCalls(ctx, &agents.ListBatchCallsOptions{
+    PageSize: 10,
 })
 
 // Fetch next page
-if resp.LastDoc != "" {
-    nextPage, _ := client.BatchCalling().List(ctx, &elevenlabs.ListBatchCallsOptions{
-        LastDoc: resp.LastDoc,
-        Limit:   10,
+if resp.NextCursor != "" {
+    nextPage, _ := client.Agents().ListBatchCalls(ctx, &agents.ListBatchCallsOptions{
+        Cursor:   resp.NextCursor,
+        PageSize: 10,
     })
 }
 ```
@@ -146,7 +151,7 @@ if resp.LastDoc != "" {
 ## Get Batch Details
 
 ```go
-batch, err := client.BatchCalling().Get(ctx, batchID)
+batch, err := client.Agents().GetBatchCall(ctx, batchID)
 if err != nil {
     log.Fatal(err)
 }
@@ -165,7 +170,7 @@ fmt.Printf("Retry Count: %d\n", batch.RetryCount)
 ### Cancel a Batch
 
 ```go
-err := client.BatchCalling().Cancel(ctx, batchID)
+err := client.Agents().CancelBatchCall(ctx, batchID)
 if err != nil {
     log.Fatal(err)
 }
@@ -175,7 +180,7 @@ fmt.Println("Batch cancelled")
 ### Retry Failed Calls
 
 ```go
-err := client.BatchCalling().Retry(ctx, batchID)
+_, err := client.Agents().RetryBatchCall(ctx, batchID)
 if err != nil {
     log.Fatal(err)
 }
@@ -185,7 +190,7 @@ fmt.Println("Retrying failed calls")
 ### Delete a Batch
 
 ```go
-err := client.BatchCalling().Delete(ctx, batchID)
+err := client.Agents().DeleteBatchCall(ctx, batchID)
 if err != nil {
     log.Fatal(err)
 }
@@ -261,6 +266,7 @@ import (
     "time"
 
     elevenlabs "github.com/plexusone/elevenlabs-go"
+    "github.com/plexusone/elevenlabs-go/agents"
 )
 
 func main() {
@@ -272,11 +278,11 @@ func main() {
     ctx := context.Background()
 
     // Create batch call
-    batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
-        Name:          "Customer Survey",
-        AgentID:       "your-agent-id",
-        PhoneNumberID: "your-phone-number-id",
-        Recipients: []elevenlabs.BatchCallRecipient{
+    batch, err := client.Agents().CreateBatchCall(ctx, &agents.CreateBatchCallRequest{
+        Name:               "Customer Survey",
+        AgentID:            "your-agent-id",
+        AgentPhoneNumberID: "your-phone-number-id",
+        Recipients: []agents.BatchCallRecipient{
             {PhoneNumber: "+14155551234", ID: "survey-001"},
             {PhoneNumber: "+14155555678", ID: "survey-002"},
             {PhoneNumber: "+14155559012", ID: "survey-003"},
@@ -290,17 +296,17 @@ func main() {
 
     // Monitor progress
     for {
-        batch, err := client.BatchCalling().Get(ctx, batch.ID)
+        batchDetail, err := client.Agents().GetBatchCall(ctx, batch.ID)
         if err != nil {
             log.Fatal(err)
         }
 
-        progress := float64(batch.TotalCallsFinished) / float64(batch.TotalCallsScheduled) * 100
+        progress := float64(batchDetail.TotalCallsFinished) / float64(batchDetail.TotalCallsScheduled) * 100
         fmt.Printf("Progress: %.1f%% (%d/%d calls completed)\n",
-            progress, batch.TotalCallsFinished, batch.TotalCallsScheduled)
+            progress, batchDetail.TotalCallsFinished, batchDetail.TotalCallsScheduled)
 
-        if batch.Status == "completed" || batch.Status == "cancelled" {
-            fmt.Printf("Batch %s\n", batch.Status)
+        if batchDetail.Status == "completed" || batchDetail.Status == "cancelled" {
+            fmt.Printf("Batch %s\n", batchDetail.Status)
             break
         }
 

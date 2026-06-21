@@ -31,17 +31,19 @@ for _, agent := range resp.Agents {
 ### With Pagination and Filtering
 
 ```go
-resp, err := client.Agents().List(ctx, &elevenlabs.ListAgentsOptions{
-    PageSize:      10,
-    Search:        "support",
-    SortBy:        "created_at",
-    SortDirection: "desc",
+import "github.com/plexusone/elevenlabs-go/agents"
+
+resp, err := client.Agents().List(ctx, &agents.ListAgentsOptions{
+    PageSize:        10,
+    Search:          "support",
+    SortBy:          "created_at",
+    SortDirection:   "desc",
     CreatedByUserID: "@me", // Only your agents
 })
 
 if resp.HasMore {
     // Fetch next page
-    nextPage, _ := client.Agents().List(ctx, &elevenlabs.ListAgentsOptions{
+    nextPage, _ := client.Agents().List(ctx, &agents.ListAgentsOptions{
         Cursor: resp.NextCursor,
     })
 }
@@ -50,7 +52,9 @@ if resp.HasMore {
 ## Creating Agents
 
 ```go
-agent, err := client.Agents().Create(ctx, &elevenlabs.CreateAgentRequest{
+import "github.com/plexusone/elevenlabs-go/agents"
+
+agent, err := client.Agents().Create(ctx, &agents.CreateAgentRequest{
     Name: "Customer Support Agent",
     Tags: []string{"support", "production"},
     ConversationConfig: map[string]any{
@@ -87,7 +91,7 @@ fmt.Printf("Created: %d\n", agent.CreatedAtUnixSecs)
 ### Update Agent
 
 ```go
-updated, err := client.Agents().Update(ctx, agentID, &elevenlabs.UpdateAgentRequest{
+updated, err := client.Agents().Update(ctx, agentID, &agents.UpdateAgentRequest{
     Name: "Customer Support Agent v2",
     Tags: []string{"support", "production", "v2"},
 })
@@ -140,7 +144,7 @@ fmt.Printf("Last committed: %d\n", branch.LastCommittedAt)
 ### Create Branch
 
 ```go
-branch, err := client.Agents().CreateBranch(ctx, agentID, &elevenlabs.CreateBranchRequest{
+branch, err := client.Agents().CreateBranch(ctx, agentID, &agents.CreateBranchRequest{
     Name:         "experiment-v2",
     Description:  "Testing new prompt structure",
     BaseBranchID: mainBranchID, // Fork from existing branch
@@ -151,7 +155,7 @@ branch, err := client.Agents().CreateBranch(ctx, agentID, &elevenlabs.CreateBran
 
 ```go
 updated, err := client.Agents().UpdateBranch(ctx, agentID, branchID,
-    &elevenlabs.UpdateBranchRequest{
+    &agents.UpdateBranchRequest{
         Name: "experiment-v2-final",
     })
 ```
@@ -169,13 +173,13 @@ Deploy branches with traffic splitting for A/B testing.
 
 ```go
 // Deploy main branch at 80%, experiment at 20%
-err := client.Agents().Deploy(ctx, agentID, []elevenlabs.DeploymentRequest{
+err := client.Agents().Deploy(ctx, agentID, []agents.DeploymentRequest{
     {BranchID: mainBranchID, Percentage: 80.0},
     {BranchID: experimentBranchID, Percentage: 20.0},
 })
 
 // Deploy single branch at 100%
-err := client.Agents().Deploy(ctx, agentID, []elevenlabs.DeploymentRequest{
+err := client.Agents().Deploy(ctx, agentID, []agents.DeploymentRequest{
     {BranchID: mainBranchID, Percentage: 100.0},
 })
 ```
@@ -233,19 +237,21 @@ err = client.Agents().UploadAvatar(ctx, agentID, f)
 
 ## Test Folder Management
 
-Test folder management has been moved to the [Agent Testing](agent-testing.md) service.
+Test folder management is part of the unified `agents` package.
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // Create test folder
-folder, err := client.AgentTesting().CreateFolder(ctx, &elevenlabs.CreateTestFolderRequest{
+folder, err := client.Agents().CreateTestFolder(ctx, &agents.CreateTestFolderRequest{
     Name: "Regression Tests",
 })
 
 // List tests
-tests, err := client.AgentTesting().ListTests(ctx, nil)
+tests, err := client.Agents().ListTests(ctx, nil)
 
 // Bulk move tests
-err := client.AgentTesting().BulkMoveTests(ctx, &elevenlabs.BulkMoveTestsRequest{
+err := client.Agents().BulkMoveTests(ctx, &agents.BulkMoveTestsRequest{
     TestIDs:        []string{"test1", "test2", "test3"},
     TargetFolderID: folderID,
 })
@@ -260,8 +266,10 @@ Simulate conversations for testing agents.
 ### Non-Streaming Simulation
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 messages, err := client.Agents().SimulateConversation(ctx, agentID,
-    &elevenlabs.SimulateConversationOptions{
+    &agents.SimulateConversationOptions{
         SimulationPersona: "A frustrated customer asking about refunds",
         InitialMessage:    "I want my money back!",
         MaxTurns:          5,
@@ -279,7 +287,7 @@ for _, msg := range messages {
 
 ```go
 conn, err := client.Agents().SimulateConversationStream(ctx, agentID,
-    &elevenlabs.SimulateConversationOptions{
+    &agents.SimulateConversationOptions{
         SimulationPersona: "A curious customer",
     })
 if err != nil {
@@ -341,6 +349,7 @@ import (
     "log"
 
     elevenlabs "github.com/plexusone/elevenlabs-go"
+    "github.com/plexusone/elevenlabs-go/agents"
 )
 
 func main() {
@@ -352,7 +361,7 @@ func main() {
     ctx := context.Background()
 
     // Create agent
-    agent, err := client.Agents().Create(ctx, &elevenlabs.CreateAgentRequest{
+    agent, err := client.Agents().Create(ctx, &agents.CreateAgentRequest{
         Name: "Demo Agent",
         Tags: []string{"demo"},
         ConversationConfig: map[string]any{

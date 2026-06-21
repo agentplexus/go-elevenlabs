@@ -120,7 +120,7 @@ func main() {
     ctx := context.Background()
 
     // List available voices
-    voices, err := client.Voices().List(ctx)
+    voices, err := client.Voice().List(ctx)
     if err != nil {
         log.Fatal(err)
     }
@@ -128,7 +128,7 @@ func main() {
 
     // Generate speech
     if len(voices) > 0 {
-        audio, err := client.TextToSpeech().Simple(ctx,
+        audio, err := client.TTS().Simple(ctx,
             voices[0].VoiceID,
             "Hello from the ElevenLabs Go SDK!")
         if err != nil {
@@ -157,11 +157,13 @@ client, err := elevenlabs.NewClient(
 ### Text-to-Speech
 
 ```go
+import "github.com/plexusone/elevenlabs-go/tts"
+
 // Simple generation
-audio, err := client.TextToSpeech().Simple(ctx, voiceID, "Hello world")
+audio, err := client.TTS().Simple(ctx, voiceID, "Hello world")
 
 // With full options
-resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+resp, err := client.TTS().Generate(ctx, &tts.Request{
     VoiceID: "21m00Tcm4TlvDq8ikWAM",
     Text:    "Hello with custom settings!",
     ModelID: "eleven_multilingual_v2",
@@ -179,12 +181,12 @@ resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
 
 ```go
 // Transcribe from URL
-result, err := client.SpeechToText().TranscribeURL(ctx, "https://example.com/audio.mp3")
+result, err := client.STT().TranscribeURL(ctx, "https://example.com/audio.mp3")
 fmt.Printf("Text: %s\n", result.Text)
 fmt.Printf("Language: %s\n", result.LanguageCode)
 
 // With speaker diarization
-result, err := client.SpeechToText().TranscribeWithDiarization(ctx, audioURL)
+result, err := client.STT().TranscribeWithDiarization(ctx, audioURL)
 for _, word := range result.Words {
     fmt.Printf("[%s] %s (%.2fs - %.2fs)\n", word.Speaker, word.Text, word.Start, word.End)
 }
@@ -193,11 +195,16 @@ for _, word := range result.Words {
 ### Sound Effects
 
 ```go
+import "github.com/plexusone/elevenlabs-go/audio"
+
 // Simple sound effect
-audio, err := client.SoundEffects().Simple(ctx, "thunder and rain storm")
+sfx, err := client.Audio().GenerateSoundEffect(ctx, &audio.SoundEffectRequest{
+    Text:            "thunder and rain storm",
+    DurationSeconds: 5,
+})
 
 // With options
-sfx, err := client.SoundEffects().Generate(ctx, &elevenlabs.SoundEffectRequest{
+sfx, err := client.Audio().GenerateSoundEffect(ctx, &audio.SoundEffectRequest{
     Text:            "spaceship engine humming",
     DurationSeconds: 10,
     PromptInfluence: 0.5,
@@ -207,27 +214,29 @@ sfx, err := client.SoundEffects().Generate(ctx, &elevenlabs.SoundEffectRequest{
 ### Music Composition
 
 ```go
+import "github.com/plexusone/elevenlabs-go/content"
+
 // Generate music from prompt
-resp, err := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+resp, err := client.Content().GenerateMusic(ctx, &content.MusicRequest{
     Prompt:     "upbeat electronic music for a tech video",
     DurationMs: 30000,
 })
 
 // Instrumental only
-audio, err := client.Music().GenerateInstrumental(ctx, "calm piano melody", 60000)
+audio, err := client.Content().GenerateMusicInstrumental(ctx, "calm piano melody", 60000)
 
 // Generate with composition plan for fine-grained control
-plan, _ := client.Music().GeneratePlan(ctx, &elevenlabs.CompositionPlanRequest{
+plan, _ := client.Content().GenerateMusicPlan(ctx, &content.CompositionPlanRequest{
     Prompt:     "pop song about summer",
     DurationMs: 180000,
 })
-resp, err := client.Music().GenerateDetailed(ctx, &elevenlabs.MusicDetailedRequest{
+resp, err := client.Content().GenerateMusicDetailed(ctx, &content.MusicDetailedRequest{
     CompositionPlan: plan,
 })
 
 // Separate stems (vocals, drums, bass, etc.)
 f, _ := os.Open("song.mp3")
-stems, err := client.Music().SeparateStems(ctx, &elevenlabs.StemSeparationRequest{
+stems, err := client.Content().SeparateStems(ctx, &content.StemSeparationRequest{
     File:     f,
     Filename: "song.mp3",
 })
@@ -238,7 +247,7 @@ stems, err := client.Music().SeparateStems(ctx, &elevenlabs.StemSeparationReques
 ```go
 // Extract vocals from audio file
 f, _ := os.Open("mixed_audio.mp3")
-isolated, err := client.AudioIsolation().IsolateFile(ctx, f, "mixed_audio.mp3")
+isolated, err := client.Audio().Isolate(ctx, f, "mixed_audio.mp3")
 ```
 
 ### Forced Alignment
@@ -246,7 +255,7 @@ isolated, err := client.AudioIsolation().IsolateFile(ctx, f, "mixed_audio.mp3")
 ```go
 // Get word-level timestamps
 f, _ := os.Open("speech.mp3")
-result, err := client.ForcedAlignment().AlignFile(ctx, f, "speech.mp3",
+result, err := client.Audio().Align(ctx, f, "speech.mp3",
     "The text that was spoken in the audio")
 
 for _, word := range result.Words {
@@ -257,8 +266,10 @@ for _, word := range result.Words {
 ### Text-to-Dialogue
 
 ```go
+import "github.com/plexusone/elevenlabs-go/tts"
+
 // Generate multi-speaker dialogue
-audio, err := client.TextToDialogue().Simple(ctx, []elevenlabs.DialogueInput{
+audio, err := client.TTS().GenerateDialogue(ctx, []tts.DialogueInput{
     {Text: "Hello, how are you?", VoiceID: "voice1"},
     {Text: "I'm doing great, thanks!", VoiceID: "voice2"},
 })
@@ -267,11 +278,13 @@ audio, err := client.TextToDialogue().Simple(ctx, []elevenlabs.DialogueInput{
 ### Voice Design
 
 ```go
+import "github.com/plexusone/elevenlabs-go/voice"
+
 // Generate a custom voice
-resp, err := client.VoiceDesign().GeneratePreview(ctx, &elevenlabs.VoiceDesignRequest{
-    Gender:         elevenlabs.VoiceGenderFemale,
-    Age:            elevenlabs.VoiceAgeYoung,
-    Accent:         elevenlabs.VoiceAccentAmerican,
+resp, err := client.Voice().Design(ctx, &voice.DesignRequest{
+    Gender:         voice.GenderFemale,
+    Age:            voice.AgeYoung,
+    Accent:         voice.AccentAmerican,
     AccentStrength: 1.0,
     Text:           "This is a preview of the generated voice. It should be at least one hundred characters long for best results.",
 })
@@ -281,63 +294,71 @@ resp, err := client.VoiceDesign().GeneratePreview(ctx, &elevenlabs.VoiceDesignRe
 
 ```go
 // Create from a map
-dict, err := client.Pronunciation().CreateFromMap(ctx, "Tech Terms", map[string]string{
+dict, err := client.Account().CreatePronunciation(ctx, "Tech Terms", map[string]string{
     "API":     "A P I",
     "kubectl": "kube control",
     "nginx":   "engine X",
 })
 
 // Create from JSON file
-dict, err := client.Pronunciation().CreateFromJSON(ctx, "Terms", "pronunciation.json")
+dict, err := client.Account().CreatePronunciationFromJSON(ctx, "Terms", "pronunciation.json")
 ```
 
 ### Dubbing
 
 ```go
+import "github.com/plexusone/elevenlabs-go/content"
+
 // Create dubbing job
-dub, err := client.Dubbing().Create(ctx, &elevenlabs.DubbingRequest{
+dub, err := client.Content().CreateDubbing(ctx, &content.DubbingRequest{
     SourceURL:      "https://example.com/video.mp4",
     TargetLanguage: "es",
     Name:           "Video - Spanish",
 })
 
 // Check status
-status, err := client.Dubbing().GetStatus(ctx, dub.DubbingID)
+status, err := client.Content().GetDubbing(ctx, dub.DubbingID)
 ```
 
 ### Projects (Studio)
 
 ```go
+import "github.com/plexusone/elevenlabs-go/content"
+
 // Create a project for long-form content
-project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
+project, err := client.Content().CreateProject(ctx, &content.CreateProjectRequest{
     Name:                    "My Audiobook",
     DefaultModelID:          "eleven_multilingual_v2",
     DefaultParagraphVoiceID: voiceID,
 })
 
 // Convert to audio
-err = client.Projects().Convert(ctx, project.ProjectID)
+err = client.Content().ConvertProject(ctx, project.ProjectID)
 ```
 
 ### Speech-to-Speech (Voice Conversion)
 
 ```go
+import "github.com/plexusone/elevenlabs-go/tts"
+
 // Convert speech from one voice to another
 f, _ := os.Open("input.mp3")
-resp, err := client.SpeechToSpeech().Convert(ctx, &elevenlabs.SpeechToSpeechRequest{
+resp, err := client.TTS().ConvertSpeech(ctx, &tts.SpeechToSpeechRequest{
     VoiceID: targetVoiceID,
     Audio:   f,
 })
 
 // Simple conversion
-output, err := client.SpeechToSpeech().Simple(ctx, targetVoiceID, audioReader)
+output, err := client.TTS().ConvertSpeechSimple(ctx, targetVoiceID, audioReader)
 ```
 
 ### WebSocket TTS (Real-Time Streaming)
 
 ```go
+import "github.com/plexusone/elevenlabs-go/realtime"
+
 // Connect for low-latency TTS (ideal for LLM output)
-conn, err := client.WebSocketTTS().Connect(ctx, voiceID, &elevenlabs.WebSocketTTSOptions{
+conn, err := client.Realtime().ConnectTTS(ctx, voiceID, &realtime.TTSOptions{
     ModelID:                  "eleven_turbo_v2_5",
     OutputFormat:             "pcm_16000",
     OptimizeStreamingLatency: 3,
@@ -359,8 +380,10 @@ for audio := range conn.Audio() {
 ### WebSocket STT (Real-Time Transcription)
 
 ```go
+import "github.com/plexusone/elevenlabs-go/realtime"
+
 // Connect for live transcription
-conn, err := client.WebSocketSTT().Connect(ctx, &elevenlabs.WebSocketSTTOptions{
+conn, err := client.Realtime().ConnectSTT(ctx, &realtime.STTOptions{
     SampleRate:     16000,
     EnablePartials: true,
 })
@@ -387,28 +410,32 @@ for transcript := range conn.Transcripts() {
 ### Twilio Integration (Phone Calls)
 
 ```go
+import "github.com/plexusone/elevenlabs-go/telephony"
+
 // Register incoming Twilio call with an ElevenLabs agent
-resp, err := client.Twilio().RegisterCall(ctx, &elevenlabs.TwilioRegisterCallRequest{
+resp, err := client.Telephony().RegisterCall(ctx, &telephony.RegisterCallRequest{
     AgentID: "your-agent-id",
 })
 // Return resp.TwiML to Twilio webhook
 
 // Make outbound call
-call, err := client.Twilio().OutboundCall(ctx, &elevenlabs.TwilioOutboundCallRequest{
+call, err := client.Telephony().OutboundCall(ctx, &telephony.OutboundCallRequest{
     AgentID:            "your-agent-id",
     AgentPhoneNumberID: "phone-number-id",
     ToNumber:           "+1234567890",
 })
 
 // List phone numbers
-numbers, err := client.PhoneNumbers().List(ctx)
+numbers, err := client.Telephony().ListPhoneNumbers(ctx)
 ```
 
 ### Conversational AI Agents
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // Create an agent
-agent, err := client.Agents().Create(ctx, &elevenlabs.CreateAgentRequest{
+agent, err := client.Agents().Create(ctx, &agents.CreateAgentRequest{
     Name: "Support Agent",
     Tags: []string{"support"},
     ConversationConfig: map[string]any{
@@ -422,7 +449,7 @@ agent, err := client.Agents().Create(ctx, &elevenlabs.CreateAgentRequest{
 })
 
 // List agents
-resp, err := client.Agents().List(ctx, &elevenlabs.ListAgentsOptions{
+resp, err := client.Agents().List(ctx, &agents.ListAgentsOptions{
     PageSize: 10,
     Search:   "support",
 })
@@ -434,7 +461,7 @@ for _, b := range branches {
 }
 
 // Deploy with traffic splitting (A/B testing)
-err = client.Agents().Deploy(ctx, agentID, []elevenlabs.DeploymentRequest{
+err = client.Agents().Deploy(ctx, agentID, []agents.DeploymentRequest{
     {BranchID: mainBranchID, Percentage: 80.0},
     {BranchID: testBranchID, Percentage: 20.0},
 })
@@ -449,67 +476,73 @@ err = client.Agents().Delete(ctx, agentID)
 ### Conversations
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // List conversations with filters
-resp, err := client.Conversations().List(ctx, &elevenlabs.ListConversationsOptions{
+resp, err := client.Agents().ListConversations(ctx, &agents.ListConversationsOptions{
     AgentID:        agentID,
     CallSuccessful: "success",
     PageSize:       10,
 })
 
 // Get conversation details with transcript
-conv, err := client.Conversations().Get(ctx, conversationID)
+conv, err := client.Agents().GetConversation(ctx, conversationID)
 for _, msg := range conv.Transcript {
     fmt.Printf("[%s] %s\n", msg.Role, msg.Message)
 }
 
 // Get conversation audio recording
-audio, err := client.Conversations().GetAudio(ctx, conversationID)
+audio, err := client.Agents().GetConversationAudio(ctx, conversationID)
 
 // Search conversation transcripts
-results, err := client.Conversations().Search(ctx, "refund policy", nil)
+results, err := client.Agents().SearchConversations(ctx, "refund policy", nil)
 ```
 
 ### Knowledge Base
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // Upload a file document for RAG
 f, _ := os.Open("product-manual.pdf")
-doc, err := client.KnowledgeBase().CreateFileDocument(ctx, &elevenlabs.CreateFileDocumentRequest{
+doc, err := client.Agents().CreateFileDocument(ctx, &agents.CreateFileDocumentRequest{
     File:     f,
-    FileName: "product-manual.pdf",
+    Filename: "product-manual.pdf",
     Name:     "Product Manual",
 })
 
 // Create a text document
-doc, err := client.KnowledgeBase().CreateTextDocument(ctx, &elevenlabs.CreateTextDocumentRequest{
+doc, err := client.Agents().CreateTextDocument(ctx, &agents.CreateTextDocumentRequest{
     Content: "Your company FAQ content here...",
     Name:    "Company FAQ",
 })
 
 // Index a URL
-doc, err := client.KnowledgeBase().CreateURLDocument(ctx, &elevenlabs.CreateURLDocumentRequest{
+doc, err := client.Agents().CreateURLDocument(ctx, &agents.CreateURLDocumentRequest{
     URL:  "https://docs.example.com/api",
     Name: "API Documentation",
 })
 
 // List documents
-resp, err := client.KnowledgeBase().List(ctx, &elevenlabs.ListDocumentsOptions{
+resp, err := client.Agents().ListDocuments(ctx, &agents.ListDocumentsOptions{
     PageSize: 20,
 })
 
 // Get document chunks for RAG
-chunks, err := client.KnowledgeBase().GetChunks(ctx, documentID)
+chunks, err := client.Agents().GetDocumentChunks(ctx, documentID)
 ```
 
 ### Batch Calling
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // Create a batch call job
-batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallRequest{
-    Name:          "Customer Outreach Campaign",
-    AgentID:       agentID,
-    PhoneNumberID: phoneNumberID,
-    Recipients: []elevenlabs.BatchCallRecipient{
+batch, err := client.Agents().CreateBatchCall(ctx, &agents.CreateBatchCallRequest{
+    Name:               "Customer Outreach Campaign",
+    AgentID:            agentID,
+    AgentPhoneNumberID: phoneNumberID,
+    Recipients: []agents.BatchCallRecipient{
         {PhoneNumber: "+14155551234"},
         {PhoneNumber: "+14155555678"},
     },
@@ -517,31 +550,33 @@ batch, err := client.BatchCalling().Create(ctx, &elevenlabs.CreateBatchCallReque
 })
 
 // List batch calls
-batches, err := client.BatchCalling().List(ctx, nil)
+batches, err := client.Agents().ListBatchCalls(ctx, nil)
 
 // Cancel or retry a batch
-err = client.BatchCalling().Cancel(ctx, batchID)
-err = client.BatchCalling().Retry(ctx, batchID)
+err = client.Agents().CancelBatchCall(ctx, batchID)
+_, err = client.Agents().RetryBatchCall(ctx, batchID)
 ```
 
 ### Agent Testing
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // Create a test folder
-folder, err := client.AgentTesting().CreateFolder(ctx, &elevenlabs.CreateTestFolderRequest{
+folder, err := client.Agents().CreateTestFolder(ctx, &agents.CreateTestFolderRequest{
     Name: "Regression Tests",
 })
 
 // List tests and folders
-tests, err := client.AgentTesting().ListTests(ctx, &elevenlabs.ListTestsOptions{
+tests, err := client.Agents().ListTests(ctx, &agents.ListTestsOptions{
     PageSize: 20,
 })
 
 // Get test details
-test, err := client.AgentTesting().GetResponseTest(ctx, testID)
+test, err := client.Agents().GetResponseTest(ctx, testID)
 
 // Bulk move tests to a folder
-err = client.AgentTesting().BulkMoveTests(ctx, &elevenlabs.BulkMoveTestsRequest{
+err = client.Agents().BulkMoveTests(ctx, &agents.BulkMoveTestsRequest{
     TestIDs:        []string{"test1", "test2"},
     TargetFolderID: folderID,
 })
@@ -551,7 +586,7 @@ err = client.AgentTesting().BulkMoveTests(ctx, &elevenlabs.BulkMoveTestsRequest{
 
 ```go
 // Get number of active conversations
-count, err := client.Analytics().GetLiveCount(ctx)
+count, err := client.Agents().GetLiveCount(ctx)
 fmt.Printf("Active conversations: %d\n", count)
 ```
 
@@ -649,7 +684,7 @@ There are moments in history when humanity TRANSFORMS.
 ### Basic Error Handling
 
 ```go
-audio, err := client.TextToSpeech().Simple(ctx, voiceID, text)
+audio, err := client.TTS().Simple(ctx, voiceID, text)
 if err != nil {
     if elevenlabs.IsRateLimitError(err) {
         log.Println("Rate limited, waiting...")
@@ -671,7 +706,7 @@ For AI agents and automated systems, use AX error codes for precise error handli
 ```go
 import "github.com/plexusone/elevenlabs-go/ax"
 
-_, err := client.Voices().Get(ctx, voiceID)
+_, err := client.Voice().Get(ctx, voiceID)
 if err != nil {
     // Extract AX error code
     if code, ok := elevenlabs.GetAXErrorCode(err); ok {

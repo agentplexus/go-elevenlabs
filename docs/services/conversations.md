@@ -2,6 +2,9 @@
 
 Access and manage conversation history for Conversational AI agents.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Conversations methods are accessed via `client.Agents()` instead of `client.Conversations()`.
+
 ## Overview
 
 The Conversations service enables:
@@ -17,8 +20,10 @@ The Conversations service enables:
 ### List Conversations
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 // List recent conversations
-resp, err := client.Conversations().List(ctx, nil)
+resp, err := client.Agents().ListConversations(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -34,7 +39,7 @@ for _, conv := range resp.Conversations {
 ```go
 // Filter by agent and success status
 callStartAfter := int(time.Now().Add(-24 * time.Hour).Unix())
-resp, err := client.Conversations().List(ctx, &elevenlabs.ListConversationsOptions{
+resp, err := client.Agents().ListConversations(ctx, &agents.ListConversationsOptions{
     AgentID:            agentID,
     CallSuccessful:     "success",
     CallStartAfterUnix: &callStartAfter,
@@ -44,7 +49,7 @@ resp, err := client.Conversations().List(ctx, &elevenlabs.ListConversationsOptio
 
 if resp.HasMore {
     // Fetch next page
-    nextPage, _ := client.Conversations().List(ctx, &elevenlabs.ListConversationsOptions{
+    nextPage, _ := client.Agents().ListConversations(ctx, &agents.ListConversationsOptions{
         Cursor: resp.NextCursor,
     })
 }
@@ -53,7 +58,7 @@ if resp.HasMore {
 ## Get Conversation Details
 
 ```go
-conv, err := client.Conversations().Get(ctx, conversationID)
+conv, err := client.Agents().GetConversation(ctx, conversationID)
 if err != nil {
     log.Fatal(err)
 }
@@ -83,7 +88,7 @@ if conv.Analysis != nil {
 ## Get Audio Recording
 
 ```go
-audio, err := client.Conversations().GetAudio(ctx, conversationID)
+audio, err := client.Agents().GetConversationAudio(ctx, conversationID)
 if err != nil {
     log.Fatal(err)
 }
@@ -99,7 +104,7 @@ io.Copy(f, audio)
 
 ```go
 // Search for conversations mentioning specific terms
-results, err := client.Conversations().Search(ctx, "refund policy", &elevenlabs.ListConversationsOptions{
+results, err := client.Agents().SearchConversations(ctx, "refund policy", &agents.ListConversationsOptions{
     AgentID:  agentID,
     PageSize: 10,
 })
@@ -116,30 +121,30 @@ for _, conv := range results.Conversations {
 
 ```go
 // Submit positive feedback
-err := client.Conversations().SubmitFeedback(ctx, conversationID, "like")
+err := client.Agents().SubmitConversationFeedback(ctx, conversationID, "like")
 
 // Submit negative feedback
-err = client.Conversations().SubmitFeedback(ctx, conversationID, "dislike")
+err = client.Agents().SubmitConversationFeedback(ctx, conversationID, "dislike")
 ```
 
 ## Run Analysis
 
 ```go
 // Trigger analysis on a conversation
-err := client.Conversations().RunAnalysis(ctx, conversationID)
+err := client.Agents().RunConversationAnalysis(ctx, conversationID)
 if err != nil {
     log.Fatal(err)
 }
 
 // Fetch updated conversation to get analysis results
-conv, _ := client.Conversations().Get(ctx, conversationID)
+conv, _ := client.Agents().GetConversation(ctx, conversationID)
 fmt.Printf("Analysis: %s\n", conv.Analysis.TranscriptSummary)
 ```
 
 ## Delete Conversation
 
 ```go
-err := client.Conversations().Delete(ctx, conversationID)
+err := client.Agents().DeleteConversation(ctx, conversationID)
 if err != nil {
     log.Fatal(err)
 }
@@ -214,6 +219,7 @@ import (
     "time"
 
     elevenlabs "github.com/plexusone/elevenlabs-go"
+    "github.com/plexusone/elevenlabs-go/agents"
 )
 
 func main() {
@@ -227,11 +233,11 @@ func main() {
     // Export last 7 days of conversations
     weekAgo := int(time.Now().Add(-7 * 24 * time.Hour).Unix())
 
-    var allConversations []*elevenlabs.ConversationDetail
+    var allConversations []*agents.ConversationDetail
     var cursor string
 
     for {
-        resp, err := client.Conversations().List(ctx, &elevenlabs.ListConversationsOptions{
+        resp, err := client.Agents().ListConversations(ctx, &agents.ListConversationsOptions{
             CallStartAfterUnix: &weekAgo,
             Cursor:             cursor,
             PageSize:           100,
@@ -242,7 +248,7 @@ func main() {
 
         // Fetch full details for each conversation
         for _, conv := range resp.Conversations {
-            detail, err := client.Conversations().Get(ctx, conv.ConversationID)
+            detail, err := client.Agents().GetConversation(ctx, conv.ConversationID)
             if err != nil {
                 log.Printf("Warning: failed to get %s: %v", conv.ConversationID, err)
                 continue

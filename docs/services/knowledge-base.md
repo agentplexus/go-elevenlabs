@@ -2,6 +2,9 @@
 
 Manage knowledge base documents for RAG (Retrieval-Augmented Generation) in Conversational AI agents.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Knowledge Base methods are accessed via `client.Agents()` instead of `client.KnowledgeBase()`.
+
 ## Overview
 
 The Knowledge Base service enables:
@@ -26,15 +29,17 @@ The Knowledge Base service enables:
 ### Upload a File
 
 ```go
+import "github.com/plexusone/elevenlabs-go/agents"
+
 f, err := os.Open("product-manual.pdf")
 if err != nil {
     log.Fatal(err)
 }
 defer f.Close()
 
-doc, err := client.KnowledgeBase().CreateFileDocument(ctx, &elevenlabs.CreateFileDocumentRequest{
+doc, err := client.Agents().CreateFileDocument(ctx, &agents.CreateFileDocumentRequest{
     File:     f,
-    FileName: "product-manual.pdf",
+    Filename: "product-manual.pdf",
     Name:     "Product Manual v2.0",
 })
 if err != nil {
@@ -47,7 +52,7 @@ fmt.Printf("Created document: %s (ID: %s)\n", doc.Name, doc.ID)
 ### Create Text Document
 
 ```go
-doc, err := client.KnowledgeBase().CreateTextDocument(ctx, &elevenlabs.CreateTextDocumentRequest{
+doc, err := client.Agents().CreateTextDocument(ctx, &agents.CreateTextDocumentRequest{
     Content: `
 # Frequently Asked Questions
 
@@ -64,7 +69,7 @@ Click "Forgot Password" on the login page and follow the instructions.
 ### Index a URL
 
 ```go
-doc, err := client.KnowledgeBase().CreateURLDocument(ctx, &elevenlabs.CreateURLDocumentRequest{
+doc, err := client.Agents().CreateURLDocument(ctx, &agents.CreateURLDocumentRequest{
     URL:  "https://docs.example.com/api-reference",
     Name: "API Documentation",
 })
@@ -75,7 +80,7 @@ doc, err := client.KnowledgeBase().CreateURLDocument(ctx, &elevenlabs.CreateURLD
 ### List All Documents
 
 ```go
-resp, err := client.KnowledgeBase().List(ctx, nil)
+resp, err := client.Agents().ListDocuments(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -88,14 +93,14 @@ for _, doc := range resp.Documents {
 ### With Pagination and Filters
 
 ```go
-resp, err := client.KnowledgeBase().List(ctx, &elevenlabs.ListDocumentsOptions{
+resp, err := client.Agents().ListDocuments(ctx, &agents.ListDocumentsOptions{
     PageSize:       20,
     Search:         "manual",
     ParentFolderID: folderID,
 })
 
 if resp.HasMore {
-    nextPage, _ := client.KnowledgeBase().List(ctx, &elevenlabs.ListDocumentsOptions{
+    nextPage, _ := client.Agents().ListDocuments(ctx, &agents.ListDocumentsOptions{
         Cursor: resp.NextCursor,
     })
 }
@@ -106,7 +111,7 @@ if resp.HasMore {
 ### Get Document Metadata
 
 ```go
-doc, err := client.KnowledgeBase().Get(ctx, documentID)
+doc, err := client.Agents().GetDocument(ctx, documentID)
 if err != nil {
     log.Fatal(err)
 }
@@ -120,7 +125,7 @@ fmt.Printf("Created: %d\n", doc.CreatedAtUnix)
 ### Get Document Content
 
 ```go
-content, err := client.KnowledgeBase().GetContent(ctx, documentID)
+content, err := client.Agents().GetDocumentContent(ctx, documentID)
 if err != nil {
     log.Fatal(err)
 }
@@ -134,7 +139,7 @@ fmt.Printf("Content: %s\n", string(data))
 ### Get Document Chunks
 
 ```go
-chunks, err := client.KnowledgeBase().GetChunks(ctx, documentID)
+chunks, err := client.Agents().GetDocumentChunks(ctx, documentID)
 if err != nil {
     log.Fatal(err)
 }
@@ -148,7 +153,7 @@ for i, chunk := range chunks {
 ### Get Specific Chunk
 
 ```go
-chunk, err := client.KnowledgeBase().GetChunk(ctx, documentID, chunkID)
+chunk, err := client.Agents().GetDocumentChunk(ctx, documentID, chunkID)
 if err != nil {
     log.Fatal(err)
 }
@@ -163,10 +168,15 @@ fmt.Printf("Content: %s\n", chunk.Content)
 
 ```go
 // Create top-level folder
-folder, err := client.KnowledgeBase().CreateFolder(ctx, "Product Documentation", "")
+folder, err := client.Agents().CreateKnowledgeBaseFolder(ctx, &agents.CreateKnowledgeBaseFolderRequest{
+    Name: "Product Documentation",
+})
 
 // Create nested folder
-subFolder, err := client.KnowledgeBase().CreateFolder(ctx, "API Docs", folder.ID)
+subFolder, err := client.Agents().CreateKnowledgeBaseFolder(ctx, &agents.CreateKnowledgeBaseFolderRequest{
+    Name:           "API Docs",
+    ParentFolderID: folder.ID,
+})
 ```
 
 ### Upload to Folder
@@ -175,36 +185,12 @@ subFolder, err := client.KnowledgeBase().CreateFolder(ctx, "API Docs", folder.ID
 f, _ := os.Open("api-guide.pdf")
 defer f.Close()
 
-doc, err := client.KnowledgeBase().CreateFileDocument(ctx, &elevenlabs.CreateFileDocumentRequest{
+doc, err := client.Agents().CreateFileDocument(ctx, &agents.CreateFileDocumentRequest{
     File:           f,
-    FileName:       "api-guide.pdf",
+    Filename:       "api-guide.pdf",
     Name:           "API Guide",
     ParentFolderID: folderID,
 })
-```
-
-## RAG Index Management
-
-### List RAG Indexes
-
-```go
-indexes, err := client.KnowledgeBase().GetRAGIndexes(ctx, documentID)
-if err != nil {
-    log.Fatal(err)
-}
-
-for _, idx := range indexes {
-    fmt.Printf("Index: %s (Status: %s)\n", idx.ID, idx.Status)
-}
-```
-
-### Delete RAG Index
-
-```go
-err := client.KnowledgeBase().DeleteRAGIndex(ctx, documentID, ragIndexID)
-if err != nil {
-    log.Fatal(err)
-}
 ```
 
 ## Agent Dependencies
@@ -212,13 +198,13 @@ if err != nil {
 ### Find Agents Using a Document
 
 ```go
-agents, err := client.KnowledgeBase().GetDependentAgents(ctx, documentID)
+dependentAgents, err := client.Agents().GetDocumentDependentAgents(ctx, documentID)
 if err != nil {
     log.Fatal(err)
 }
 
-fmt.Printf("Document is used by %d agents:\n", len(agents))
-for _, agent := range agents {
+fmt.Printf("Document is used by %d agents:\n", len(dependentAgents))
+for _, agent := range dependentAgents {
     fmt.Printf("  - %s (%s)\n", agent.Name, agent.ID)
 }
 ```
@@ -226,7 +212,7 @@ for _, agent := range agents {
 ## Delete Document
 
 ```go
-err := client.KnowledgeBase().Delete(ctx, documentID)
+err := client.Agents().DeleteDocument(ctx, documentID)
 if err != nil {
     log.Fatal(err)
 }
@@ -294,6 +280,7 @@ import (
     "path/filepath"
 
     elevenlabs "github.com/plexusone/elevenlabs-go"
+    "github.com/plexusone/elevenlabs-go/agents"
 )
 
 func main() {
@@ -305,7 +292,9 @@ func main() {
     ctx := context.Background()
 
     // Create folder for imports
-    folder, err := client.KnowledgeBase().CreateFolder(ctx, "Imported Docs", "")
+    folder, err := client.Agents().CreateKnowledgeBaseFolder(ctx, &agents.CreateKnowledgeBaseFolderRequest{
+        Name: "Imported Docs",
+    })
     if err != nil {
         log.Fatal(err)
     }
@@ -319,9 +308,9 @@ func main() {
             continue
         }
 
-        doc, err := client.KnowledgeBase().CreateFileDocument(ctx, &elevenlabs.CreateFileDocumentRequest{
+        doc, err := client.Agents().CreateFileDocument(ctx, &agents.CreateFileDocumentRequest{
             File:           f,
-            FileName:       filepath.Base(path),
+            Filename:       filepath.Base(path),
             ParentFolderID: folder.ID,
         })
         f.Close()

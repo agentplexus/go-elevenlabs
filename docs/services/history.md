@@ -2,10 +2,15 @@
 
 Access and manage your generated audio history.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, History methods are accessed via `client.Account()` instead of `client.History()`.
+
 ## List History
 
 ```go
-resp, err := client.History().List(ctx, nil)
+import "github.com/plexusone/elevenlabs-go/account"
+
+resp, err := client.Account().ListHistory(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -18,13 +23,13 @@ for _, item := range resp.Items {
 ### With Pagination
 
 ```go
-resp, err := client.History().List(ctx, &elevenlabs.HistoryListOptions{
+resp, err := client.Account().ListHistory(ctx, &account.HistoryListOptions{
     PageSize: 20,
 })
 
 // Get next page
 if resp.HasMore {
-    nextResp, _ := client.History().List(ctx, &elevenlabs.HistoryListOptions{
+    nextResp, _ := client.Account().ListHistory(ctx, &account.HistoryListOptions{
         PageSize:             20,
         StartAfterHistoryID: resp.LastHistoryItemID,
     })
@@ -34,7 +39,7 @@ if resp.HasMore {
 ### Filter by Voice
 
 ```go
-resp, err := client.History().List(ctx, &elevenlabs.HistoryListOptions{
+resp, err := client.Account().ListHistory(ctx, &account.HistoryListOptions{
     VoiceID: "21m00Tcm4TlvDq8ikWAM",
 })
 ```
@@ -56,13 +61,13 @@ resp, err := client.History().List(ctx, &elevenlabs.HistoryListOptions{
 ## Get a Specific Item
 
 ```go
-item, err := client.History().Get(ctx, historyItemID)
+item, err := client.Account().GetHistoryItem(ctx, historyItemID)
 ```
 
 ## Download Audio
 
 ```go
-audio, err := client.History().GetAudio(ctx, historyItemID)
+audio, err := client.Account().GetHistoryAudio(ctx, historyItemID)
 if err != nil {
     log.Fatal(err)
 }
@@ -75,7 +80,7 @@ io.Copy(f, audio)
 ## Delete History Item
 
 ```go
-err := client.History().Delete(ctx, historyItemID)
+err := client.Account().DeleteHistoryItem(ctx, historyItemID)
 ```
 
 ## Use Cases
@@ -84,10 +89,10 @@ err := client.History().Delete(ctx, historyItemID)
 
 ```go
 // Find item by text content
-resp, _ := client.History().List(ctx, nil)
+resp, _ := client.Account().ListHistory(ctx, nil)
 for _, item := range resp.Items {
     if strings.Contains(item.Text, "specific phrase") {
-        audio, _ := client.History().GetAudio(ctx, item.HistoryItemID)
+        audio, _ := client.Account().GetHistoryAudio(ctx, item.HistoryItemID)
         // Save audio
     }
 }
@@ -96,7 +101,7 @@ for _, item := range resp.Items {
 ### Track Usage Over Time
 
 ```go
-resp, _ := client.History().List(ctx, &elevenlabs.HistoryListOptions{
+resp, _ := client.Account().ListHistory(ctx, &account.HistoryListOptions{
     PageSize: 100,
 })
 
@@ -112,10 +117,10 @@ fmt.Printf("Total characters used: %d\n", totalChars)
 ```go
 cutoff := time.Now().AddDate(0, -1, 0)  // 1 month ago
 
-resp, _ := client.History().List(ctx, nil)
+resp, _ := client.Account().ListHistory(ctx, nil)
 for _, item := range resp.Items {
     if time.Unix(item.DateUnix, 0).Before(cutoff) {
-        client.History().Delete(ctx, item.HistoryItemID)
+        client.Account().DeleteHistoryItem(ctx, item.HistoryItemID)
     }
 }
 ```

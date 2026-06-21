@@ -69,7 +69,7 @@ func main() {
     ctx := context.Background()
 
     // Generate speech
-    audio, _ := client.TextToSpeech().Simple(ctx,
+    audio, _ := client.TTS().Simple(ctx,
         "21m00Tcm4TlvDq8ikWAM",  // Voice ID
         "Hello, welcome to ElevenLabs!")
 
