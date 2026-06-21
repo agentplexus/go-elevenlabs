@@ -2,6 +2,9 @@
 
 Create long-form audio content organized into chapters - ideal for audiobooks, courses, and podcasts.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Projects methods are accessed via `client.Content()` instead of `client.Projects()`.
+
 ## Overview
 
 Projects allow you to:
@@ -16,7 +19,9 @@ Projects allow you to:
 ### Basic Project
 
 ```go
-project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
+import "github.com/plexusone/elevenlabs-go/content"
+
+project, err := client.Content().CreateProject(ctx, &content.CreateProjectRequest{
     Name:        "My Course",
     Description: "Introduction to Go Programming",
     Language:    "en",
@@ -26,7 +31,7 @@ project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
 ### With Voice Settings
 
 ```go
-project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
+project, err := client.Content().CreateProject(ctx, &content.CreateProjectRequest{
     Name:                    "My Course",
     DefaultModelID:          "eleven_multilingual_v2",
     DefaultParagraphVoiceID: "21m00Tcm4TlvDq8ikWAM",
@@ -39,7 +44,7 @@ project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
 ### From URL
 
 ```go
-project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
+project, err := client.Content().CreateProject(ctx, &content.CreateProjectRequest{
     Name:    "My Article",
     FromURL: "https://example.com/article",
 })
@@ -48,7 +53,7 @@ project, err := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
 ## Listing Projects
 
 ```go
-projects, err := client.Projects().List(ctx)
+projects, err := client.Content().ListProjects(ctx)
 for _, p := range projects {
     fmt.Printf("%s: %s\n", p.ProjectID, p.Name)
 }
@@ -74,7 +79,7 @@ for _, p := range projects {
 ### List Chapters
 
 ```go
-chapters, err := client.Projects().ListChapters(ctx, projectID)
+chapters, err := client.Content().ListProjectChapters(ctx, projectID)
 for _, ch := range chapters {
     fmt.Printf("%s: %s (state: %s)\n", ch.ChapterID, ch.Name, ch.State)
 }
@@ -83,13 +88,13 @@ for _, ch := range chapters {
 ### Convert a Chapter
 
 ```go
-err := client.Projects().ConvertChapter(ctx, projectID, chapterID)
+err := client.Content().ConvertProjectChapter(ctx, projectID, chapterID)
 ```
 
 ### Delete a Chapter
 
 ```go
-err := client.Projects().DeleteChapter(ctx, projectID, chapterID)
+err := client.Content().DeleteProjectChapter(ctx, projectID, chapterID)
 ```
 
 ## Chapter Object
@@ -107,13 +112,13 @@ err := client.Projects().DeleteChapter(ctx, projectID, chapterID)
 ### Convert Entire Project
 
 ```go
-err := client.Projects().Convert(ctx, projectID)
+err := client.Content().ConvertProject(ctx, projectID)
 ```
 
 ### Check Conversion Status
 
 ```go
-chapters, _ := client.Projects().ListChapters(ctx, projectID)
+chapters, _ := client.Content().ListProjectChapters(ctx, projectID)
 for _, ch := range chapters {
     fmt.Printf("%s: %.0f%% complete\n", ch.Name, ch.ConversionProgress)
 }
@@ -126,7 +131,7 @@ Snapshots are frozen versions of converted audio.
 ### List Project Snapshots
 
 ```go
-snapshots, err := client.Projects().ListSnapshots(ctx, projectID)
+snapshots, err := client.Content().ListProjectSnapshots(ctx, projectID)
 for _, snap := range snapshots {
     fmt.Printf("%s: %s (created: %s)\n",
         snap.ProjectSnapshotID, snap.Name, snap.CreatedAt)
@@ -136,7 +141,7 @@ for _, snap := range snapshots {
 ### Download Snapshot Archive
 
 ```go
-reader, err := client.Projects().DownloadSnapshotArchive(ctx, projectID, snapshotID)
+reader, err := client.Content().DownloadProjectSnapshotArchive(ctx, projectID, snapshotID)
 if err != nil {
     log.Fatal(err)
 }
@@ -149,19 +154,19 @@ io.Copy(f, reader)
 ### List Chapter Snapshots
 
 ```go
-snapshots, err := client.Projects().ListChapterSnapshots(ctx, projectID, chapterID)
+snapshots, err := client.Content().ListProjectChapterSnapshots(ctx, projectID, chapterID)
 ```
 
 ### Stream Chapter Audio
 
 ```go
-audio, err := client.Projects().StreamChapterAudio(ctx, projectID, chapterID, snapshotID)
+audio, err := client.Content().StreamProjectChapterAudio(ctx, projectID, chapterID, snapshotID)
 ```
 
 ## Updating Projects
 
 ```go
-err := client.Projects().Update(ctx, projectID, &elevenlabs.UpdateProjectRequest{
+err := client.Content().UpdateProject(ctx, projectID, &content.UpdateProjectRequest{
     Name:                    "Updated Name",
     DefaultParagraphVoiceID: "newVoiceID",
     DefaultTitleVoiceID:     "newVoiceID",
@@ -171,7 +176,7 @@ err := client.Projects().Update(ctx, projectID, &elevenlabs.UpdateProjectRequest
 ## Deleting Projects
 
 ```go
-err := client.Projects().Delete(ctx, projectID)
+err := client.Content().DeleteProject(ctx, projectID)
 ```
 
 ## Quality Presets
@@ -187,26 +192,26 @@ err := client.Projects().Delete(ctx, projectID)
 
 ```go
 // 1. Create project
-project, _ := client.Projects().Create(ctx, &elevenlabs.CreateProjectRequest{
+project, _ := client.Content().CreateProject(ctx, &content.CreateProjectRequest{
     Name:     "Go Programming Course",
     Language: "en",
 })
 
 // 2. List chapters (added via web UI or API)
-chapters, _ := client.Projects().ListChapters(ctx, project.ProjectID)
+chapters, _ := client.Content().ListProjectChapters(ctx, project.ProjectID)
 
 // 3. Convert all chapters
 for _, ch := range chapters {
-    client.Projects().ConvertChapter(ctx, project.ProjectID, ch.ChapterID)
+    client.Content().ConvertProjectChapter(ctx, project.ProjectID, ch.ChapterID)
 }
 
 // 4. Wait for conversion (poll status)
 // ...
 
 // 5. Download completed project
-snapshots, _ := client.Projects().ListSnapshots(ctx, project.ProjectID)
+snapshots, _ := client.Content().ListProjectSnapshots(ctx, project.ProjectID)
 if len(snapshots) > 0 {
-    reader, _ := client.Projects().DownloadSnapshotArchive(ctx,
+    reader, _ := client.Content().DownloadProjectSnapshotArchive(ctx,
         project.ProjectID, snapshots[0].ProjectSnapshotID)
 
     f, _ := os.Create("course.zip")

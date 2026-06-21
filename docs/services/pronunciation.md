@@ -2,6 +2,9 @@
 
 Ensure correct pronunciation of technical terms, names, and domain-specific vocabulary.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Pronunciation methods are accessed via `client.Account()` instead of `client.Pronunciation()`.
+
 ## Why Use Pronunciation Dictionaries?
 
 Without pronunciation rules, TTS may mispronounce:
@@ -16,7 +19,9 @@ Without pronunciation rules, TTS may mispronounce:
 ### From a Map (Simplest)
 
 ```go
-dict, err := client.Pronunciation().CreateFromMap(ctx, "Tech Terms", map[string]string{
+import "github.com/plexusone/elevenlabs-go/account"
+
+dict, err := client.Account().CreatePronunciationDictionaryFromMap(ctx, "Tech Terms", map[string]string{
     "ADK":     "Agent Development Kit",
     "API":     "A P I",
     "kubectl": "kube control",
@@ -41,18 +46,18 @@ Create a JSON file (`terms.json`):
 Load and create:
 
 ```go
-dict, err := client.Pronunciation().CreateFromJSON(ctx, "Tech Terms", "terms.json")
+dict, err := client.Account().CreatePronunciationDictionaryFromJSON(ctx, "Tech Terms", "terms.json")
 ```
 
 ### With Full Options
 
 ```go
-rules := elevenlabs.PronunciationRules{
+rules := account.PronunciationRules{
     {Grapheme: "ADK", Alias: "Agent Development Kit"},
     {Grapheme: "nginx", Phoneme: "ˈɛndʒɪnˈɛks"},
 }
 
-dict, err := client.Pronunciation().Create(ctx, &elevenlabs.CreatePronunciationDictionaryRequest{
+dict, err := client.Account().CreatePronunciationDictionary(ctx, &account.CreatePronunciationDictionaryRequest{
     Name:        "Tech Terms",
     Description: "Technical vocabulary for developer courses",
     Rules:       rules,
@@ -84,7 +89,7 @@ For precise phonetic control using International Phonetic Alphabet:
 ### List All Dictionaries
 
 ```go
-resp, err := client.Pronunciation().List(ctx, nil)
+resp, err := client.Account().ListPronunciationDictionaries(ctx, nil)
 for _, dict := range resp.Dictionaries {
     fmt.Printf("%s: %s (%d rules)\n", dict.ID, dict.Name, dict.RulesCount)
 }
@@ -93,25 +98,25 @@ for _, dict := range resp.Dictionaries {
 ### Get a Dictionary
 
 ```go
-dict, err := client.Pronunciation().Get(ctx, dictionaryID)
+dict, err := client.Account().GetPronunciationDictionary(ctx, dictionaryID)
 ```
 
 ### Rename a Dictionary
 
 ```go
-err := client.Pronunciation().Rename(ctx, dictionaryID, "New Name")
+err := client.Account().RenamePronunciationDictionary(ctx, dictionaryID, "New Name")
 ```
 
 ### Remove Rules
 
 ```go
-err := client.Pronunciation().RemoveRules(ctx, dictionaryID, []string{"API", "SQL"})
+err := client.Account().RemovePronunciationRules(ctx, dictionaryID, []string{"API", "SQL"})
 ```
 
 ### Archive a Dictionary
 
 ```go
-err := client.Pronunciation().Archive(ctx, dictionaryID)
+err := client.Account().ArchivePronunciationDictionary(ctx, dictionaryID)
 ```
 
 ### Download PLS File
@@ -120,7 +125,7 @@ Download the PLS (Pronunciation Lexicon Specification) XML file for a dictionary
 
 ```go
 // Download latest version
-pls, err := client.Pronunciation().DownloadLatestPLS(ctx, dictionaryID)
+pls, err := client.Account().DownloadPronunciationDictionaryPLS(ctx, dictionaryID)
 if err != nil {
     log.Fatal(err)
 }
@@ -130,7 +135,7 @@ f, _ := os.Create("dictionary.pls")
 io.Copy(f, pls)
 
 // Or download a specific version
-pls, err := client.Pronunciation().GetVersionPLS(ctx, dictionaryID, versionID)
+pls, err := client.Account().GetPronunciationDictionaryVersionPLS(ctx, dictionaryID, versionID)
 ```
 
 ## Working with Rules Locally
@@ -138,20 +143,20 @@ pls, err := client.Pronunciation().GetVersionPLS(ctx, dictionaryID, versionID)
 ### Load from JSON
 
 ```go
-rules, err := elevenlabs.LoadRulesFromJSON("terms.json")
+rules, err := account.LoadRulesFromJSON("terms.json")
 ```
 
 ### Parse from JSON String
 
 ```go
 jsonData := `[{"grapheme": "API", "alias": "A P I"}]`
-rules, err := elevenlabs.ParseRulesFromJSON([]byte(jsonData))
+rules, err := account.ParseRulesFromJSON([]byte(jsonData))
 ```
 
 ### Create from Map
 
 ```go
-rules := elevenlabs.RulesFromMap(map[string]string{
+rules := account.RulesFromMap(map[string]string{
     "API": "A P I",
     "SQL": "sequel",
 })
@@ -160,7 +165,7 @@ rules := elevenlabs.RulesFromMap(map[string]string{
 ### Generate PLS XML
 
 ```go
-rules := elevenlabs.PronunciationRules{
+rules := account.PronunciationRules{
     {Grapheme: "API", Alias: "A P I"},
 }
 

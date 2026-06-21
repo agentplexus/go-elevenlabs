@@ -2,10 +2,13 @@
 
 Access user information and subscription details.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, User methods are accessed via `client.Account()` instead of `client.User()`.
+
 ## Get User Info
 
 ```go
-user, err := client.User().GetInfo(ctx)
+user, err := client.Account().GetUser(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -26,7 +29,7 @@ fmt.Printf("First Name: %s\n", user.FirstName)
 ## Get Subscription
 
 ```go
-sub, err := client.User().GetSubscription(ctx)
+sub, err := client.Account().GetSubscription(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -52,7 +55,7 @@ fmt.Printf("Remaining: %d\n", sub.CharactersRemaining())
 ## Check Characters Remaining
 
 ```go
-sub, _ := client.User().GetSubscription(ctx)
+sub, _ := client.Account().GetSubscription(ctx)
 
 remaining := sub.CharactersRemaining()
 if remaining < 1000 {
@@ -77,7 +80,7 @@ Always check before generating audio:
 
 ```go
 func generateSafely(client *elevenlabs.Client, text string) error {
-    sub, err := client.User().GetSubscription(context.Background())
+    sub, err := client.Account().GetSubscription(context.Background())
     if err != nil {
         return err
     }
@@ -89,7 +92,7 @@ func generateSafely(client *elevenlabs.Client, text string) error {
     }
 
     // Safe to generate
-    _, err = client.TextToSpeech().Simple(context.Background(), voiceID, text)
+    _, err = client.TTS().Simple(context.Background(), voiceID, text)
     return err
 }
 ```
@@ -98,7 +101,7 @@ func generateSafely(client *elevenlabs.Client, text string) error {
 
 ```go
 func printUsageReport(client *elevenlabs.Client) {
-    sub, _ := client.User().GetSubscription(context.Background())
+    sub, _ := client.Account().GetSubscription(context.Background())
 
     used := sub.CharacterCount
     limit := sub.CharacterLimit

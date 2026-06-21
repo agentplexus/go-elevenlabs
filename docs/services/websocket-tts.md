@@ -2,6 +2,9 @@
 
 Real-time text-to-speech streaming via WebSocket for low-latency voice synthesis.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, WebSocket TTS methods are accessed via `client.Realtime()` instead of `client.WebSocketTTS()`.
+
 ## Overview
 
 The WebSocket TTS service enables streaming text to speech in real-time, making it ideal for:
@@ -14,7 +17,7 @@ The WebSocket TTS service enables streaming text to speech in real-time, making 
 
 ```go
 // Connect to WebSocket TTS
-conn, err := client.WebSocketTTS().Connect(ctx, voiceID, nil)
+conn, err := client.Realtime().ConnectTTS(ctx, voiceID, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -38,7 +41,9 @@ for audio := range conn.Audio() {
 ## With Options
 
 ```go
-opts := &elevenlabs.WebSocketTTSOptions{
+import "github.com/plexusone/elevenlabs-go/realtime"
+
+opts := &realtime.TTSOptions{
     // Use turbo model for lowest latency
     ModelID: "eleven_turbo_v2_5",
 
@@ -58,14 +63,14 @@ opts := &elevenlabs.WebSocketTTSOptions{
     },
 }
 
-conn, err := client.WebSocketTTS().Connect(ctx, voiceID, opts)
+conn, err := client.Realtime().ConnectTTS(ctx, voiceID, opts)
 ```
 
 ## Streaming from LLM
 
 ```go
 // Connect to TTS
-conn, err := client.WebSocketTTS().Connect(ctx, voiceID, &elevenlabs.WebSocketTTSOptions{
+conn, err := client.Realtime().ConnectTTS(ctx, voiceID, &realtime.TTSOptions{
     ModelID:                  "eleven_turbo_v2_5",
     OutputFormat:             "pcm_16000",
     OptimizeStreamingLatency: 3,
@@ -170,13 +175,13 @@ for audio := range conn.Audio() {
 For applications that need faster stream completion, set a shorter `InactivityTimeout` and treat the timeout as successful completion:
 
 ```go
-opts := &elevenlabs.WebSocketTTSOptions{
+opts := &realtime.TTSOptions{
     ModelID:           "eleven_turbo_v2_5",
     OutputFormat:      "pcm_16000",
     InactivityTimeout: 5, // 5 seconds instead of 20
 }
 
-conn, err := client.WebSocketTTS().Connect(ctx, voiceID, opts)
+conn, err := client.Realtime().ConnectTTS(ctx, voiceID, opts)
 if err != nil {
     log.Fatal(err)
 }

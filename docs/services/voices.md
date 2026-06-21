@@ -2,10 +2,13 @@
 
 The Voices service manages voice selection and settings.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Voice methods are accessed via `client.Voice()` instead of `client.Voices()`.
+
 ## List All Voices
 
 ```go
-voices, err := client.Voices().List(ctx)
+voices, err := client.Voice().List(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -18,7 +21,7 @@ for _, v := range voices {
 ## Get a Specific Voice
 
 ```go
-voice, err := client.Voices().Get(ctx, "21m00Tcm4TlvDq8ikWAM")
+voice, err := client.Voice().Get(ctx, "21m00Tcm4TlvDq8ikWAM")
 if err != nil {
     log.Fatal(err)
 }
@@ -43,7 +46,7 @@ fmt.Printf("Labels: %v\n", voice.Labels)
 ## Get Voice Settings
 
 ```go
-settings, err := client.Voices().GetSettings(ctx, voiceID)
+settings, err := client.Voice().GetSettings(ctx, voiceID)
 if err != nil {
     log.Fatal(err)
 }
@@ -55,7 +58,7 @@ fmt.Printf("Similarity Boost: %f\n", settings.SimilarityBoost)
 ## Get Default Settings
 
 ```go
-defaults, err := client.Voices().GetDefaultSettings(ctx)
+defaults, err := client.Voice().GetDefaultSettings(ctx)
 ```
 
 ## Popular Pre-made Voices
@@ -71,7 +74,7 @@ defaults, err := client.Voices().GetDefaultSettings(ctx)
 ## Finding the Right Voice
 
 ```go
-voices, _ := client.Voices().List(ctx)
+voices, _ := client.Voice().List(ctx)
 
 // Filter by category
 for _, v := range voices {

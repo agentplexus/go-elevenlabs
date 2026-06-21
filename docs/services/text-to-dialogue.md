@@ -2,10 +2,15 @@
 
 Generate multi-speaker conversations with different voices for each speaker.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Text-to-Dialogue methods are accessed via `client.TTS()` instead of `client.TextToDialogue()`.
+
 ## Basic Usage
 
 ```go
-audio, err := client.TextToDialogue().Simple(ctx, []elevenlabs.DialogueInput{
+import "github.com/plexusone/elevenlabs-go/tts"
+
+audio, err := client.TTS().GenerateDialogue(ctx, []tts.DialogueInput{
     {Text: "Hello, how are you today?", VoiceID: "voice1"},
     {Text: "I'm doing great, thanks for asking!", VoiceID: "voice2"},
     {Text: "That's wonderful to hear.", VoiceID: "voice1"},
@@ -21,8 +26,8 @@ io.Copy(f, audio)
 ## Full Options
 
 ```go
-audio, err := client.TextToDialogue().Generate(ctx, &elevenlabs.DialogueRequest{
-    Inputs: []elevenlabs.DialogueInput{
+audio, err := client.TTS().GenerateDialogueWithOptions(ctx, &tts.DialogueRequest{
+    Inputs: []tts.DialogueInput{
         {Text: "Welcome to the show!", VoiceID: hostVoiceID},
         {Text: "Thanks for having me.", VoiceID: guestVoiceID},
     },
@@ -37,8 +42,8 @@ audio, err := client.TextToDialogue().Generate(ctx, &elevenlabs.DialogueRequest{
 Get timing information for each segment:
 
 ```go
-resp, err := client.TextToDialogue().GenerateWithTimestamps(ctx, &elevenlabs.DialogueRequest{
-    Inputs: []elevenlabs.DialogueInput{
+resp, err := client.TTS().GenerateDialogueWithTimestamps(ctx, &tts.DialogueRequest{
+    Inputs: []tts.DialogueInput{
         {Text: "First speaker talks.", VoiceID: voice1},
         {Text: "Second speaker responds.", VoiceID: voice2},
     },
@@ -56,7 +61,7 @@ for _, seg := range resp.VoiceSegments {
 For real-time playback:
 
 ```go
-stream, err := client.TextToDialogue().GenerateStream(ctx, &elevenlabs.DialogueRequest{
+stream, err := client.TTS().GenerateDialogueStream(ctx, &tts.DialogueRequest{
     Inputs: dialogueInputs,
 })
 ```
@@ -96,14 +101,14 @@ type VoiceSegment struct {
 hostVoice := "21m00Tcm4TlvDq8ikWAM"
 guestVoice := "AZnzlk1XvdvUeBnXmlld"
 
-dialogue := []elevenlabs.DialogueInput{
+dialogue := []tts.DialogueInput{
     {Text: "Welcome back to Tech Talk! Today we're discussing AI.", VoiceID: hostVoice},
     {Text: "Thanks for having me. AI has really transformed everything.", VoiceID: guestVoice},
     {Text: "Let's dive into the specifics. What excites you most?", VoiceID: hostVoice},
     {Text: "Definitely the creative applications - music, art, writing.", VoiceID: guestVoice},
 }
 
-audio, _ := client.TextToDialogue().Simple(ctx, dialogue)
+audio, _ := client.TTS().GenerateDialogue(ctx, dialogue)
 ```
 
 ### Educational Content
@@ -112,7 +117,7 @@ audio, _ := client.TextToDialogue().Simple(ctx, dialogue)
 teacher := "teacher-voice-id"
 student := "student-voice-id"
 
-lesson := []elevenlabs.DialogueInput{
+lesson := []tts.DialogueInput{
     {Text: "Today we'll learn about photosynthesis.", VoiceID: teacher},
     {Text: "What exactly is photosynthesis?", VoiceID: student},
     {Text: "It's how plants convert sunlight into energy.", VoiceID: teacher},
@@ -120,7 +125,7 @@ lesson := []elevenlabs.DialogueInput{
     {Text: "That's a great analogy! Let me explain further.", VoiceID: teacher},
 }
 
-audio, _ := client.TextToDialogue().Simple(ctx, lesson)
+audio, _ := client.TTS().GenerateDialogue(ctx, lesson)
 ```
 
 ### Audiobook Dialogues
@@ -130,14 +135,14 @@ narrator := "narrator-voice-id"
 character1 := "character1-voice-id"
 character2 := "character2-voice-id"
 
-story := []elevenlabs.DialogueInput{
+story := []tts.DialogueInput{
     {Text: "The detective entered the room slowly.", VoiceID: narrator},
     {Text: "I've been expecting you.", VoiceID: character1},
     {Text: "Then you know why I'm here.", VoiceID: character2},
     {Text: "The tension was palpable.", VoiceID: narrator},
 }
 
-audio, _ := client.TextToDialogue().Simple(ctx, story)
+audio, _ := client.TTS().GenerateDialogue(ctx, story)
 ```
 
 ### Customer Service Demos
@@ -146,7 +151,7 @@ audio, _ := client.TextToDialogue().Simple(ctx, story)
 agent := "agent-voice-id"
 customer := "customer-voice-id"
 
-demo := []elevenlabs.DialogueInput{
+demo := []tts.DialogueInput{
     {Text: "Thank you for calling support. How can I help?", VoiceID: agent},
     {Text: "I'm having trouble with my account.", VoiceID: customer},
     {Text: "I'd be happy to help. Can I have your account number?", VoiceID: agent},
@@ -154,14 +159,14 @@ demo := []elevenlabs.DialogueInput{
     {Text: "Perfect, I can see your account now.", VoiceID: agent},
 }
 
-audio, _ := client.TextToDialogue().Simple(ctx, demo)
+audio, _ := client.TTS().GenerateDialogue(ctx, demo)
 ```
 
 ### Interview Simulation
 
 ```go
 // Get timestamps for video sync
-resp, _ := client.TextToDialogue().GenerateWithTimestamps(ctx, &elevenlabs.DialogueRequest{
+resp, _ := client.TTS().GenerateDialogueWithTimestamps(ctx, &tts.DialogueRequest{
     Inputs: interviewDialogue,
 })
 
@@ -183,10 +188,10 @@ for _, seg := range resp.VoiceSegments {
 
 ```go
 // Get available voices
-voices, _ := client.Voices().List(ctx)
+voices, _ := client.Voice().List(ctx)
 
 // Filter by characteristics
-var maleVoices, femaleVoices []elevenlabs.Voice
+var maleVoices, femaleVoices []voice.Voice
 for _, v := range voices {
     if v.Labels["gender"] == "male" {
         maleVoices = append(maleVoices, v)

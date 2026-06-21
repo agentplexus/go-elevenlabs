@@ -2,10 +2,13 @@
 
 Generate music from text prompts.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Music methods are accessed via `client.Content()` instead of `client.Music()`.
+
 ## Basic Usage
 
 ```go
-audio, err := client.Music().Simple(ctx, "upbeat electronic music for a tech video")
+audio, err := client.Content().GenerateMusic(ctx, "upbeat electronic music for a tech video")
 if err != nil {
     log.Fatal(err)
 }
@@ -17,7 +20,9 @@ io.Copy(f, audio)
 ## Full Options
 
 ```go
-resp, err := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+import "github.com/plexusone/elevenlabs-go/content"
+
+resp, err := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:            "calm piano melody with soft strings",
     DurationMs:        30000,  // 30 seconds
     ForceInstrumental: true,   // No vocals
@@ -38,7 +43,7 @@ io.Copy(f, resp.Audio)
 Ensure the generated music has no vocals:
 
 ```go
-audio, err := client.Music().GenerateInstrumental(ctx,
+audio, err := client.Content().GenerateMusicInstrumental(ctx,
     "epic orchestral music for movie trailer",
     60000,  // 60 seconds
 )
@@ -49,7 +54,7 @@ audio, err := client.Music().GenerateInstrumental(ctx,
 For real-time playback:
 
 ```go
-resp, err := client.Music().GenerateStream(ctx, &elevenlabs.MusicRequest{
+resp, err := client.Content().GenerateMusicStream(ctx, &content.MusicRequest{
     Prompt:     "lofi hip hop beats",
     DurationMs: 120000,  // 2 minutes
 })
@@ -159,7 +164,7 @@ type MusicResponse struct {
 ### Video Intro Music
 
 ```go
-intro, err := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+intro, err := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:            "modern tech startup intro jingle, professional and innovative",
     DurationMs:        8000,  // 8 seconds
     ForceInstrumental: true,
@@ -169,7 +174,7 @@ intro, err := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
 ### Podcast Background
 
 ```go
-background, err := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+background, err := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:            "subtle podcast background music, warm and conversational",
     DurationMs:        300000,  // 5 minutes
     ForceInstrumental: true,
@@ -180,15 +185,15 @@ background, err := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
 
 ```go
 // Intro music
-intro, _ := client.Music().GenerateInstrumental(ctx,
+intro, _ := client.Content().GenerateMusicInstrumental(ctx,
     "educational video intro, friendly and engaging", 5000)
 
 // Transition music
-transition, _ := client.Music().GenerateInstrumental(ctx,
+transition, _ := client.Content().GenerateMusicInstrumental(ctx,
     "soft transition sound, brief whoosh with melody", 2000)
 
 // Background for explanations
-background, _ := client.Music().GenerateInstrumental(ctx,
+background, _ := client.Content().GenerateMusicInstrumental(ctx,
     "thinking music, curious and light", 60000)
 ```
 
@@ -196,14 +201,14 @@ background, _ := client.Music().GenerateInstrumental(ctx,
 
 ```go
 // Menu theme
-menuTheme, _ := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+menuTheme, _ := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:     "fantasy RPG main menu theme, epic and adventurous",
     DurationMs: 120000,
     Seed:       42,  // Reproducible for version control
 })
 
 // Battle music
-battleMusic, _ := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+battleMusic, _ := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:            "intense battle music, fast drums and aggressive strings",
     DurationMs:        90000,
     ForceInstrumental: true,
@@ -218,13 +223,13 @@ Use seeds for consistent results:
 // Generate same music twice
 seed := 12345
 
-music1, _ := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+music1, _ := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:     "calm acoustic guitar",
     DurationMs: 30000,
     Seed:       seed,
 })
 
-music2, _ := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
+music2, _ := client.Content().GenerateMusicWithOptions(ctx, &content.MusicRequest{
     Prompt:     "calm acoustic guitar",
     DurationMs: 30000,
     Seed:       seed,
@@ -232,99 +237,6 @@ music2, _ := client.Music().Generate(ctx, &elevenlabs.MusicRequest{
 
 // music1 and music2 will be identical
 ```
-
-## Composition Plans
-
-For fine-grained control over song structure, generate a composition plan first:
-
-```go
-// Generate a plan from a prompt
-plan, err := client.Music().GeneratePlan(ctx, &elevenlabs.CompositionPlanRequest{
-    Prompt:     "upbeat pop song about summer",
-    DurationMs: 180000, // 3 minutes
-})
-if err != nil {
-    log.Fatal(err)
-}
-
-// Modify the plan if needed
-plan.Sections[0].Lines = []string{"Custom lyrics for the intro"}
-plan.PositiveGlobalStyles = append(plan.PositiveGlobalStyles, "energetic")
-
-// Generate music from the modified plan
-resp, err := client.Music().GenerateDetailed(ctx, &elevenlabs.MusicDetailedRequest{
-    CompositionPlan: plan,
-    WithTimestamps:  true,
-})
-```
-
-### Composition Plan Structure
-
-```go
-type CompositionPlan struct {
-    PositiveGlobalStyles []string     // Styles present throughout
-    NegativeGlobalStyles []string     // Styles to avoid
-    Sections             []SongSection
-}
-
-type SongSection struct {
-    SectionName         string   // "intro", "verse", "chorus"
-    DurationMs          int      // 3000-120000 per section
-    Lines               []string // Lyrics (max 200 chars per line)
-    PositiveLocalStyles []string // Styles for this section
-    NegativeLocalStyles []string // Styles to avoid in this section
-}
-```
-
-## Detailed Generation
-
-Generate music with detailed options and metadata:
-
-```go
-// With a simple prompt
-resp, err := client.Music().GenerateDetailed(ctx, &elevenlabs.MusicDetailedRequest{
-    Prompt:            "epic orchestral music",
-    DurationMs:        60000,
-    ForceInstrumental: true,
-    WithTimestamps:    true,  // Get word timestamps
-})
-
-// With a composition plan (see above)
-resp, err := client.Music().GenerateDetailed(ctx, &elevenlabs.MusicDetailedRequest{
-    CompositionPlan: plan,
-})
-```
-
-## Stem Separation
-
-Separate a song into individual stems (vocals, drums, bass, etc.):
-
-```go
-f, _ := os.Open("song.mp3")
-defer f.Close()
-
-stems, err := client.Music().SeparateStems(ctx, &elevenlabs.StemSeparationRequest{
-    File:     f,
-    Filename: "song.mp3",
-    // Options: "two_stems_v1" (vocals + music)
-    //          "six_stems_v1" (vocals, drums, bass, other - default)
-    StemVariation: "six_stems_v1",
-})
-if err != nil {
-    log.Fatal(err)
-}
-
-// Save the stems (returned as a zip file)
-output, _ := os.Create("stems.zip")
-io.Copy(output, stems)
-```
-
-### Stem Variation Options
-
-| Option | Output |
-|--------|--------|
-| `two_stems_v1` | Vocals + instrumental |
-| `six_stems_v1` | Vocals, drums, bass, and other (default) |
 
 ## Best Practices
 
@@ -334,5 +246,3 @@ io.Copy(output, stems)
 4. **Use ForceInstrumental** - When you don't want any vocals
 5. **Test with seeds** - Find good seeds and save them for consistency
 6. **Match duration to use case** - Don't generate 5 minutes for a 10-second intro
-7. **Use composition plans** - For complex songs with multiple sections
-8. **Stem separation** - Extract vocals for remixing or karaoke

@@ -2,10 +2,13 @@
 
 List and select text-to-speech models.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Models methods are accessed via `client.Account()` instead of `client.Models()`.
+
 ## List Available Models
 
 ```go
-models, err := client.Models().ListTTSModels(ctx)
+models, err := client.Account().ListModels(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -63,7 +66,7 @@ modelID := "eleven_monolingual_v1"
 ## Check Language Support
 
 ```go
-models, _ := client.Models().ListTTSModels(ctx)
+models, _ := client.Account().ListModels(ctx)
 
 for _, m := range models {
     for _, lang := range m.Languages {

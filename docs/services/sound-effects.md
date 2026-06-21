@@ -2,10 +2,13 @@
 
 Generate sound effects from text descriptions.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Sound Effects methods are accessed via `client.Audio()` instead of `client.SoundEffects()`.
+
 ## Basic Usage
 
 ```go
-audio, err := client.SoundEffects().Simple(ctx, "thunder and rain storm")
+audio, err := client.Audio().GenerateSoundEffect(ctx, "thunder and rain storm")
 if err != nil {
     log.Fatal(err)
 }
@@ -17,7 +20,9 @@ io.Copy(f, audio)
 ## Full Control
 
 ```go
-resp, err := client.SoundEffects().Generate(ctx, &elevenlabs.SoundEffectRequest{
+import "github.com/plexusone/elevenlabs-go/audio"
+
+resp, err := client.Audio().GenerateSoundEffectWithOptions(ctx, &audio.SoundEffectRequest{
     Text:            "car engine starting and revving",
     DurationSeconds: 5.0,      // 0.5 to 30 seconds
     PromptInfluence: 0.5,      // 0.0 to 1.0
@@ -30,7 +35,7 @@ resp, err := client.SoundEffects().Generate(ctx, &elevenlabs.SoundEffectRequest{
 Create seamlessly looping audio for backgrounds:
 
 ```go
-audio, err := client.SoundEffects().GenerateLoop(ctx,
+audio, err := client.Audio().GenerateSoundEffectLoop(ctx,
     "gentle rain on window",
     10.0,  // duration in seconds
 )
@@ -55,6 +60,7 @@ audio, err := client.SoundEffects().GenerateLoop(ctx,
 ## Example Prompts
 
 ### Nature
+
 ```go
 "gentle rain on a tin roof"
 "thunderstorm with distant lightning"
@@ -64,6 +70,7 @@ audio, err := client.SoundEffects().GenerateLoop(ctx,
 ```
 
 ### Urban
+
 ```go
 "busy city traffic"
 "car horn honking"
@@ -72,6 +79,7 @@ audio, err := client.SoundEffects().GenerateLoop(ctx,
 ```
 
 ### Technology
+
 ```go
 "computer keyboard typing"
 "notification chime"
@@ -80,6 +88,7 @@ audio, err := client.SoundEffects().GenerateLoop(ctx,
 ```
 
 ### Music/Transitions
+
 ```go
 "dramatic orchestral hit"
 "soft piano transition"
@@ -93,23 +102,23 @@ audio, err := client.SoundEffects().GenerateLoop(ctx,
 
 ```go
 // Intro sound
-intro, _ := client.SoundEffects().Simple(ctx, "professional podcast intro jingle")
+intro, _ := client.Audio().GenerateSoundEffect(ctx, "professional podcast intro jingle")
 
 // Transition
-transition, _ := client.SoundEffects().Simple(ctx, "soft whoosh transition")
+transition, _ := client.Audio().GenerateSoundEffect(ctx, "soft whoosh transition")
 
 // Background ambience (looping)
-ambience, _ := client.SoundEffects().GenerateLoop(ctx, "quiet office ambience", 30)
+ambience, _ := client.Audio().GenerateSoundEffectLoop(ctx, "quiet office ambience", 30)
 ```
 
 ### Video Production
 
 ```go
 // Action sounds
-punch, _ := client.SoundEffects().Simple(ctx, "punch impact sound")
+punch, _ := client.Audio().GenerateSoundEffect(ctx, "punch impact sound")
 
 // Ambient backgrounds
-forest, _ := client.SoundEffects().GenerateLoop(ctx, "peaceful forest ambience", 60)
+forest, _ := client.Audio().GenerateSoundEffectLoop(ctx, "peaceful forest ambience", 60)
 ```
 
 ## Best Practices

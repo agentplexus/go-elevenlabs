@@ -2,13 +2,16 @@
 
 Get precise word-level and character-level timestamps for audio when you already have the transcript.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Forced Alignment methods are accessed via `client.Audio()` instead of `client.ForcedAlignment()`.
+
 ## Basic Usage
 
 ```go
 file, _ := os.Open("speech.mp3")
 defer file.Close()
 
-result, err := client.ForcedAlignment().AlignFile(ctx, file, "speech.mp3",
+result, err := client.Audio().AlignFile(ctx, file, "speech.mp3",
     "The text that was spoken in the audio")
 if err != nil {
     log.Fatal(err)
@@ -22,7 +25,9 @@ for _, word := range result.Words {
 ## Full Options
 
 ```go
-result, err := client.ForcedAlignment().Align(ctx, &elevenlabs.ForcedAlignmentRequest{
+import "github.com/plexusone/elevenlabs-go/audio"
+
+result, err := client.Audio().Align(ctx, &audio.AlignmentRequest{
     File:     audioFile,
     Filename: "narration.mp3",
     Text:     "The complete transcript of the audio file",
@@ -32,10 +37,10 @@ result, err := client.ForcedAlignment().Align(ctx, &elevenlabs.ForcedAlignmentRe
 ## Response Structure
 
 ```go
-type ForcedAlignmentResponse struct {
-    Loss       float64              // Overall alignment loss/confidence
-    Words      []AlignmentWord      // Word-level timestamps
-    Characters []AlignmentCharacter // Character-level timestamps
+type AlignmentResponse struct {
+    Loss       float64           // Overall alignment loss/confidence
+    Words      []AlignmentWord   // Word-level timestamps
+    Characters []AlignmentChar   // Character-level timestamps
 }
 
 type AlignmentWord struct {
@@ -45,7 +50,7 @@ type AlignmentWord struct {
     Loss  float64 // Alignment confidence for this word
 }
 
-type AlignmentCharacter struct {
+type AlignmentChar struct {
     Text  string  // The character
     Start float64 // Start time in seconds
     End   float64 // End time in seconds
@@ -57,7 +62,7 @@ type AlignmentCharacter struct {
 ### Karaoke-Style Subtitles
 
 ```go
-result, err := client.ForcedAlignment().AlignFile(ctx, audioFile, "song.mp3", lyrics)
+result, err := client.Audio().AlignFile(ctx, audioFile, "song.mp3", lyrics)
 
 // Highlight words as they're spoken
 for _, word := range result.Words {
@@ -69,7 +74,7 @@ for _, word := range result.Words {
 
 ```go
 // Align narration with known script
-result, err := client.ForcedAlignment().AlignFile(ctx,
+result, err := client.Audio().AlignFile(ctx,
     narrationFile, "narration.mp3", script)
 
 // Generate precise captions
@@ -95,7 +100,7 @@ chapters := []string{
 var chapterMarkers []float64
 currentPos := 0
 
-result, err := client.ForcedAlignment().AlignFile(ctx, bookFile, "book.mp3", fullText)
+result, err := client.Audio().AlignFile(ctx, bookFile, "book.mp3", fullText)
 
 // Find chapter start times
 for _, word := range result.Words {
@@ -112,7 +117,7 @@ for _, word := range result.Words {
 
 ```go
 // Generate speech
-audio, _ := client.TextToSpeech().Simple(ctx, voiceID, text)
+audio, _ := client.TTS().Simple(ctx, voiceID, text)
 
 // Save audio
 audioFile, _ := os.CreateTemp("", "tts-*.mp3")
@@ -120,7 +125,7 @@ io.Copy(audioFile, audio)
 audioFile.Seek(0, 0)
 
 // Verify alignment
-result, _ := client.ForcedAlignment().AlignFile(ctx, audioFile, "tts.mp3", text)
+result, _ := client.Audio().AlignFile(ctx, audioFile, "tts.mp3", text)
 
 // Check alignment quality
 if result.Loss > 0.5 {

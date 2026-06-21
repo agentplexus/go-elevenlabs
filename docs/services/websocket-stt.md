@@ -2,6 +2,9 @@
 
 Real-time speech-to-text streaming via WebSocket for live transcription.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, WebSocket STT methods are accessed via `client.Realtime()` instead of `client.WebSocketSTT()`.
+
 ## Overview
 
 The WebSocket STT service enables real-time audio transcription with:
@@ -15,7 +18,7 @@ The WebSocket STT service enables real-time audio transcription with:
 
 ```go
 // Connect to WebSocket STT
-conn, err := client.WebSocketSTT().Connect(ctx, nil)
+conn, err := client.Realtime().ConnectSTT(ctx, nil)
 if err != nil {
     log.Fatal(err)
 }
@@ -44,7 +47,9 @@ for transcript := range conn.Transcripts() {
 ## With Options
 
 ```go
-opts := &elevenlabs.WebSocketSTTOptions{
+import "github.com/plexusone/elevenlabs-go/realtime"
+
+opts := &realtime.STTOptions{
     // Scribe model for transcription
     ModelID: "scribe_v1",
 
@@ -62,14 +67,14 @@ opts := &elevenlabs.WebSocketSTTOptions{
     LanguageCode: "en",
 }
 
-conn, err := client.WebSocketSTT().Connect(ctx, opts)
+conn, err := client.Realtime().ConnectSTT(ctx, opts)
 ```
 
 ## Streaming from Microphone
 
 ```go
 // Connect to STT
-conn, err := client.WebSocketSTT().Connect(ctx, &elevenlabs.WebSocketSTTOptions{
+conn, err := client.Realtime().ConnectSTT(ctx, &realtime.STTOptions{
     SampleRate:           16000,
     Encoding:             "pcm_s16le",
     EnablePartials:       true,

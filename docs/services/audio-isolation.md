@@ -2,13 +2,16 @@
 
 Extract vocals and speech from audio, removing background noise and music.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Audio Isolation methods are accessed via `client.Audio()` instead of `client.AudioIsolation()`.
+
 ## Basic Usage
 
 ```go
 file, _ := os.Open("mixed_audio.mp3")
 defer file.Close()
 
-isolated, err := client.AudioIsolation().IsolateFile(ctx, file, "mixed_audio.mp3")
+isolated, err := client.Audio().IsolateFile(ctx, file, "mixed_audio.mp3")
 if err != nil {
     log.Fatal(err)
 }
@@ -23,7 +26,9 @@ io.Copy(output, isolated)
 For real-time processing:
 
 ```go
-isolated, err := client.AudioIsolation().IsolateStream(ctx, &elevenlabs.AudioIsolationRequest{
+import "github.com/plexusone/elevenlabs-go/audio"
+
+isolated, err := client.Audio().IsolateStream(ctx, &audio.IsolationRequest{
     Audio:    audioReader,
     Filename: "audio.mp3",
 })
@@ -32,7 +37,7 @@ isolated, err := client.AudioIsolation().IsolateStream(ctx, &elevenlabs.AudioIso
 ## Full Options
 
 ```go
-isolated, err := client.AudioIsolation().Isolate(ctx, &elevenlabs.AudioIsolationRequest{
+isolated, err := client.Audio().Isolate(ctx, &audio.IsolationRequest{
     Audio:    audioFile,
     Filename: "podcast_with_music.mp3",
 })
@@ -49,7 +54,7 @@ Remove background music and enhance speech clarity:
 podcastFile, _ := os.Open("podcast_episode.mp3")
 
 // Extract just the voices
-cleanAudio, err := client.AudioIsolation().IsolateFile(ctx,
+cleanAudio, err := client.Audio().IsolateFile(ctx,
     podcastFile, "podcast_episode.mp3")
 
 // Save clean version
@@ -66,11 +71,11 @@ Extract speech from noisy interview recordings:
 interviewFile, _ := os.Open("street_interview.mp3")
 
 // Isolate speaker voices
-voices, err := client.AudioIsolation().IsolateFile(ctx,
+voices, err := client.Audio().IsolateFile(ctx,
     interviewFile, "street_interview.mp3")
 
 // Use clean audio for transcription
-result, _ := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
+result, _ := client.STT().Transcribe(ctx, &stt.Request{
     File:     voices,
     Filename: "clean_interview.mp3",
 })
@@ -83,7 +88,7 @@ Extract vocals from songs:
 ```go
 songFile, _ := os.Open("song.mp3")
 
-vocals, err := client.AudioIsolation().IsolateFile(ctx, songFile, "song.mp3")
+vocals, err := client.Audio().IsolateFile(ctx, songFile, "song.mp3")
 
 // Save isolated vocals
 vocalFile, _ := os.Create("vocals.mp3")
@@ -100,7 +105,7 @@ Clean up audio tracks from video:
 
 audioFile, _ := os.Open("audio.mp3")
 
-cleanAudio, err := client.AudioIsolation().IsolateFile(ctx, audioFile, "audio.mp3")
+cleanAudio, err := client.Audio().IsolateFile(ctx, audioFile, "audio.mp3")
 
 // Save and remix back into video
 cleanFile, _ := os.Create("clean_audio.mp3")
@@ -116,7 +121,7 @@ Get clean voice samples for cloning:
 sampleFile, _ := os.Open("voice_sample.mp3")
 
 // Clean it up
-cleanSample, err := client.AudioIsolation().IsolateFile(ctx,
+cleanSample, err := client.Audio().IsolateFile(ctx,
     sampleFile, "voice_sample.mp3")
 
 // Use clean sample for voice training
@@ -130,7 +135,7 @@ Combine with other services:
 ```go
 // 1. Isolate vocals from noisy audio
 file, _ := os.Open("noisy_recording.mp3")
-clean, _ := client.AudioIsolation().IsolateFile(ctx, file, "noisy_recording.mp3")
+clean, _ := client.Audio().IsolateFile(ctx, file, "noisy_recording.mp3")
 
 // 2. Save to temp file for transcription
 tmpFile, _ := os.CreateTemp("", "clean-*.mp3")
@@ -138,14 +143,14 @@ io.Copy(tmpFile, clean)
 tmpFile.Seek(0, 0)
 
 // 3. Transcribe the clean audio
-transcript, _ := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
+transcript, _ := client.STT().Transcribe(ctx, &stt.Request{
     File:     tmpFile,
     Filename: "clean.mp3",
 })
 
 // 4. Get word-level timestamps
 tmpFile.Seek(0, 0)
-alignment, _ := client.ForcedAlignment().AlignFile(ctx, tmpFile, "clean.mp3", transcript.Text)
+alignment, _ := client.Audio().AlignFile(ctx, tmpFile, "clean.mp3", transcript.Text)
 ```
 
 ## Supported Audio Formats

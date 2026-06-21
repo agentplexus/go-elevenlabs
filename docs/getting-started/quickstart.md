@@ -19,7 +19,7 @@ if err != nil {
 ```go
 ctx := context.Background()
 
-voices, err := client.Voices().List(ctx)
+voices, err := client.Voice().List(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -35,7 +35,7 @@ for _, v := range voices {
 
 ```go
 // Generate speech with default settings
-audio, err := client.TextToSpeech().Simple(ctx,
+audio, err := client.TTS().Simple(ctx,
     "21m00Tcm4TlvDq8ikWAM",  // Voice ID (Rachel)
     "Hello, this is a test of the ElevenLabs API.")
 if err != nil {
@@ -51,7 +51,9 @@ io.Copy(f, audio)
 ### With Options
 
 ```go
-resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+import "github.com/plexusone/elevenlabs-go/tts"
+
+resp, err := client.TTS().Generate(ctx, &tts.Request{
     VoiceID: "21m00Tcm4TlvDq8ikWAM",
     Text:    "Hello with custom settings!",
     ModelID: "eleven_multilingual_v2",
@@ -67,7 +69,7 @@ resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
 ## Generate Sound Effects
 
 ```go
-audio, err := client.SoundEffects().Simple(ctx, "thunder and rain storm")
+audio, err := client.Audio().GenerateSoundEffect(ctx, "thunder and rain storm")
 if err != nil {
     log.Fatal(err)
 }
@@ -80,7 +82,7 @@ io.Copy(f, audio)
 ## Check Your Usage
 
 ```go
-sub, err := client.User().GetSubscription(ctx)
+sub, err := client.Account().GetSubscription(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -114,12 +116,12 @@ func main() {
     ctx := context.Background()
 
     // List voices
-    voices, _ := client.Voices().List(ctx)
+    voices, _ := client.Voice().List(ctx)
     fmt.Printf("Found %d voices\n", len(voices))
 
     // Generate speech using first voice
     if len(voices) > 0 {
-        audio, err := client.TextToSpeech().Simple(ctx,
+        audio, err := client.TTS().Simple(ctx,
             voices[0].VoiceID,
             "Hello from go-elevenlabs!")
         if err != nil {

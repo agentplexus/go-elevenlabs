@@ -2,6 +2,9 @@
 
 Phone call integration for ElevenLabs conversational AI agents.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Twilio and Phone Number methods are accessed via `client.Telephony()` instead of `client.Twilio()` and `client.PhoneNumbers()`.
+
 ## Overview
 
 The Twilio integration enables:
@@ -16,9 +19,11 @@ The Twilio integration enables:
 When Twilio receives a call, register it with ElevenLabs:
 
 ```go
+import "github.com/plexusone/elevenlabs-go/telephony"
+
 // In your Twilio webhook handler
 func handleIncomingCall(w http.ResponseWriter, r *http.Request) {
-    resp, err := client.Twilio().RegisterCall(ctx, &elevenlabs.TwilioRegisterCallRequest{
+    resp, err := client.Telephony().RegisterTwilioCall(ctx, &telephony.TwilioRegisterCallRequest{
         AgentID: "your-agent-id",
     })
     if err != nil {
@@ -37,7 +42,7 @@ func handleIncomingCall(w http.ResponseWriter, r *http.Request) {
 Inject context into the agent conversation:
 
 ```go
-resp, err := client.Twilio().RegisterCall(ctx, &elevenlabs.TwilioRegisterCallRequest{
+resp, err := client.Telephony().RegisterTwilioCall(ctx, &telephony.TwilioRegisterCallRequest{
     AgentID: "your-agent-id",
 
     // Dynamic variables for prompt injection
@@ -60,7 +65,7 @@ resp, err := client.Twilio().RegisterCall(ctx, &elevenlabs.TwilioRegisterCallReq
 Initiate calls from your ElevenLabs agent:
 
 ```go
-call, err := client.Twilio().OutboundCall(ctx, &elevenlabs.TwilioOutboundCallRequest{
+call, err := client.Telephony().TwilioOutboundCall(ctx, &telephony.TwilioOutboundCallRequest{
     // Required fields
     AgentID:            "your-agent-id",
     AgentPhoneNumberID: "phone-number-id",
@@ -86,7 +91,7 @@ fmt.Printf("Conversation ID: %s\n", call.ConversationID)
 For SIP-based infrastructure:
 
 ```go
-call, err := client.Twilio().SIPOutboundCall(ctx, &elevenlabs.SIPOutboundCallRequest{
+call, err := client.Telephony().SIPOutboundCall(ctx, &telephony.SIPOutboundCallRequest{
     AgentID:    "your-agent-id",
     SIPTrunkID: "sip-trunk-id",
     ToNumber:   "+1234567890",
@@ -103,7 +108,7 @@ call, err := client.Twilio().SIPOutboundCall(ctx, &elevenlabs.SIPOutboundCallReq
 ### List Phone Numbers
 
 ```go
-numbers, err := client.PhoneNumbers().List(ctx)
+numbers, err := client.Telephony().ListPhoneNumbers(ctx)
 if err != nil {
     log.Fatal(err)
 }
@@ -116,7 +121,7 @@ for _, num := range numbers {
 ### Get Phone Number Details
 
 ```go
-number, err := client.PhoneNumbers().Get(ctx, "phone-number-id")
+number, err := client.Telephony().GetPhoneNumber(ctx, "phone-number-id")
 if err != nil {
     log.Fatal(err)
 }
@@ -129,8 +134,8 @@ fmt.Printf("Provider: %s\n", number.Provider)
 ### Update Phone Number
 
 ```go
-updated, err := client.PhoneNumbers().Update(ctx, "phone-number-id",
-    &elevenlabs.UpdatePhoneNumberRequest{
+updated, err := client.Telephony().UpdatePhoneNumber(ctx, "phone-number-id",
+    &telephony.UpdatePhoneNumberRequest{
         Label:   "Customer Support Line",
         AgentID: "new-agent-id",
     })
@@ -139,7 +144,7 @@ updated, err := client.PhoneNumbers().Update(ctx, "phone-number-id",
 ### Delete Phone Number
 
 ```go
-err := client.PhoneNumbers().Delete(ctx, "phone-number-id")
+err := client.Telephony().DeletePhoneNumber(ctx, "phone-number-id")
 ```
 
 ## Request Types
@@ -187,6 +192,7 @@ import (
     "net/http"
 
     elevenlabs "github.com/plexusone/elevenlabs-go"
+    "github.com/plexusone/elevenlabs-go/telephony"
 )
 
 var client *elevenlabs.Client
@@ -211,7 +217,7 @@ func handleIncoming(w http.ResponseWriter, r *http.Request) {
     // Get caller info from Twilio parameters
     callerNumber := r.FormValue("From")
 
-    resp, err := client.Twilio().RegisterCall(ctx, &elevenlabs.TwilioRegisterCallRequest{
+    resp, err := client.Telephony().RegisterTwilioCall(ctx, &telephony.TwilioRegisterCallRequest{
         AgentID: "your-agent-id",
         DynamicVariables: map[string]string{
             "caller_number": callerNumber,
@@ -231,7 +237,7 @@ func handleOutbound(w http.ResponseWriter, r *http.Request) {
     ctx := r.Context()
     toNumber := r.URL.Query().Get("to")
 
-    call, err := client.Twilio().OutboundCall(ctx, &elevenlabs.TwilioOutboundCallRequest{
+    call, err := client.Telephony().TwilioOutboundCall(ctx, &telephony.TwilioOutboundCallRequest{
         AgentID:            "your-agent-id",
         AgentPhoneNumberID: "phone-number-id",
         ToNumber:           toNumber,

@@ -2,12 +2,15 @@
 
 The Text-to-Speech service converts text into natural-sounding speech.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, TTS methods are accessed via `client.TTS()` instead of `client.TextToSpeech()`.
+
 ## Basic Usage
 
 ### Simple Generation
 
 ```go
-audio, err := client.TextToSpeech().Simple(ctx, voiceID, "Your text here")
+audio, err := client.TTS().Simple(ctx, voiceID, "Your text here")
 if err != nil {
     log.Fatal(err)
 }
@@ -20,7 +23,9 @@ io.Copy(f, audio)
 ### Full Control
 
 ```go
-resp, err := client.TextToSpeech().Generate(ctx, &elevenlabs.TTSRequest{
+import "github.com/plexusone/elevenlabs-go/tts"
+
+resp, err := client.TTS().Generate(ctx, &tts.Request{
     VoiceID: "21m00Tcm4TlvDq8ikWAM",
     Text:    "Hello world!",
     ModelID: "eleven_multilingual_v2",
@@ -77,7 +82,7 @@ settings := elevenlabs.DefaultVoiceSettings()
 For real-time applications, use streaming:
 
 ```go
-resp, err := client.TextToSpeech().GenerateStream(ctx, &elevenlabs.TTSRequest{
+resp, err := client.TTS().GenerateStream(ctx, &tts.Request{
     VoiceID: voiceID,
     Text:    "Long text to stream...",
 })
@@ -94,7 +99,7 @@ for chunk := range resp.Chunks {
 ## Error Handling
 
 ```go
-audio, err := client.TextToSpeech().Simple(ctx, voiceID, text)
+audio, err := client.TTS().Simple(ctx, voiceID, text)
 if err != nil {
     if elevenlabs.IsRateLimitError(err) {
         // Wait and retry

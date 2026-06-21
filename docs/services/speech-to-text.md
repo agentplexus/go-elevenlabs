@@ -2,11 +2,14 @@
 
 Transcribe audio files with optional speaker diarization.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, STT methods are accessed via `client.STT()` instead of `client.SpeechToText()`.
+
 ## Basic Usage
 
 ```go
 // Transcribe from URL
-result, err := client.SpeechToText().TranscribeURL(ctx, "https://example.com/audio.mp3")
+result, err := client.STT().TranscribeURL(ctx, "https://example.com/audio.mp3")
 if err != nil {
     log.Fatal(err)
 }
@@ -18,9 +21,11 @@ fmt.Printf("Language: %s\n", result.LanguageCode)
 ## Transcribe with File Upload
 
 ```go
+import "github.com/plexusone/elevenlabs-go/stt"
+
 audioData, _ := os.ReadFile("audio.mp3")
 
-result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
+result, err := client.STT().Transcribe(ctx, &stt.Request{
     FileBytes: audioData,
     FileName:  "audio.mp3",
     ModelID:   "scribe_v1",
@@ -31,7 +36,7 @@ Or use the convenience method:
 
 ```go
 audioData, _ := os.ReadFile("audio.mp3")
-result, err := client.SpeechToText().TranscribeFile(ctx, audioData)
+result, err := client.STT().TranscribeFile(ctx, audioData)
 ```
 
 Note: `TranscribeFile` takes raw bytes. To transcribe from a file path, read the file first with `os.ReadFile()`.
@@ -41,7 +46,7 @@ Note: `TranscribeFile` takes raw bytes. To transcribe from a file path, read the
 Identify different speakers in the audio:
 
 ```go
-result, err := client.SpeechToText().TranscribeWithDiarization(ctx, audioURL)
+result, err := client.STT().TranscribeWithDiarization(ctx, audioURL)
 if err != nil {
     log.Fatal(err)
 }
@@ -57,7 +62,7 @@ for _, word := range result.Words {
 ```go
 audioData, _ := os.ReadFile("interview.mp3")
 
-result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
+result, err := client.STT().Transcribe(ctx, &stt.Request{
     FileBytes:      audioData,
     FileName:       "interview.mp3",
     ModelID:        "scribe_v1",
@@ -84,13 +89,13 @@ result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRe
 ## Response Structure
 
 ```go
-type TranscriptionResponse struct {
-    Text         string              // Full transcription text
-    LanguageCode string              // Detected language
-    Words        []TranscriptionWord // Word-level timestamps
+type Response struct {
+    Text         string  // Full transcription text
+    LanguageCode string  // Detected language
+    Words        []Word  // Word-level timestamps
 }
 
-type TranscriptionWord struct {
+type Word struct {
     Text    string  // The word
     Start   float64 // Start time in seconds
     End     float64 // End time in seconds
@@ -105,7 +110,7 @@ type TranscriptionWord struct {
 ```go
 meetingData, _ := os.ReadFile("meeting.mp3")
 
-result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
+result, err := client.STT().Transcribe(ctx, &stt.Request{
     FileBytes:   meetingData,
     FileName:    "meeting.mp3",
     Diarize:     true,
@@ -122,7 +127,7 @@ for _, word := range result.Words {
 ### Subtitle Generation
 
 ```go
-result, err := client.SpeechToText().TranscribeURL(ctx, videoAudioURL)
+result, err := client.STT().TranscribeURL(ctx, videoAudioURL)
 
 // Generate SRT format
 for i, word := range result.Words {
@@ -138,7 +143,7 @@ for i, word := range result.Words {
 // Transcribe podcast episode
 podcastData, _ := os.ReadFile("episode.mp3")
 
-result, err := client.SpeechToText().Transcribe(ctx, &elevenlabs.TranscriptionRequest{
+result, err := client.STT().Transcribe(ctx, &stt.Request{
     FileBytes:      podcastData,
     FileName:       "episode.mp3",
     Diarize:        true,

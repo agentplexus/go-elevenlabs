@@ -2,12 +2,17 @@
 
 Translate and dub audio/video content into other languages while preserving the original speaker's voice characteristics.
 
+!!! note "v0.13.0 API Change"
+    As of v0.13.0, Dubbing methods are accessed via `client.Content()` instead of `client.Dubbing()`.
+
 ## Creating a Dub
 
 ### From URL
 
 ```go
-dub, err := client.Dubbing().Create(ctx, &elevenlabs.DubbingRequest{
+import "github.com/plexusone/elevenlabs-go/content"
+
+dub, err := client.Content().CreateDubbing(ctx, &content.DubbingRequest{
     SourceURL:      "https://example.com/video.mp4",
     TargetLanguage: "es",  // Spanish
     Name:           "My Video - Spanish",
@@ -30,7 +35,7 @@ dub, err := client.Dubbing().Create(ctx, &elevenlabs.DubbingRequest{
 ## Checking Status
 
 ```go
-status, err := client.Dubbing().GetStatus(ctx, dubbingID)
+status, err := client.Content().GetDubbingStatus(ctx, dubbingID)
 
 fmt.Printf("Status: %s\n", status.Status)
 fmt.Printf("Target Languages: %v\n", status.TargetLanguages)
@@ -47,7 +52,7 @@ fmt.Printf("Target Languages: %v\n", status.TargetLanguages)
 ## Downloading Dubbed Audio
 
 ```go
-audio, err := client.Dubbing().GetDubbedFile(ctx, dubbingID, "es")
+audio, err := client.Content().GetDubbedFile(ctx, dubbingID, "es")
 if err != nil {
     log.Fatal(err)
 }
@@ -60,7 +65,7 @@ io.Copy(f, audio)
 ## Deleting a Dub
 
 ```go
-err := client.Dubbing().Delete(ctx, dubbingID)
+err := client.Content().DeleteDubbing(ctx, dubbingID)
 ```
 
 ## Supported Languages
@@ -85,7 +90,7 @@ Common language codes:
 
 ```go
 // 1. Create dubbing job
-dub, err := client.Dubbing().Create(ctx, &elevenlabs.DubbingRequest{
+dub, err := client.Content().CreateDubbing(ctx, &content.DubbingRequest{
     SourceURL:      "https://example.com/course-intro.mp4",
     TargetLanguage: "es",
     Name:           "Course Intro - Spanish",
@@ -98,7 +103,7 @@ fmt.Printf("Dubbing ID: %s\n", dub.DubbingID)
 
 // 2. Poll for completion
 for {
-    status, _ := client.Dubbing().GetStatus(ctx, dub.DubbingID)
+    status, _ := client.Content().GetDubbingStatus(ctx, dub.DubbingID)
 
     if status.Status == "dubbed" {
         fmt.Println("Dubbing complete!")
@@ -112,7 +117,7 @@ for {
 }
 
 // 3. Download dubbed file
-audio, _ := client.Dubbing().GetDubbedFile(ctx, dub.DubbingID, "es")
+audio, _ := client.Content().GetDubbedFile(ctx, dub.DubbingID, "es")
 f, _ := os.Create("intro_spanish.mp4")
 io.Copy(f, audio)
 f.Close()
