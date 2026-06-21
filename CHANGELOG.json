@@ -7,6 +7,56 @@
   "maintainers": ["johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.13.0",
+      "date": "2026-06-21",
+      "highlights": [
+        { "description": "Major SDK restructure: domain-based subpackages for better pkg.go.dev discoverability" },
+        { "description": "Combined services with short accessor names: `client.TTS()`, `client.Voice()`, `client.Content()`" },
+        { "description": "All services moved to dedicated packages: `tts`, `stt`, `voice`, `audio`, `content`, `realtime`, `telephony`, `account`, `agents`" }
+      ],
+      "breaking": [
+        { "description": "Services moved to subpackages - requires import path changes (e.g., `import \"github.com/plexusone/elevenlabs-go/tts\"`)", "commit": "cd8c378" },
+        { "description": "`client.TextToSpeech()` renamed to `client.TTS()` with methods on `tts.Service`", "commit": "bb7e29a" },
+        { "description": "`client.SpeechToText()` renamed to `client.STT()` with methods on `stt.Service`", "commit": "bb7e29a" },
+        { "description": "`client.Voices()` renamed to `client.Voice()` with methods on `voice.Service`", "commit": "bb7e29a" },
+        { "description": "`client.Music()`, `client.Dubbing()`, `client.Projects()` combined into `client.Content()`", "commit": "bb7e29a" },
+        { "description": "`client.AudioIsolation()`, `client.ForcedAlignment()`, `client.SoundEffects()` combined into `client.Audio()`", "commit": "bb7e29a" },
+        { "description": "`client.WebSocketTTS()`, `client.WebSocketSTT()` combined into `client.Realtime()`", "commit": "bb7e29a" },
+        { "description": "`client.Twilio()`, `client.PhoneNumbers()` combined into `client.Telephony()`", "commit": "bb7e29a" },
+        { "description": "`client.User()`, `client.Models()`, `client.History()`, `client.Pronunciation()` combined into `client.Account()`", "commit": "bb7e29a" },
+        { "description": "Conversational AI services combined into `client.Agents()` (agents, conversations, knowledge base, batch calling, analytics, testing)", "commit": "bb7e29a" }
+      ],
+      "added": [
+        { "description": "`tts` package with `Service` combining TextToSpeech, SpeechToSpeech, and TextToDialogue", "commit": "cd8c378", "file": "tts/" },
+        { "description": "`stt` package with `Service` for speech-to-text transcription", "commit": "d1985fa", "file": "stt/" },
+        { "description": "`voice` package with `Service` combining Voices and VoiceDesign", "commit": "f181869", "file": "voice/" },
+        { "description": "`audio` package with `Service` combining AudioIsolation, ForcedAlignment, and SoundEffects", "commit": "adb0afa", "file": "audio/" },
+        { "description": "`content` package with `Service` combining Music, Dubbing, and Projects", "commit": "d3f93b4", "file": "content/" },
+        { "description": "`realtime` package with `Service` combining WebSocketTTS and WebSocketSTT", "commit": "791b9fb", "file": "realtime/" },
+        { "description": "`telephony` package with `Service` combining Twilio and PhoneNumbers", "commit": "ea1edfa", "file": "telephony/" },
+        { "description": "`account` package with `Service` combining User, Models, History, and Pronunciation", "commit": "4bf479d", "file": "account/" },
+        { "description": "`agents` package with `Service` combining Agents, Conversations, KnowledgeBase, BatchCalling, Analytics, and AgentTesting", "commit": "e391d5b", "file": "agents/" }
+      ],
+      "changed": [
+        { "description": "Client service accessors use short names: `TTS()`, `STT()`, `Voice()`, `Audio()`, `Content()`, `Realtime()`, `Telephony()`, `Account()`, `Agents()`", "commit": "bb7e29a", "file": "client.go" },
+        { "description": "Request/response types moved to subpackages (e.g., `tts.Request`, `voice.Voice`, `content.MusicRequest`)", "commit": "bb7e29a" }
+      ],
+      "refactor": [
+        { "description": "Remove old service files from root package after migration to subpackages", "commit": "d1803b9" },
+        { "description": "Update `cmd/elevenlabs`, `examples/`, and `omnivoice/` imports for new package structure", "commit": "a271195" }
+      ],
+      "tests": [
+        { "description": "Update integration tests for v0.13.0 subpackage API", "commit": "1ca88d4" },
+        { "description": "Add unit tests for agents package", "commit": "e391d5b", "file": "agents/agents_test.go" },
+        { "description": "Add integration tests for agents package", "commit": "e391d5b", "file": "agents/integration_test.go" }
+      ],
+      "documentation": [
+        { "description": "Add v0.13.0 release notes with migration guide", "commit": "adae129", "file": "docs/releases/v0.13.0.md" },
+        { "description": "Update all service documentation for v0.13.0 API patterns", "commit": "5c6f337" },
+        { "description": "Add API change notes to service docs (quickstart, twilio, projects, dubbing, music, etc.)", "commit": "5c6f337" }
+      ]
+    },
+    {
       "version": "v0.12.0",
       "date": "2026-06-20",
       "highlights": [
