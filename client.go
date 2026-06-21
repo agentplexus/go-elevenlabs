@@ -10,11 +10,20 @@ import (
 	"os"
 	"time"
 
+	"github.com/plexusone/elevenlabs-go/account"
+	"github.com/plexusone/elevenlabs-go/agents"
+	"github.com/plexusone/elevenlabs-go/audio"
+	"github.com/plexusone/elevenlabs-go/content"
 	"github.com/plexusone/elevenlabs-go/internal/api"
+	"github.com/plexusone/elevenlabs-go/realtime"
+	"github.com/plexusone/elevenlabs-go/stt"
+	"github.com/plexusone/elevenlabs-go/telephony"
+	"github.com/plexusone/elevenlabs-go/tts"
+	"github.com/plexusone/elevenlabs-go/voice"
 )
 
 // Version is the SDK version.
-const Version = "0.11.0"
+const Version = "0.13.0"
 
 // DefaultBaseURL is the default ElevenLabs API base URL.
 const DefaultBaseURL = "https://api.elevenlabs.io"
@@ -28,37 +37,16 @@ type Client struct {
 	apiKey    string
 	baseURL   string
 
-	// Service accessors
-	tts             *TextToSpeechService
-	voices          *VoicesService
-	models          *ModelsService
-	history         *HistoryService
-	user            *UserService
-	dubbing         *DubbingService
-	soundEffects    *SoundEffectsService
-	pronunciation   *PronunciationService
-	projects        *ProjectsService
-	speechToText    *SpeechToTextService
-	forcedAlignment *ForcedAlignmentService
-	audioIsolation  *AudioIsolationService
-	textToDialogue  *TextToDialogueService
-	voiceDesign     *VoiceDesignService
-	music           *MusicService
-
-	// Real-time services
-	webSocketTTS   *WebSocketTTSService
-	webSocketSTT   *WebSocketSTTService
-	twilio         *TwilioService
-	phoneNumbers   *PhoneNumberService
-	speechToSpeech *SpeechToSpeechService
-
-	// Conversational AI services
-	agents        *AgentsService
-	conversations *ConversationsService
-	batchCalling  *BatchCallingService
-	analytics     *AnalyticsService
-	knowledgeBase *KnowledgeBaseService
-	agentTesting  *AgentTestingService
+	// Domain-based service accessors
+	ttsSvc       *tts.Service
+	sttSvc       *stt.Service
+	voiceSvc     *voice.Service
+	audioSvc     *audio.Service
+	contentSvc   *content.Service
+	realtimeSvc  *realtime.Service
+	telephonySvc *telephony.Service
+	accountSvc   *account.Service
+	agentsSvc    *agents.Service
 }
 
 // NewClient creates a new ElevenLabs client with the given options.
@@ -102,37 +90,16 @@ func NewClient(opts ...Option) (*Client, error) {
 		baseURL:   options.baseURL,
 	}
 
-	// Initialize services
-	c.tts = &TextToSpeechService{client: c}
-	c.voices = &VoicesService{client: c}
-	c.models = &ModelsService{client: c}
-	c.history = &HistoryService{client: c}
-	c.user = &UserService{client: c}
-	c.dubbing = &DubbingService{client: c}
-	c.soundEffects = &SoundEffectsService{client: c}
-	c.pronunciation = &PronunciationService{client: c}
-	c.projects = &ProjectsService{client: c}
-	c.speechToText = &SpeechToTextService{client: c}
-	c.forcedAlignment = &ForcedAlignmentService{client: c}
-	c.audioIsolation = &AudioIsolationService{client: c}
-	c.textToDialogue = &TextToDialogueService{client: c}
-	c.voiceDesign = &VoiceDesignService{client: c}
-	c.music = &MusicService{client: c}
-
-	// Initialize real-time services
-	c.webSocketTTS = &WebSocketTTSService{client: c}
-	c.webSocketSTT = &WebSocketSTTService{client: c}
-	c.twilio = &TwilioService{client: c}
-	c.phoneNumbers = &PhoneNumberService{client: c}
-	c.speechToSpeech = &SpeechToSpeechService{client: c}
-
-	// Initialize conversational AI services
-	c.agents = &AgentsService{client: c}
-	c.conversations = &ConversationsService{client: c}
-	c.batchCalling = &BatchCallingService{client: c}
-	c.analytics = &AnalyticsService{client: c}
-	c.knowledgeBase = &KnowledgeBaseService{client: c}
-	c.agentTesting = &AgentTestingService{client: c}
+	// Initialize domain-based services
+	c.ttsSvc = tts.New(apiClient, options.apiKey, options.baseURL)
+	c.sttSvc = stt.New(apiClient, options.apiKey, options.baseURL)
+	c.voiceSvc = voice.New(apiClient)
+	c.audioSvc = audio.New(apiClient)
+	c.contentSvc = content.New(apiClient)
+	c.realtimeSvc = realtime.New(options.apiKey, options.baseURL)
+	c.telephonySvc = telephony.New(options.apiKey, options.baseURL)
+	c.accountSvc = account.New(apiClient)
+	c.agentsSvc = agents.New(c)
 
 	return c, nil
 }
@@ -164,134 +131,67 @@ func (c *Client) API() *api.Client {
 	return c.apiClient
 }
 
-// TextToSpeech returns the text-to-speech service.
-func (c *Client) TextToSpeech() *TextToSpeechService {
-	return c.tts
+// TTS returns the text-to-speech service.
+// This includes TTS generation, speech-to-speech conversion, and dialogue generation.
+func (c *Client) TTS() *tts.Service {
+	return c.ttsSvc
 }
 
-// Voices returns the voices service.
-func (c *Client) Voices() *VoicesService {
-	return c.voices
+// STT returns the speech-to-text service.
+func (c *Client) STT() *stt.Service {
+	return c.sttSvc
 }
 
-// Models returns the models service.
-func (c *Client) Models() *ModelsService {
-	return c.models
+// Voice returns the voice management service.
+// This includes listing voices, getting settings, and AI voice design.
+func (c *Client) Voice() *voice.Service {
+	return c.voiceSvc
 }
 
-// History returns the history service.
-func (c *Client) History() *HistoryService {
-	return c.history
+// Audio returns the audio processing service.
+// This includes audio isolation, forced alignment, and sound effects generation.
+func (c *Client) Audio() *audio.Service {
+	return c.audioSvc
 }
 
-// User returns the user service.
-func (c *Client) User() *UserService {
-	return c.user
+// Content returns the content generation service.
+// This includes music generation, dubbing, and Studio projects.
+func (c *Client) Content() *content.Service {
+	return c.contentSvc
 }
 
-// Dubbing returns the dubbing service.
-func (c *Client) Dubbing() *DubbingService {
-	return c.dubbing
+// Realtime returns the real-time streaming service.
+// This includes WebSocket-based TTS and STT connections.
+func (c *Client) Realtime() *realtime.Service {
+	return c.realtimeSvc
 }
 
-// SoundEffects returns the sound effects service.
-func (c *Client) SoundEffects() *SoundEffectsService {
-	return c.soundEffects
+// Telephony returns the telephony integration service.
+// This includes Twilio/SIP integration and phone number management.
+func (c *Client) Telephony() *telephony.Service {
+	return c.telephonySvc
 }
 
-// Pronunciation returns the pronunciation dictionary service.
-func (c *Client) Pronunciation() *PronunciationService {
-	return c.pronunciation
+// Account returns the account management service.
+// This includes user info, models, history, and pronunciation dictionaries.
+func (c *Client) Account() *account.Service {
+	return c.accountSvc
 }
 
-// Projects returns the projects (Studio) service.
-func (c *Client) Projects() *ProjectsService {
-	return c.projects
+// Agents returns the ElevenAgents (Conversational AI) service.
+// This includes agent management, conversations, knowledge base, testing, and batch calling.
+func (c *Client) Agents() *agents.Service {
+	return c.agentsSvc
 }
 
-// SpeechToText returns the speech-to-text transcription service.
-func (c *Client) SpeechToText() *SpeechToTextService {
-	return c.speechToText
+// APIKey returns the API key used by the client.
+func (c *Client) APIKey() string {
+	return c.apiKey
 }
 
-// ForcedAlignment returns the forced alignment service.
-func (c *Client) ForcedAlignment() *ForcedAlignmentService {
-	return c.forcedAlignment
-}
-
-// AudioIsolation returns the audio isolation service.
-func (c *Client) AudioIsolation() *AudioIsolationService {
-	return c.audioIsolation
-}
-
-// TextToDialogue returns the text-to-dialogue service.
-func (c *Client) TextToDialogue() *TextToDialogueService {
-	return c.textToDialogue
-}
-
-// VoiceDesign returns the voice design/generation service.
-func (c *Client) VoiceDesign() *VoiceDesignService {
-	return c.voiceDesign
-}
-
-// Music returns the music composition service.
-func (c *Client) Music() *MusicService {
-	return c.music
-}
-
-// WebSocketTTS returns the WebSocket text-to-speech service for real-time streaming.
-func (c *Client) WebSocketTTS() *WebSocketTTSService {
-	return c.webSocketTTS
-}
-
-// WebSocketSTT returns the WebSocket speech-to-text service for real-time transcription.
-func (c *Client) WebSocketSTT() *WebSocketSTTService {
-	return c.webSocketSTT
-}
-
-// Twilio returns the Twilio phone integration service.
-func (c *Client) Twilio() *TwilioService {
-	return c.twilio
-}
-
-// PhoneNumbers returns the phone number management service.
-func (c *Client) PhoneNumbers() *PhoneNumberService {
-	return c.phoneNumbers
-}
-
-// SpeechToSpeech returns the speech-to-speech voice conversion service.
-func (c *Client) SpeechToSpeech() *SpeechToSpeechService {
-	return c.speechToSpeech
-}
-
-// Agents returns the conversational AI agents service.
-func (c *Client) Agents() *AgentsService {
-	return c.agents
-}
-
-// Conversations returns the conversations service.
-func (c *Client) Conversations() *ConversationsService {
-	return c.conversations
-}
-
-// BatchCalling returns the batch calling service.
-func (c *Client) BatchCalling() *BatchCallingService {
-	return c.batchCalling
-}
-
-// Analytics returns the analytics service.
-func (c *Client) Analytics() *AnalyticsService {
-	return c.analytics
-}
-
-// KnowledgeBase returns the knowledge base service.
-func (c *Client) KnowledgeBase() *KnowledgeBaseService {
-	return c.knowledgeBase
-}
-
-// AgentTesting returns the agent testing service.
-func (c *Client) AgentTesting() *AgentTestingService {
-	return c.agentTesting
+// BaseURL returns the base URL used by the client.
+func (c *Client) BaseURL() string {
+	return c.baseURL
 }
 
 // clientOptions holds the options for creating a Client.

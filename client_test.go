@@ -1,7 +1,6 @@
 package elevenlabs
 
 import (
-	"os"
 	"testing"
 )
 
@@ -15,51 +14,30 @@ func TestNewClient(t *testing.T) {
 		t.Fatal("NewClient() returned nil client")
 	}
 
-	// Verify services are initialized
-	if client.TextToSpeech() == nil {
-		t.Error("TextToSpeech() service is nil")
+	// Verify domain-based services are initialized
+	if client.TTS() == nil {
+		t.Error("TTS() service is nil")
 	}
-	if client.Voices() == nil {
-		t.Error("Voices() service is nil")
+	if client.STT() == nil {
+		t.Error("STT() service is nil")
 	}
-	if client.Models() == nil {
-		t.Error("Models() service is nil")
+	if client.Voice() == nil {
+		t.Error("Voice() service is nil")
 	}
-	if client.History() == nil {
-		t.Error("History() service is nil")
+	if client.Audio() == nil {
+		t.Error("Audio() service is nil")
 	}
-	if client.User() == nil {
-		t.Error("User() service is nil")
+	if client.Content() == nil {
+		t.Error("Content() service is nil")
 	}
-	if client.Dubbing() == nil {
-		t.Error("Dubbing() service is nil")
+	if client.Realtime() == nil {
+		t.Error("Realtime() service is nil")
 	}
-	if client.SoundEffects() == nil {
-		t.Error("SoundEffects() service is nil")
+	if client.Telephony() == nil {
+		t.Error("Telephony() service is nil")
 	}
-	if client.Pronunciation() == nil {
-		t.Error("Pronunciation() service is nil")
-	}
-	if client.Projects() == nil {
-		t.Error("Projects() service is nil")
-	}
-	if client.SpeechToText() == nil {
-		t.Error("SpeechToText() service is nil")
-	}
-	if client.ForcedAlignment() == nil {
-		t.Error("ForcedAlignment() service is nil")
-	}
-	if client.AudioIsolation() == nil {
-		t.Error("AudioIsolation() service is nil")
-	}
-	if client.TextToDialogue() == nil {
-		t.Error("TextToDialogue() service is nil")
-	}
-	if client.VoiceDesign() == nil {
-		t.Error("VoiceDesign() service is nil")
-	}
-	if client.Music() == nil {
-		t.Error("Music() service is nil")
+	if client.Account() == nil {
+		t.Error("Account() service is nil")
 	}
 	if client.API() == nil {
 		t.Error("API() returned nil")
@@ -90,14 +68,4 @@ func TestNewClientWithOptions(t *testing.T) {
 	if client.baseURL != "https://custom.api.com" {
 		t.Errorf("baseURL = %s, want https://custom.api.com", client.baseURL)
 	}
-}
-
-// Helper function to get API key for live tests
-func getAPIKey(t *testing.T) string {
-	t.Helper()
-	apiKey := os.Getenv("ELEVENLABS_API_KEY")
-	if apiKey == "" {
-		t.Skip("ELEVENLABS_API_KEY not set, skipping live API test")
-	}
-	return apiKey
 }

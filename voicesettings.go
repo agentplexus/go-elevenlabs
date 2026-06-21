@@ -5,6 +5,57 @@ package elevenlabs
 // These presets are tuned for specific content types and platforms.
 // Adjust as needed for your specific voice and content style.
 
+// VoiceSettings represents voice configuration options for speech synthesis.
+type VoiceSettings struct {
+	// Stability determines how stable the voice is (0.0 to 1.0).
+	// Lower values introduce broader emotional range.
+	Stability float64
+
+	// SimilarityBoost determines how closely the AI should adhere to
+	// the original voice (0.0 to 1.0).
+	SimilarityBoost float64
+
+	// Style determines the style exaggeration (0.0 to 1.0).
+	// Higher values amplify the original speaker's style.
+	Style float64
+
+	// Speed adjusts the speed of the voice (0.25 to 4.0).
+	// 1.0 is the default speed.
+	Speed float64
+
+	// UseSpeakerBoost boosts similarity to the original speaker.
+	UseSpeakerBoost bool
+}
+
+// Validate checks if the voice settings are within valid ranges.
+func (vs *VoiceSettings) Validate() error {
+	if vs.Stability < 0 || vs.Stability > 1 {
+		return ErrInvalidStability
+	}
+	if vs.SimilarityBoost < 0 || vs.SimilarityBoost > 1 {
+		return ErrInvalidSimilarityBoost
+	}
+	if vs.Style < 0 || vs.Style > 1 {
+		return ErrInvalidStyle
+	}
+	// Speed of 0 means use default (which is 1.0)
+	if vs.Speed != 0 && (vs.Speed < 0.25 || vs.Speed > 4.0) {
+		return ErrInvalidSpeed
+	}
+	return nil
+}
+
+// DefaultVoiceSettings returns sensible default voice settings.
+func DefaultVoiceSettings() *VoiceSettings {
+	return &VoiceSettings{
+		Stability:       0.5,
+		SimilarityBoost: 0.75,
+		Style:           0.0,
+		Speed:           1.0,
+		UseSpeakerBoost: true,
+	}
+}
+
 // VoiceSettingsForUdemy returns settings tuned for Udemy courses.
 // Neutral, clear, consistent, safe for long lectures.
 func VoiceSettingsForUdemy() *VoiceSettings {
