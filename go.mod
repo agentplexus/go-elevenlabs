@@ -3,7 +3,7 @@ module github.com/plexusone/elevenlabs-go
 go 1.26.0
 
 require (
-	github.com/go-faster/errors v0.7.1
+	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/grokify/mogo v0.74.6
