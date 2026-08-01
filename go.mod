@@ -1,6 +1,6 @@
 module github.com/plexusone/elevenlabs-go
 
-go 1.26.0
+go 1.26.4
 
 require (
 	github.com/go-faster/errors v0.8.0
@@ -9,7 +9,7 @@ require (
 	github.com/grokify/mogo v0.74.6
 	github.com/ogen-go/ogen v1.23.0
 	github.com/plexusone/ogen-tools v0.3.0
-	github.com/plexusone/omnivoice-core v0.15.0
+	github.com/plexusone/omnivoice-core v0.16.0
 	github.com/spf13/cobra v1.10.2
 	go.opentelemetry.io/otel v1.44.0
 	go.opentelemetry.io/otel/metric v1.44.0
