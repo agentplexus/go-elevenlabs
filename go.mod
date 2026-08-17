@@ -37,10 +37,10 @@ require (
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
-	golang.org/x/exp v0.0.0-20260727155853-b88d891fe743 // indirect
-	golang.org/x/net v0.57.0 // indirect
+	golang.org/x/exp v0.0.0-20260813180055-c1d0aacb2297 // indirect
+	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.40.0 // indirect
+	golang.org/x/text v0.41.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
